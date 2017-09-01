@@ -8,7 +8,8 @@ use Donm::SchemaConnected qw(get_connection_info);
 __PACKAGE__->config(
     schema_class => 'Donm::Schema',
 
-    connect_info => get_connection_info();
+    connect_info => get_connection_info(),
+);
 
 =head1 NAME
 

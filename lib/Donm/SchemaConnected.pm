@@ -11,7 +11,7 @@ BEGIN {
 require Exporter;
 
 our @ISA    = qw(Exporter);
-our @EXPORT = qw(get_schema get_connect_info);
+our @EXPORT = qw(get_schema get_connection_info);
 
 use Donm::Schema;
 
