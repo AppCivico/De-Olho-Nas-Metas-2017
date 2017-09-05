@@ -1,5 +1,6 @@
 #!/bin/bash
 GIT_DIR=$(git rev-parse --show-toplevel)
+cd $GIT_DIR
 
 source ~/perl5/perlbrew/etc/bashrc
 
@@ -14,7 +15,6 @@ line (){
     perl -e "print '-' x 40, $/";
 }
 
-cd ../
 mkdir -p $GIT_DIR/log/
 
 up_server (){
