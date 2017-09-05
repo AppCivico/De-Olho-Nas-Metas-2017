@@ -1,6 +1,6 @@
 #!/bin/bash
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source ~/perl5/perlbrew/etc/bashrc
+DIR=$(git rev-parse --show-toplevel)
 cd $DIR
 echo "doing cpanm --installdeps on $DIR"
 cpanm Module::Install::Catalyst App::Sqitch App::ForkProve -n
