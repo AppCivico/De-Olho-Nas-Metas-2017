@@ -4,6 +4,7 @@ use open ":locale";
 use FindBin qw($RealBin $Script);
 use lib "$RealBin/../../lib";
 
+use DDP;
 use Text::CSV;
 use Tie::Handle::CSV;
 use Donm::SchemaConnected;
@@ -35,12 +36,30 @@ $schema->txn_do(sub {
         my $goal_id    = $line->{'ID Meta'};
         my $project_id = $line->{'ID Projeto'};
 
-        $schema->resultset("GoalProject")->create(
+        my $action_line_ids = $line->{'ID Linha de Ação'};
+        my ($action_line_id, $action_line_subid) = split m{\.}, $action_line_ids;
+
+        next if $action_line_ids eq "20.4";
+
+        my $project_action_line_rs = $schema->resultset("ProjectActionLine")->search(
             {
-                goal_id    => $goal_id,
-                project_id => $project_id,
+                'me.project_id'        => $project_id,
+                'me.action_line_id'    => $action_line_id,
+                'me.action_line_subid' => $action_line_subid,
             }
         );
+
+
+        if (!$project_action_line_rs->next()) {
+            $project_action_line_rs->create(
+                {
+                    project_id        => $project_id,
+                    action_line_id    => $action_line_id,
+                    action_line_subid => $action_line_subid,
+                }
+            );
+        }
+
         print STDERR ".";
     }
     print STDERR "\n";
