@@ -73,9 +73,26 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key("id");
 
+=head1 RELATIONS
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-09-14 17:47:46
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:lz7hegmvFrIPtOv/SFrGRw
+=head2 goal_projects
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::GoalProject>
+
+=cut
+
+__PACKAGE__->has_many(
+  "goal_projects",
+  "Donm::Schema::Result::GoalProject",
+  { "foreign.goal_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-09-19 16:13:23
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6afUhXsIhePOCP8LhQu8wQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
