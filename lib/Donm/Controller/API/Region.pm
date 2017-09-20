@@ -24,7 +24,7 @@ sub list_GET {
     my $region_rs = $c->stash->{collection}->search(
         {},
         {
-            '+select' => [ \"ST_ASGEOJSON(ST_TRANSFORM(ST_SIMPLIFY(ST_TRANSFORM(geom, 2249), 200), 4326), 6)" ],
+            '+select' => [ \"ST_ASGEOJSON(ST_TRANSFORM(ST_SIMPLIFY(ST_TRANSFORM(geom, 2249), 100), 4326), 6)" ],
             '+as'     => [ qw(geo_json) ],
         }
     );
