@@ -94,9 +94,26 @@ __PACKAGE__->set_primary_key("id");
 
 __PACKAGE__->add_unique_constraint("topic_name_key", ["name"]);
 
+=head1 RELATIONS
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-09-13 16:28:23
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5nzC7hDYmDz+yXauvOPj3A
+=head2 goals
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::Goal>
+
+=cut
+
+__PACKAGE__->has_many(
+  "goals",
+  "Donm::Schema::Result::Goal",
+  { "foreign.topic_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-09-20 15:59:33
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:EEAzAbXfFb406TMaNJlG0w
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

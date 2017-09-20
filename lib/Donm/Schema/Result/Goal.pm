@@ -52,6 +52,12 @@ __PACKAGE__->table("goal");
   data_type: 'text'
   is_nullable: 0
 
+=head2 topic_id
+
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -59,6 +65,8 @@ __PACKAGE__->add_columns(
   { data_type => "integer", is_nullable => 0 },
   "title",
   { data_type => "text", is_nullable => 0 },
+  "topic_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -90,9 +98,24 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 topic
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-09-19 16:13:23
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6afUhXsIhePOCP8LhQu8wQ
+Type: belongs_to
+
+Related object: L<Donm::Schema::Result::Topic>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "topic",
+  "Donm::Schema::Result::Topic",
+  { id => "topic_id" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-09-20 17:01:39
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:yhnsboF1SKk7nk9+IAgLeg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
