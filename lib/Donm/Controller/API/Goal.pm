@@ -6,16 +6,48 @@ use namespace::autoclean;
 BEGIN { extends 'CatalystX::Eta::Controller::REST' }
 
 with "CatalystX::Eta::Controller::AutoBase";
+with "CatalystX::Eta::Controller::AutoResultGET";
 with "CatalystX::Eta::Controller::TypesValidation";
 
 __PACKAGE__->config(
     # AutoBase.
     result => "DB::Goal",
+
+    # AutoResultGET.
+    object_key => "goal",
+    build_row  => sub {
+        my ($goal, $self, $c) = @_;
+
+        return {
+            goal => {
+                ( map { $_ => $goal->$_ } qw / id title topic_id first_biennium second_biennium / ),
+
+                (
+                    topic => { map { $_ => $goal->topic->$_ } qw/ id name / }
+                ),
+            },
+        };
+    },
 );
 
 sub root : Chained('/api/root') : PathPart('') : CaptureArgs(0) { }
 
 sub base : Chained('root') : PathPart('goal') : CaptureArgs(0) { }
+
+sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
+    my ($self, $c, $goal_id) = @_;
+
+    $c->stash->{goal_id} = $goal_id;
+
+    my $goal_rs = $c->stash->{collection}->search(
+        {},
+        { prefetch => [ "topic" ] },
+    );
+
+    if ( !( $c->stash->{goal} = $goal_rs->search( { 'me.id' => $goal_id } )->next ) ) {
+        $c->detach("/error_404");
+    }
+}
 
 sub list : Chained('base') : PathPart('') : Args(0) : ActionClass('REST') { }
 
@@ -79,6 +111,10 @@ sub list_GET {
         },
     );
 }
+
+sub result : Chained('object') : PathPart('') : Args(0) : ActionClass('REST') { }
+
+sub result_GET { }
 
 __PACKAGE__->meta->make_immutable;
 

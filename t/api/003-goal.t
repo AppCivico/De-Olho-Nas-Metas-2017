@@ -7,9 +7,9 @@ my $schema = Donm->model("DB");
 
 db_transaction {
     # Listagem.
-    rest_get "/api/goal", name => "list goals", stash => "goal";
+    rest_get "/api/goal", name => "list goals", stash => "goals";
 
-    stash_test "goal" => sub {
+    stash_test "goals" => sub {
         my $res = shift;
 
         is (ref $res->{goal}, "ARRAY", 'list of goals');
@@ -45,6 +45,21 @@ db_transaction {
             [ 33, 41 ],
             "correct id's",
         );
+    };
+
+
+    # Obtendo dados de uma meta específica.
+    my $goal_id = fake_pick( map { $_->{id} } @{ (stash("goals")->{goal}) } )->();
+
+    rest_get [ qw(api goal), $goal_id ],
+        name  => "get specifc goal",
+        stash => "goal",
+    ;
+
+    stash_test "goal" => sub {
+        my $res = shift;
+
+        p $res;
     };
 };
 
