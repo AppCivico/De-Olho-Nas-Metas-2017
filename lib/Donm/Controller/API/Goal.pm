@@ -21,29 +21,37 @@ sub list : Chained('base') : PathPart('') : Args(0) : ActionClass('REST') { }
 sub list_GET {
     my ($self, $c) = @_;
 
-    #return $self->status_ok(
-    #    $c,
-    #    entity => {
-    #        goals => [
-    #            map {
-    #                my $r = $_;
-
-    #                (
-    #                    (
-    #                        +{ map { $_ => $r->get_column($_) } qw/id title/ }
-    #                    ),
-    #                    (
-    #                        projects => [ map {   ]
-    #                    ),
-    #                )
-    #            } $c->stash->{collection}->search( {}, { prefetch => [ "goal_projects" ] }->all()
-    #        ]
-    #    },
-    #);
-
     return $self->status_ok(
         $c,
-        entity => [ $c->stash->{collection}->search( {}, { prefetch => "goal_projects", result_class => "DBIx::Class::ResultClass::HashRefInflator" } )->all ],
+        entity => {
+            goal => [
+                map {
+                    my $r = $_;
+                    +{
+                        ( map { $_ => $r->{$_} } qw/ id title topic_id topic / ),
+
+                        topic => +{ map { $_ => $r->{topic}->{$_} } qw/ id name / },
+
+                        goal_projects => [
+                            map {
+                                my $gp = $_;
+                                +{
+                                    ( map { $_ => $gp->{$_} } qw/ id goal_id project_id / ),
+
+                                    project => +{ map { $_ => $gp->{project}->{$_} } qw/ id title / },
+                                }
+                            } @{ $r->{goal_projects} }
+                        ],
+                    }
+                } $c->stash->{collection}->search(
+                    {},
+                    {
+                        prefetch     => [ "topic", { 'goal_projects' => "project" } ],
+                        result_class => "DBIx::Class::ResultClass::HashRefInflator",
+                    }
+                )->all()
+            ],
+        },
     );
 }
 

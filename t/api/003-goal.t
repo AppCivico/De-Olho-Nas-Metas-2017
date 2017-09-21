@@ -11,7 +11,7 @@ db_transaction {
     stash_test "goal" => sub {
         my $res = shift;
 
-        p $res;
+        is (ref $res->{goal}, "ARRAY", 'list of goals');
     };
 };
 
