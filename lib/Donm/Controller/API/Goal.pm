@@ -6,6 +6,7 @@ use namespace::autoclean;
 BEGIN { extends 'CatalystX::Eta::Controller::REST' }
 
 with "CatalystX::Eta::Controller::AutoBase";
+with "CatalystX::Eta::Controller::TypesValidation";
 
 __PACKAGE__->config(
     # AutoBase.
@@ -20,6 +21,18 @@ sub list : Chained('base') : PathPart('') : Args(0) : ActionClass('REST') { }
 
 sub list_GET {
     my ($self, $c) = @_;
+
+    $self->validate_request_params(
+        $c,
+        topic_name => {
+            required => 0,
+            type     => "Str",
+        },
+        title => {
+            required => 0,
+            type     => "Str",
+        },
+    );
 
     return $self->status_ok(
         $c,
@@ -44,9 +57,21 @@ sub list_GET {
                         ],
                     }
                 } $c->stash->{collection}->search(
-                    {},
+                    {
+                        (
+                            exists($c->req->params->{topic_name})
+                            ? ( 'topic.name' => { ilike => $c->req->params->{topic_name} } )
+                            : ()
+                        ),
+                        (
+                            exists($c->req->params->{title})
+                            ? ( 'me.title' => { ilike => '%' . $c->req->params->{title} . '%' } )
+                            : ()
+                        ),
+                    },
                     {
                         prefetch     => [ "topic", { 'goal_projects' => "project" } ],
+                        order_by     => [ "me.id" ],
                         result_class => "DBIx::Class::ResultClass::HashRefInflator",
                     }
                 )->all()
