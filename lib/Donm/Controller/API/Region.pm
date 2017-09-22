@@ -32,7 +32,7 @@ sub list_GET {
     return $self->status_ok(
         $c,
         entity => {
-            region => [
+            regions => [
                 map {
                     my $r = $_;
                     +{
