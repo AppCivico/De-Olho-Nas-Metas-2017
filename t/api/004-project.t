@@ -32,8 +32,8 @@ db_transaction {
             $res->{projects},
             [
                 {
-                    id => 59,
-                    title => "Plano Municipal de Desestatização",
+                    id     => 59,
+                    title  => "Plano Municipal de Desestatização",
                     topics => [
                         {
                             id   => 5,
@@ -44,6 +44,27 @@ db_transaction {
             ],
             'only one result',
         );
+    };
+
+    # Filtro por eixo.
+    rest_get "/api/project",
+        name  => "filter by topic",
+        stash => "project_filter_topic",
+        [ topic_name => "desenvolvimento institucional" ],
+    ;
+
+    stash_test "project_filter_topic" => sub {
+        my $res = shift;
+
+        for my $project ( @{ $res->{projects} } ) {
+            my $ok = 0;
+
+            for my $topic ( @{ $project->{topics } } ) {
+                $ok = 1 if $topic->{name} eq "Desenvolvimento Institucional";
+            }
+
+            ok( $ok, 'there are at least one topic like as looked for' );
+        }
     };
 };
 

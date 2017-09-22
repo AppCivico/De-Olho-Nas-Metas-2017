@@ -41,9 +41,32 @@ sub list_GET {
                     };
                 } $c->stash->{collection}->search(
                     {
+                        # Busca pelo titulo do projeto.
                         (
                             exists $c->req->params->{title}
                             ? ( 'me.title' => { ilike => '%' . $c->req->params->{title} . '%' } )
+                            : ()
+                        ),
+
+                        # Busca por topicos.
+                        (
+                            exists $c->req->params->{topic_name}
+                            ? (
+                                '-and' => [
+                                    \[ <<'SQL_QUERY', $c->req->params->{topic_name} ]
+EXISTS (
+    SELECT 1
+    FROM goal_project
+    JOIN goal
+      ON goal_project.goal_id = goal.id
+    JOIN topic
+      ON goal.topic_id = topic.id
+    WHERE goal_project.project_id = me.id
+      and topic.name ILIKE ?
+)
+SQL_QUERY
+                                ],
+                            )
                             : ()
                         ),
                     },
