@@ -12,7 +12,7 @@ db_transaction {
         my $res = shift;
 
         is( ref($res), "HASH", 'returns a hashref' );
-        is( scalar @{ $res->{region} }, 96, 'count=96' );
+        is( scalar @{ $res->{regions} }, 96, 'count=96' );
     };
 };
 
