@@ -27,7 +27,7 @@ sub list_GET {
     )->all;
 
     use DDP;
-    p \@all;
+    #p \@all;
 
     return $self->status_ok(
         $c,
@@ -35,21 +35,18 @@ sub list_GET {
             projects => [
                 map {
                     my $r = $_;
+                    my %topics_name = map { $_->{goal}->{topic}->{name} => 1 } @{ $r->{goal_projects} };
                     +{
-                        ( map { $_ => $r->$_ } qw/ id title / ),
-                        (
-                            topics => [
-                                #map {
-                                #    my $gp = $_;
+                        ( map { $_ => $r->{$_} } qw/ id title / ),
 
-                                #    +{};
-                                #} $r->goal_projects
-                            ],
-                        ),
+                        ( topics => [ keys %topics_name ] ),
                     };
                 } $c->stash->{collection}->search(
                     {},
-                    { join => { 'goal_projects' => "goal" } },
+                    {
+                        prefetch => [ { 'goal_projects' => { 'goal' => "topic" } } ],
+                        result_class => "DBIx::Class::ResultClass::HashRefInflator",
+                    },
                 )->all()
             ],
         },

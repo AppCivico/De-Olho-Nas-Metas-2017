@@ -12,7 +12,7 @@ db_transaction {
     stash_test "projects" => sub {
         my $res = shift;
 
-        #p $res;
+        p $res;
     };
 };
 
