@@ -35,11 +35,17 @@ sub list_GET {
             projects => [
                 map {
                     my $r = $_;
-                    my %topics_name = map { $_->{goal}->{topic}->{name} => 1 } @{ $r->{goal_projects} };
+
+                    # Um projeto possui várias metas. Essas várias metas possuem eixos. Para que os eixos não
+                    # apareceram duplicados (quando se aplica), vou unificá-los numa hash.
+                    my %topics = map {
+                        $_->{goal}->{topic}->{id} => $_->{goal}->{topic}
+                    } @{ $r->{goal_projects} };
+
                     +{
                         ( map { $_ => $r->{$_} } qw/ id title / ),
 
-                        ( topics => [ keys %topics_name ] ),
+                        ( topics => [ values %topics ] ),
                     };
                 } $c->stash->{collection}->search(
                     {},
