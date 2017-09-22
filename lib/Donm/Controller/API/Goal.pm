@@ -69,7 +69,7 @@ sub list_GET {
     return $self->status_ok(
         $c,
         entity => {
-            goal => [
+            goals => [
                 map {
                     my $r = $_;
                     +{
