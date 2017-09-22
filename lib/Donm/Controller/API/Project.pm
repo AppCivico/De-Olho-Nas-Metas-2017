@@ -21,14 +21,6 @@ sub list : Chained('base') : PathPart('') : Args(0) : ActionClass('REST') { }
 sub list_GET {
     my ($self, $c) = @_;
 
-    my @all = $c->stash->{collection}->search(
-        {},
-        { prefetch => [ { 'goal_projects' => { "goal" => "topic" } } ], result_class => "DBIx::Class::ResultClass::HashRefInflator" },
-    )->all;
-
-    use DDP;
-    #p \@all;
-
     return $self->status_ok(
         $c,
         entity => {
@@ -48,7 +40,13 @@ sub list_GET {
                         ( topics => [ values %topics ] ),
                     };
                 } $c->stash->{collection}->search(
-                    {},
+                    {
+                        (
+                            exists $c->req->params->{title}
+                            ? ( 'me.title' => { ilike => '%' . $c->req->params->{title} . '%' } )
+                            : ()
+                        ),
+                    },
                     {
                         prefetch => [ { 'goal_projects' => { 'goal' => "topic" } } ],
                         result_class => "DBIx::Class::ResultClass::HashRefInflator",

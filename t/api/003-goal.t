@@ -47,7 +47,6 @@ db_transaction {
         );
     };
 
-
     # Obtendo dados de uma meta específica.
     my $goal_id = fake_pick( map { $_->{id} } @{ (stash("goals")->{goal}) } )->();
 
