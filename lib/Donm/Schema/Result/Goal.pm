@@ -61,12 +61,12 @@ __PACKAGE__->table("goal");
 =head2 first_biennium
 
   data_type: 'text'
-  is_nullable: 1
+  is_nullable: 0
 
 =head2 second_biennium
 
   data_type: 'text'
-  is_nullable: 1
+  is_nullable: 0
 
 =cut
 
@@ -78,9 +78,9 @@ __PACKAGE__->add_columns(
   "topic_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "first_biennium",
-  { data_type => "text", is_nullable => 1 },
+  { data_type => "text", is_nullable => 0 },
   "second_biennium",
-  { data_type => "text", is_nullable => 1 },
+  { data_type => "text", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -128,8 +128,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-09-21 17:36:28
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:QWBqYaIJP0TMLrq8DoIFUw
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-09-29 13:27:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:uYi71s8/E0lmNGMbBQR93w
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

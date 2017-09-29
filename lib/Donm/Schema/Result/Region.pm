@@ -70,6 +70,7 @@ __PACKAGE__->table("region");
 =head2 subprefecture_id
 
   data_type: 'integer'
+  is_foreign_key: 1
   is_nullable: 1
 
 =cut
@@ -86,12 +87,34 @@ __PACKAGE__->add_columns(
   "long",
   { data_type => "text", is_nullable => 1 },
   "subprefecture_id",
-  { data_type => "integer", is_nullable => 1 },
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+);
+
+=head1 RELATIONS
+
+=head2 subprefecture
+
+Type: belongs_to
+
+Related object: L<Donm::Schema::Result::Subprefecture>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "subprefecture",
+  "Donm::Schema::Result::Subprefecture",
+  { id => "subprefecture_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-08-25 18:41:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NLarb+CDiZwnN079nR39og
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-09-29 13:27:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:hQ/r89zU5PVGNJuV1WnZFg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
