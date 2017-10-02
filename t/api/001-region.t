@@ -11,6 +11,8 @@ db_transaction {
     stash_test "regions" => sub {
         my $res = shift;
 
+        p $res;
+
         is( ref($res), "HASH", 'returns a hashref' );
         is( scalar @{ $res->{regions} }, 96, 'count=96' );
     };

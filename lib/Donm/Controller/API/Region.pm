@@ -52,7 +52,7 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
 
     my $region_rs = $c->stash->{collection}->search(
         {},
-        { prefetch => [ { "region_variables" => "variable" } ] },
+        { prefetch => [ "subprefecture", { "region_variables" => "variable" } ] },
     );
 
     if ( !( $c->stash->{region} = $region_rs->search( { 'me.id' => $region_id } )->next ) ) {
@@ -68,6 +68,7 @@ sub list_GET {
     my $region_rs = $c->stash->{collection}->search(
         {},
         {
+            prefetch  => [ "subprefecture" ],
             '+select' => [ \"ST_ASGEOJSON(ST_TRANSFORM(ST_SIMPLIFY(ST_TRANSFORM(geom, 2249), 25), 4326), 6)" ],
             '+as'     => [ qw(geo_json) ],
         }
@@ -80,12 +81,19 @@ sub list_GET {
                 map {
                     my $r = $_;
                     +{
-                        map { $_ => $r->get_column($_) }
-                        qw/
-                        id
-                        name
-                        geo_json
-                        /
+                        (
+                            map { $_ => $r->get_column($_) }
+                            qw/
+                            id
+                            name
+                            geo_json
+                            subprefecture_id
+                            /
+                        ),
+
+                        subprefecture => +{
+                            map { $_ => $r->subprefecture->$_ } qw/ id name /
+                        },
                     }
                 } $region_rs->all()
             ],
