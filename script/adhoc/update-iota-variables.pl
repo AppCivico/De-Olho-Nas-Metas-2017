@@ -33,7 +33,7 @@ my $schema = get_schema();
 # Variaveis desejadas.
 my %variables = (
     27 => 'Área total do município em quilômetros quadrados (km²)',
-    #19 => 'População total',
+    19 => 'População total',
 
     # TODO Verificar se a cidade de São Paulo possui estas variáveis abaixo.
     #2260 => 'Renda per capita',
@@ -116,13 +116,27 @@ for my $region_id (keys %regions) {
 
                 my $region = $schema->resultset("Region")->search( { name => { 'ilike', $region_name } } )->next;
                 if (ref $region) {
-                    $schema->resultset("RegionVariable")->create(
+                    my $region_variable_rs = $schema->resultset("RegionVariable");
+
+                    my $region_variable = $region_variable_rs->search(
                         {
                             region_id   => $region->id,
                             variable_id => $variable_id,
-                            value       => $value,
                         }
-                    );
+                    )->next;
+
+                    if (ref $region_variable) {
+                        $region_variable->update( { value => $value } );
+                    }
+                    else {
+                        $region_variable_rs->create(
+                            {
+                                region_id   => $region->id,
+                                variable_id => $variable_id,
+                                value       => $value,
+                            }
+                        );
+                    }
                 }
                 else {
                     LOGDIE "A região id '$region_id' não existe no Donm.";
