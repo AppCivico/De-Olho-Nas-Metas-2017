@@ -1,12 +1,12 @@
 use utf8;
-package Donm::Schema::Result::Region;
+package Donm::Schema::Result::Variable;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
 
 =head1 NAME
 
-Donm::Schema::Result::Region
+Donm::Schema::Result::Variable
 
 =cut
 
@@ -34,11 +34,11 @@ extends 'DBIx::Class::Core';
 
 __PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
 
-=head1 TABLE: C<region>
+=head1 TABLE: C<variable>
 
 =cut
 
-__PACKAGE__->table("region");
+__PACKAGE__->table("variable");
 
 =head1 ACCESSORS
 
@@ -47,47 +47,18 @@ __PACKAGE__->table("region");
   data_type: 'integer'
   is_nullable: 0
 
-=head2 geom
-
-  data_type: 'geometry'
-  is_nullable: 1
-
 =head2 name
 
   data_type: 'text'
-  is_nullable: 1
-
-=head2 lat
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 long
-
-  data_type: 'text'
-  is_nullable: 1
-
-=head2 subprefecture_id
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
+  is_nullable: 0
 
 =cut
 
 __PACKAGE__->add_columns(
   "id",
   { data_type => "integer", is_nullable => 0 },
-  "geom",
-  { data_type => "geometry", is_nullable => 1 },
   "name",
-  { data_type => "text", is_nullable => 1 },
-  "lat",
-  { data_type => "text", is_nullable => 1 },
-  "long",
-  { data_type => "text", is_nullable => 1 },
-  "subprefecture_id",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+  { data_type => "text", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -115,33 +86,13 @@ Related object: L<Donm::Schema::Result::RegionVariable>
 __PACKAGE__->has_many(
   "region_variables",
   "Donm::Schema::Result::RegionVariable",
-  { "foreign.region_id" => "self.id" },
+  { "foreign.variable_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
-);
-
-=head2 subprefecture
-
-Type: belongs_to
-
-Related object: L<Donm::Schema::Result::Subprefecture>
-
-=cut
-
-__PACKAGE__->belongs_to(
-  "subprefecture",
-  "Donm::Schema::Result::Subprefecture",
-  { id => "subprefecture_id" },
-  {
-    is_deferrable => 0,
-    join_type     => "LEFT",
-    on_delete     => "NO ACTION",
-    on_update     => "NO ACTION",
-  },
 );
 
 
 # Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-02 12:33:06
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:FOEZ/OPh65AkVbWS6APdzw
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mlZcwDRdHekdmP7D5tEZHA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
