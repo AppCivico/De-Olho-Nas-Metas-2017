@@ -19,7 +19,7 @@ __PACKAGE__->config(
 
         return {
             region => {
-                ( map { $_ => $region->$_ } qw/ id name subprefecture_id / ),
+                ( map { $_ => $region->$_ } qw/ id name subprefecture_id slug / ),
 
                 subprefecture => +{
                     map { $_ => $region->subprefecture->$_ }
@@ -88,6 +88,7 @@ sub list_GET {
                             name
                             geo_json
                             subprefecture_id
+                            slug
                             /
                         ),
 

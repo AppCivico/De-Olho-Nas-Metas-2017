@@ -27,7 +27,7 @@ sub list_GET {
             topic => [
                 map {
                     my $r = $_;
-                    +{ map { $_ => $r->get_column($_) } qw/id name/ }
+                    +{ map { $_ => $r->get_column($_) } qw/id name slug/ }
                 } $c->stash->{collection}->all()
             ]
         },

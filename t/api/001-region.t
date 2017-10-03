@@ -25,6 +25,7 @@ db_transaction {
 
         is( $res->{region}->{id}, 630, 'id=630' );
         is( $res->{region}->{name}, 'Sacomã', 'name=Sacomã' );
+        is( $res->{region}->{slug}, 'sacoma', 'slug=sacoma' );
         is( $res->{region}->{subprefecture_id}, 11, 'subprefecture_id=11' );
         is( $res->{region}->{subprefecture}->{id}, 11, 'subprefecture_id=11' );
         is( $res->{region}->{subprefecture}->{name}, 'Ipiranga', 'subprefecture_name=Ipiranga' );

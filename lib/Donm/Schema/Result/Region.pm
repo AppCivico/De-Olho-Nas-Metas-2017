@@ -73,6 +73,11 @@ __PACKAGE__->table("region");
   is_foreign_key: 1
   is_nullable: 1
 
+=head2 slug
+
+  data_type: 'text'
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -88,6 +93,8 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 1 },
   "subprefecture_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+  "slug",
+  { data_type => "text", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -140,8 +147,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-02 12:33:06
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:FOEZ/OPh65AkVbWS6APdzw
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-03 12:07:51
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Xd16NSWp48xZdj26Jiws/w
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

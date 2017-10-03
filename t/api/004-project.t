@@ -34,10 +34,12 @@ db_transaction {
                 {
                     id     => 59,
                     title  => "Plano Municipal de Desestatização",
+                    slug   => "plano-municipal-de-desestatizacao",
                     topics => [
                         {
                             id   => 5,
                             name => "Desenvolvimento Econômico E Gestão",
+                            slug => "desenvolvimento-economico-e-gestao",
                         }
                     ],
                 },
