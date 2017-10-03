@@ -12,7 +12,7 @@ is( slugify("quando   houver  muitos     espaços"), "quando-houver-muitos-espac
 is( slugify("o ano de 2018 será próspero!"), "o-ano-de-2018-sera-prospero", 'slugify digits' );
 is(
     slugify("um texto suficientemente grande precisa ser cortada para que as urls não fiquem grandes"),
-    "um-texto-suficientemente-grande-precisa-ser-cortad",
+    "um-texto-suficientemente-grande-precisa-ser-cortada-para-que",
     'slugify substr'
 );
 

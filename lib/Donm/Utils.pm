@@ -13,7 +13,7 @@ sub slugify {
     $string = unac_string($string);
 
     $string =~ s/[^a-z0-9]+/-/gi;
-    $string = substr $string, 0, 50;
+    $string = substr $string, 0, 60;
     $string =~ s/^-?(.+?)-?$/$1/;
     $string = lc($string);
 
