@@ -11,8 +11,6 @@ db_transaction {
     stash_test "regions" => sub {
         my $res = shift;
 
-        p $res;
-
         is( ref($res), "HASH", 'returns a hashref' );
         is( scalar @{ $res->{regions} }, 96, 'count=96' );
     };
@@ -32,7 +30,6 @@ db_transaction {
         is( $res->{region}->{subprefecture}->{name}, 'Ipiranga', 'subprefecture_name=Ipiranga' );
         is( ref $res->{region}->{region_variables}, 'ARRAY', 'region_variables=ARRAY' );
         is( $res->{region}->{region_variables}->[0]->{variable_id}, 19, 'variable_id=19' );
-
     }
 };
 
