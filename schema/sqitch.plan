@@ -15,3 +15,4 @@
 0011-region-variable [0010-subprefecture] 2017-10-02T17:37:43Z Junior Moraes <juniorfvox@gmail.com> # region-variable
 0012-remove-duplicated-goal-project [0011-region-variable] 2017-10-02T19:58:15Z Junior Moraes <juniorfvox@gmail.com> # remove-duplicated-goal-project
 0013-trim-subprefecture-address [0012-remove-duplicated-goal-project] 2017-10-02T20:11:14Z Junior Moraes <juniorfvox@gmail.com> # trim-subprefecture-address
+0014-slugify [0013-trim-subprefecture-address] 2017-10-03T14:44:57Z Junior Moraes <juniorfvox@gmail.com> # slugify
