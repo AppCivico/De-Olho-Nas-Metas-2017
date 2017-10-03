@@ -83,7 +83,7 @@ sub list_GET {
                                 +{
                                     ( map { $_ => $gp->{$_} } qw/ id goal_id project_id / ),
 
-                                    project => +{ map { $_ => $gp->{project}->{$_} } qw/ id title / },
+                                    project => +{ map { $_ => $gp->{project}->{$_} } qw/ id title slug / },
                                 }
                             } @{ $r->{goal_projects} }
                         ],
