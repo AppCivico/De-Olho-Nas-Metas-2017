@@ -72,17 +72,17 @@ db_transaction {
     };
 
     # Obtendo dados de um projeto específico.
-    #rest_get "/api/project/57",
     rest_get "/api/project/10",
         name  => "get specifc project",
-        stash => "goal",
+        stash => "project",
     ;
 
-    stash_test "goal" => sub {
+    stash_test "project" => sub {
         my $res = shift;
 
         is( ref($res->{project}), "HASH", "main node is hashref" );
-        is( ref($res->{project}->{project_topics}), "ARRAY", "retrieved topic" );
+        is( ref($res->{project}->{topics}), "ARRAY", "retrieved topic" );
+        is( ref($res->{project}->{action_lines}), "ARRAY", "retrieved action lines" );
 
         is( $res->{project}->{id}, 10, "id=10" );
         is(

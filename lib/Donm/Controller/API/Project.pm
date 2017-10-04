@@ -19,19 +19,32 @@ __PACKAGE__->config(
     build_row  => sub {
         my ($project, $self, $c) = @_;
 
-        # TODO Retornar todas as linhas de ação.
         return {
             project => {
                 ( map { $_ => $project->get_column($_) } qw/ id title slug description / ),
 
                 (
-                    project_topics => [
+                    topics => [
                         map {
                             my $gp = $_;
 
                             # TODO Remover possíveis duplicações de eixos.
                             +{ map { $_ => $gp->goal->topic->get_column($_) } qw/ id name slug / }
                         } $project->goal_projects->all()
+                    ],
+                ),
+
+                (
+                    action_lines => [
+                        map {
+                            my $al  = $_->action_line;
+                            my $al_id = $al->get_column('id') . "." . $al->get_column('subid');
+
+                            +{
+                                id => $al_id,
+                                title => $al->get_column('title'),
+                            }
+                        } $project->project_action_lines->all(),
                     ],
                 ),
             },
@@ -48,7 +61,7 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
 
     my $project_rs = $c->stash->{collection}->search(
         {},
-        { prefetch => [ { "goal_projects" => { "goal" => "topic" } } ] },
+        { prefetch => [ { "goal_projects" => { "goal" => "topic" } }, { "project_action_lines" => "action_line" } ] },
     );
 
     if ( !( $c->stash->{project} = $project_rs->search( { 'me.id' => $project_id } )->next() ) ) {
