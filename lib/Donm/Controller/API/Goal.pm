@@ -21,11 +21,22 @@ __PACKAGE__->config(
         return {
             goal => {
                 (
-                    map { $_ => $goal->$_ }
+                    map { $_ => $goal->get_column($_) }
                     qw/ id title topic_id first_biennium second_biennium slug indicator_description /
                 ),
 
                 ( topic => { map { $_ => $goal->topic->$_ } qw/ id name slug / } ),
+
+                (
+                    goal_projects => [
+                        map {
+                            my $gp = $_;
+                            +{
+                                project => +{ map { $_ => $gp->project->get_column($_) } qw/ id title slug description / },
+                            }
+                        } $goal->goal_projects->all()
+                    ],
+                ),
             },
         };
     },
@@ -42,7 +53,7 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
 
     my $goal_rs = $c->stash->{collection}->search(
         {},
-        { prefetch => [ "topic" ] },
+        { prefetch => [ "topic", { 'goal_projects' => "project" } ] },
     );
 
     if ( !( $c->stash->{goal} = $goal_rs->search( { 'me.id' => $goal_id } )->next ) ) {
@@ -82,8 +93,6 @@ sub list_GET {
                             map {
                                 my $gp = $_;
                                 +{
-                                    ( map { $_ => $gp->{$_} } qw/ id goal_id project_id / ),
-
                                     project => +{ map { $_ => $gp->{project}->{$_} } qw/ id title slug / },
                                 }
                             } @{ $r->{goal_projects} }

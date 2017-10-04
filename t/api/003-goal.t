@@ -58,6 +58,7 @@ db_transaction {
 
         is( ref($res->{goal}), "HASH", "main node is hashref" );
         is( ref($res->{goal}->{topic}), "HASH", "retrieved topic" );
+        is( ref($res->{goal}->{goal_projects}), "ARRAY", "retrieved projects" );
 
         is( $res->{goal}->{id}, 13, 'id=13' );
         is( $res->{goal}->{title}, "Atingir IDEB de 6,5 nos anos iniciais do Ensino Fundamental.", 'title' );
