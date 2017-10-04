@@ -35,6 +35,8 @@ db_transaction {
                     id     => 59,
                     title  => "Plano Municipal de Desestatização",
                     slug   => "plano-municipal-de-desestatizacao",
+                    description =>
+"Plano Municipal de Desestatização: contempla o arcabouço legal e institucional necessário para a viabilização dos projetos de desestatização e parcerias",
                     topics => [
                         {
                             id   => 5,

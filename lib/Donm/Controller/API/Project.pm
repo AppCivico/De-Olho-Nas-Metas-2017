@@ -35,7 +35,7 @@ sub list_GET {
                     } @{ $r->{goal_projects} };
 
                     +{
-                        ( map { $_ => $r->{$_} } qw/ id title slug / ),
+                        ( map { $_ => $r->{$_} } qw/ id title slug description / ),
 
                         ( topics => [ values %topics ] ),
                     };
