@@ -28,7 +28,7 @@ __PACKAGE__->config(
                 ( topic => { map { $_ => $goal->topic->$_ } qw/ id name slug / } ),
 
                 (
-                    goal_projects => [
+                    projects => [
                         map {
                             my $gp = $_;
                             +{
@@ -89,7 +89,7 @@ sub list_GET {
 
                         topic => +{ map { $_ => $r->{topic}->{$_} } qw/ id name slug / },
 
-                        goal_projects => [
+                        projects => [
                             map {
                                 my $gp = $_;
                                 +{
