@@ -90,6 +90,8 @@ db_transaction {
             "Implementar balcões de cidadania (pontos de Direitos Humanos) em toda a cidade.",
             'description',
         );
+
+        p $res;
     };
 
     # Uma meta que não existe deve retornar 404.

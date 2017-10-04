@@ -35,6 +35,17 @@ __PACKAGE__->config(
                 ),
 
                 (
+                    goals => [
+                        map {
+                            my $gp = $_;
+
+                            +{ map { $_ => $gp->goal->get_column($_) } qw / id title topic_id slug / }
+
+                        } $project->goal_projects->all()
+                    ],
+                ),
+
+                (
                     action_lines => [
                         map {
                             my $al  = $_->action_line;
