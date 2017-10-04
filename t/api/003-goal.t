@@ -48,9 +48,7 @@ db_transaction {
     };
 
     # Obtendo dados de uma meta específica.
-    my $goal_id = fake_pick( map { $_->{id} } @{ (stash("goals")->{goals}) } )->();
-
-    rest_get [ qw(api goal), $goal_id ],
+    rest_get [ qw(api goal 13) ],
         name  => "get specifc goal",
         stash => "goal",
     ;
@@ -60,6 +58,14 @@ db_transaction {
 
         is( ref($res->{goal}), "HASH", "main node is hashref" );
         is( ref($res->{goal}->{topic}), "HASH", "retrieved topic" );
+
+        is( $res->{goal}->{id}, 13, 'id=13' );
+        is( $res->{goal}->{title}, "Atingir IDEB de 6,5 nos anos iniciais do Ensino Fundamental.", 'title' );
+        is(
+            $res->{goal}->{indicator_description},
+            "IDEB dos anos iniciais do EF, da rede municipal",
+            'indicator_description',
+        );
     };
 
     # Uma meta que não existe deve retornar 404.

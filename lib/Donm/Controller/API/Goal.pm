@@ -20,11 +20,12 @@ __PACKAGE__->config(
 
         return {
             goal => {
-                ( map { $_ => $goal->$_ } qw / id title topic_id first_biennium second_biennium slug / ),
-
                 (
-                    topic => { map { $_ => $goal->topic->$_ } qw/ id name slug / }
+                    map { $_ => $goal->$_ }
+                    qw/ id title topic_id first_biennium second_biennium slug indicator_description /
                 ),
+
+                ( topic => { map { $_ => $goal->topic->$_ } qw/ id name slug / } ),
             },
         };
     },
@@ -73,7 +74,7 @@ sub list_GET {
                 map {
                     my $r = $_;
                     +{
-                        ( map { $_ => $r->{$_} } qw/ id title topic_id topic slug / ),
+                        ( map { $_ => $r->{$_} } qw/ id title topic_id topic slug indicator_description / ),
 
                         topic => +{ map { $_ => $r->{topic}->{$_} } qw/ id name slug / },
 
