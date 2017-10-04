@@ -73,6 +73,11 @@ __PACKAGE__->table("goal");
   data_type: 'text'
   is_nullable: 0
 
+=head2 indicator_description
+
+  data_type: 'text'
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -87,6 +92,8 @@ __PACKAGE__->add_columns(
   "second_biennium",
   { data_type => "text", is_nullable => 0 },
   "slug",
+  { data_type => "text", is_nullable => 0 },
+  "indicator_description",
   { data_type => "text", is_nullable => 0 },
 );
 
@@ -135,8 +142,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-03 12:07:51
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:dW9x2PRtBtvoqScVt97MYw
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-04 15:35:28
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:g5N876V0zruUzYSxwqPyTQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

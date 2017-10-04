@@ -17,3 +17,4 @@
 0013-trim-subprefecture-address [0012-remove-duplicated-goal-project] 2017-10-02T20:11:14Z Junior Moraes <juniorfvox@gmail.com> # trim-subprefecture-address
 0014-slugify [0013-trim-subprefecture-address] 2017-10-03T14:44:57Z Junior Moraes <juniorfvox@gmail.com> # slugify
 0015-project-description [0014-slugify] 2017-10-04T16:36:21Z Junior Moraes <juniorfvox@gmail.com> # project-description
+0016-goal-indicator [0015-project-description] 2017-10-04T18:35:17Z Junior Moraes <juniorfvox@gmail.com> # goal-indicator
