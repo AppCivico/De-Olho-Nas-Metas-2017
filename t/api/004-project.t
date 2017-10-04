@@ -70,6 +70,34 @@ db_transaction {
             ok( $ok, 'there are at least one topic like as looked for' );
         }
     };
+
+    # Obtendo dados de um projeto específico.
+    #rest_get "/api/project/57",
+    rest_get "/api/project/10",
+        name  => "get specifc project",
+        stash => "goal",
+    ;
+
+    stash_test "goal" => sub {
+        my $res = shift;
+
+        is( ref($res->{project}), "HASH", "main node is hashref" );
+        is( ref($res->{project}->{project_topics}), "ARRAY", "retrieved topic" );
+
+        is( $res->{project}->{id}, 10, "id=10" );
+        is(
+            $res->{project}->{description},
+            "Implementar balcões de cidadania (pontos de Direitos Humanos) em toda a cidade.",
+            'description',
+        );
+    };
+
+    # Uma meta que não existe deve retornar 404.
+    rest_get [ qw(api project), 100 ],
+        name    => "get project that not exists",
+        is_fail => 1,
+        code    => 404,
+    ;
 };
 
 done_testing();

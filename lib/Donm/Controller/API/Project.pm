@@ -3,18 +3,58 @@ use common::sense;
 use Moose;
 use namespace::autoclean;
 
+use DDP;
+
 BEGIN { extends 'CatalystX::Eta::Controller::REST' }
 
 with "CatalystX::Eta::Controller::AutoBase";
+with "CatalystX::Eta::Controller::AutoResultGET";
 
 __PACKAGE__->config(
     # AutoBase.
     result => "DB::Project",
+
+    # AutoResultGET.
+    object_key => "project",
+    build_row  => sub {
+        my ($project, $self, $c) = @_;
+
+        # TODO Retornar todas as linhas de ação.
+        return {
+            project => {
+                ( map { $_ => $project->get_column($_) } qw/ id title slug description / ),
+
+                (
+                    project_topics => [
+                        map {
+                            my $gp = $_;
+
+                            # TODO Remover possíveis duplicações de eixos.
+                            +{ map { $_ => $gp->goal->topic->get_column($_) } qw/ id name slug / }
+                        } $project->goal_projects->all()
+                    ],
+                ),
+            },
+        };
+    },
 );
 
 sub root : Chained('/api/root') : PathPart('') : CaptureArgs(0) { }
 
 sub base : Chained('root') : PathPart('project') : CaptureArgs(0) { }
+
+sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
+    my ($self, $c, $project_id) = @_;
+
+    my $project_rs = $c->stash->{collection}->search(
+        {},
+        { prefetch => [ { "goal_projects" => { "goal" => "topic" } } ] },
+    );
+
+    if ( !( $c->stash->{project} = $project_rs->search( { 'me.id' => $project_id } )->next() ) ) {
+        $c->detach("/error_404");
+    }
+}
 
 sub list : Chained('base') : PathPart('') : Args(0) : ActionClass('REST') { }
 
@@ -79,6 +119,10 @@ SQL_QUERY
         },
     );
 }
+
+sub result : Chained('object') : PathPart('') : Args(0) : ActionClass('REST') { }
+
+sub result_GET { }
 
 __PACKAGE__->meta->make_immutable;
 
