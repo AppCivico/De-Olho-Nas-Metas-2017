@@ -22,9 +22,10 @@ up_server (){
     PORT="$2"
     WORKERS="$3"
 
-    ERROR_LOG="/tmp/donm.error.log"
-    STATUS="/tmp/donm.start_server.status"
-    PIDFILE="/tmp/donm.start_server.pid"
+    PREFIX=$( echo $SQITCH_DEPLOY | tr '[:upper:]' '[:lower:]' )
+    ERROR_LOG="/tmp/donm.$PREFIX.error.log"
+    STATUS="/tmp/donm.$PREFIX.start_server.status"
+    PIDFILE="/tmp/donm.$PREFIX.start_server.pid"
 
     touch $ERROR_LOG
     touch $PIDFILE
