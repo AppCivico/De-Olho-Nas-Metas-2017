@@ -1,0 +1,82 @@
+-- Deploy donm:0015-project-description to pg
+-- requires: 0014-slugify
+
+BEGIN;
+
+ALTER TABLE project ADD COLUMN description TEXT ;
+
+UPDATE project SET description = 'Ampliação do acesso à Atenção Básica à Saúde de qualidade no município de São Paulo.' WHERE id = 1;
+UPDATE project SET description = 'Redução em 5% (7 óbitos prematuros em 100.000 residentes) a taxa de mortalidade precoce por Doenças Crônicas Não Transmissíveis selecionadas, contribuindo para o aumento da expectativa de vida saudável.' WHERE id = 2;
+UPDATE project SET description = 'Fortalecimento da Rede de Urgência e Emergência da cidade de São Paulo.' WHERE id = 3;
+UPDATE project SET description = 'Acelerar a informatização da saúde no município de São Paulo.' WHERE id = 4;
+UPDATE project SET description = 'Certificação de 75% dos estabelecimentos da Rede Municipal de Saúde da cidade de São Paulo no Modelo de Gestão da Qualidade, Humanização e segurança do paciente.' WHERE id = 5;
+UPDATE project SET description = 'Redução do tempo médio de espera para exames prioritários para 30 dias' WHERE id = 6;
+UPDATE project SET description = 'Diminuir a mortalidade infantil no município de São Paulo em 5% até 2020.' WHERE id = 7;
+UPDATE project SET description = 'Definição da política municipal de atendimento em álcool e outras drogas e instuição de uma rede de atendimento por meio de um conjunto de ações de caráter intersetorial e integrado para o atendimento humanizado em saúde e assistência social  por meio de atividades de prevenção, tratamento e reinserção de pessoas em situação de uso abusivo de álcool e outras drogas na família, no trabalho e na comunidade.' WHERE id = 8;
+UPDATE project SET description = 'Inclusão estruturada e acompanhada de cidadãos em situação de rua no mercado de trabalho.' WHERE id = 9;
+UPDATE project SET description = 'Implementar balcões de cidadania (pontos de Direitos Humanos) em toda a cidade.' WHERE id = 10;
+UPDATE project SET description = 'São Paulo será uma cidade Amiga do Idoso, obtendo o Selo Pleno do Programa São Paulo Amigo do Idoso.' WHERE id = 11;
+UPDATE project SET description = 'Modernização da gestão dos Programas de Transferência de Renda e de suas bases cadastrais' WHERE id = 12;
+UPDATE project SET description = 'Qualificação e ampliação do atendimento socioassistencial de convivência e fortalecimento de vínculos que envolva a população idosa' WHERE id = 13;
+UPDATE project SET description = 'Ampliação das UAPIs - Universidades Abertas da Pessoa Idosa' WHERE id = 14;
+UPDATE project SET description = 'Qualificação do atendimento para a população em situação de rua, visando sua autonomia.' WHERE id = 15;
+UPDATE project SET description = 'Implementar filosofia de Segurança Inteligente como doutrina de atuação dos órgãos municipais de segurança urbana.' WHERE id = 16;
+UPDATE project SET description = 'Qualificação/Ampliação da Presença da Guarda Civil Metropolitana' WHERE id = 17;
+UPDATE project SET description = 'Projetos e ações que promovam a saúde por meio da atividade física e de lazer. Contempla ações lúdicas, de entretenimento em suas diferentes formas, desenvolvidas ou apoiadas pela Secretaria, objetivando atender ao munícipe de forma sustentável, inclusiva e visando diminuir as desigualdades. Abrange a readequação dos equipamentos esportivos, tendo como diretriz o atendimento continuado, para tornar-se fomentador da mudança de hábitos e estilo de vida da população.' WHERE id = 18;
+UPDATE project SET description = 'Ampliar o número de matrículas em creches na Rede Municipal, garantindo a qualidade do atendimento.' WHERE id = 19;
+UPDATE project SET description = 'Alfabetizar 95% dos alunos da Rede Municipal de Ensino até o 2º ano do ensino fundamental.' WHERE id = 20;
+UPDATE project SET description = 'Fortalecer o acompanhamento e apoio pedagógico às escolas e alunos, em especial àqueles com desempenho abaixo do adequado nas avaliações internas e externas.' WHERE id = 21;
+UPDATE project SET description = 'Ampliar e fortalecer a avaliação externa de forma a subsidiar o trabalho pedagógico.' WHERE id = 22;
+UPDATE project SET description = 'Construir e implementar o Currículo da Cidade de São Paulo em todas as unidades educacionais da Rede Municipal de Ensino' WHERE id = 23;
+UPDATE project SET description = 'Desenvolver e implementar programas e ações para garantia de acesso e permanência na educação básica.' WHERE id = 24;
+UPDATE project SET description = 'Efetivar uma Política Pública de Educação Integral de forma articulada com as demais Secretarias do Município de São Paulo.' WHERE id = 25;
+UPDATE project SET description = 'Implantação de Rede de Laboratórios de Educação Digital, Experimentação e Aprendizagem em todas as escolas de ensino fundamental e dos Centros de Educação Unificados (CEUs) da rede municipal.' WHERE id = 26;
+UPDATE project SET description = 'Prover infraestrutura de comunicação de dados compatível com os requisitos pedagógicos e de gestão escolar nas EMEFs.' WHERE id = 27;
+UPDATE project SET description = 'Desenvolvimento de um novo modelo de gestão de equipamentos culturais, visando à eficiência na gestão de recursos e à dinamização na entrega de valor cultural para a sociedade.' WHERE id = 28;
+UPDATE project SET description = 'Requalificação das Casas de Cultura, de modo que elas se transformem em equipamentos de referência em suas comunidades; valorização e divulgação da arte urbana, sobretudo das manifestações artísticas desenvolvidas nos espaços públicos; promoção da acessibilidade arquitetônica dos equipamentos culturais; ampliação do circuito municipal de salas de cinema e audiovisual da cidade; e viabilização de rede WiFi em todos os equipamentos culturais da Secretaria Municipal de Cultura.' WHERE id = 29;
+UPDATE project SET description = 'Transformar a biblioteca de bairro em um equipamento cultural vivo, com uma programação regular, diversificada e de qualidade, que ofereça ao público frequentador atividades culturais, visando, também, à formação do público leitor.' WHERE id = 30;
+UPDATE project SET description = 'Ampliar e qualificar os Centros de Cidadania Temáticos da SMDHC - Centros de Promoção da Igualdade Racial, Centros de Cidadania LGBT, Centros de Cidadania da Mulher, Centros de Referência da Mulher específicos para o atendimento de mulheres vítimas de violência, Centro de Referência e Acolhimento ao Imigrante e Polo Cultural do Idoso.' WHERE id = 31;
+UPDATE project SET description = 'Implementar sistema de incentivo à adoção de politicas afirmativas da força de trabalho no setor privado.' WHERE id = 32;
+UPDATE project SET description = 'Programa de conservação de áreas verdes e arborização municipal.' WHERE id = 33;
+UPDATE project SET description = 'Programa de ampliação da coleta seletiva para reaproveitamento de resíduos sólidos urbanos. Atuação na minimização do descarte juntamente com aumento da coleta em três frentes: resíduos domicilares, logistica reversa e orgânicos.' WHERE id = 34;
+UPDATE project SET description = 'Conjunto de medidas de planejamento e intervenção do sistema viário com o objetivo de estimular a mobilidade a pé na cidade e, concomitantemente, conferir maior segurança ao pedestre, reduzindo a ocorrência de acidentes.' WHERE id = 35;
+UPDATE project SET description = 'Conjunto de programas e ações voltadas para a segurança do trânsito na cidade de São Paulo.' WHERE id = 36;
+UPDATE project SET description = 'Conjunto de programas e ações voltadas para o estímulo à mobilidade ativa por bicicletas na cidade de São Paulo.' WHERE id = 37;
+UPDATE project SET description = 'Programa de qualificação e acessibilidade de passeios públicos.' WHERE id = 38;
+UPDATE project SET description = 'Conjunto de ações voltadas ao desenvolvimento colaborativo e implementação de ferramentas de mensuração, avaliação e monitoramento dos serviços de transporte e da mobilidade na cidade, e de apoio ao desenvolvimento de tecnologias relacionadas à mobilidade.' WHERE id = 39;
+UPDATE project SET description = 'Projetos de infraestrutura do sistema viário de transporte público destinados ao fluxo e à integração dos diversos modais para favorecimento da intermodalidade segura, rápida, acessível e sustentável.' WHERE id = 40;
+UPDATE project SET description = 'Revisar e promover melhorias no sistema de transporte público coletivo municipal.' WHERE id = 41;
+UPDATE project SET description = 'Construção e reforma de Unidades Habitacionais para aquisição.' WHERE id = 42;
+UPDATE project SET description = 'Construção ou reforma de Unidades Habitacionais para locação social.' WHERE id = 43;
+UPDATE project SET description = 'Regularizar assentamentos informais e conjuntos habitacionais públicos.' WHERE id = 44;
+UPDATE project SET description = 'Programa de Urbanização Integrada em Assentamentos Precários – favelas e loteamentos irregulares.' WHERE id = 45;
+UPDATE project SET description = 'Gerenciamento de riscos geológicos, hidrológicos e tecnológicos na cidade de São Paulo.' WHERE id = 46;
+UPDATE project SET description = 'Implantar um conjunto de ações estruturantes e de manutenção para o controle de cheias nas bacias hidrográficas do município de São Paulo.' WHERE id = 47;
+UPDATE project SET description = 'Adotar nos novos projetos para edificações de próprios municipais um novo padrão de uso racional da água e eficiência energética.' WHERE id = 48;
+UPDATE project SET description = 'Ampliação e reorganização estratégica dos serviços e atividades de apoio à realização de obras e reformas para melhoria das condições de acessibilidade em equipamentos públicos municipais antigos.' WHERE id = 49;
+UPDATE project SET description = 'Projeto de requalificação e intervenção urbana, com foco no Centro da cidade de São Paulo.' WHERE id = 50;
+UPDATE project SET description = 'Projeto de aceleração da emissão de alvarás de aprovação e execução de construções e licença para residências unifamiliares.' WHERE id = 51;
+UPDATE project SET description = 'Ampliar o acesso a alimentos saudáveis para população em vulnerabilidade social, elevando o nível de segurança alimentar e nutricional' WHERE id = 52;
+UPDATE project SET description = 'Aumento da eficiência e efetividade da sistema municipal de emprego, trabalho e renda.' WHERE id = 53;
+UPDATE project SET description = 'Fomentar o desenvolvimento de empreendimentos, trabalho e emprego em setores da economia criativa e em setores com tendência de crescimento e absorção de força de trabalho' WHERE id = 54;
+UPDATE project SET description = 'Melhoria do Ambiente de Negócios na cidade de São Paulo.' WHERE id = 55;
+UPDATE project SET description = 'Implantação de unidades de atendimento presencial com “Padrão Poupatempo” em todas as regionais.' WHERE id = 56;
+UPDATE project SET description = 'Implantação do programa WiFi SP.' WHERE id = 57;
+UPDATE project SET description = 'Implantação do processo eletrônico na Prefeitura de São Paulo.' WHERE id = 58;
+UPDATE project SET description = 'Plano Municipal de Desestatização: contempla o arcabouço legal e institucional necessário para a viabilização dos projetos de desestatização e parcerias' WHERE id = 59;
+UPDATE project SET description = 'A ação internacional da cidade de São Paulo com vistas ao aumento de investimentos e de cooperações internacionais que possam trazer desenvolvimento econômico, social e humano para a cidade de São Paulo.' WHERE id = 60;
+UPDATE project SET description = 'A ação internacional da cidade de São Paulo com vistas ao aumento de investimentos e de cooperações internacionais que possam trazer desenvolvimento econômico, social e humano para a cidade de São Paulo.' WHERE id = 61;
+UPDATE project SET description = 'Plano Municipal de Combate à Sonegação Fiscal.' WHERE id = 62;
+UPDATE project SET description = 'Melhoria do perfil fiscal do Município de São Paulo.' WHERE id = 63;
+UPDATE project SET description = 'Modernização dos Sistemas da Dívida Ativa e de Acompanhamento de Ações Judiciais.' WHERE id = 64;
+UPDATE project SET description = 'Governo Aberto: Fomentar e integrar o Governo Aberto em todas as Secretarias, através da manutenção e criação de iniciativas e mecanismos de participação, transparência, inovação e integridade Dados abertos: 100% dos dados publicados pela Prefeitura Municipal de São Paulo serão disponibilizados em formato aberto, serão processáveis por máquinas e estarão disponíveis a toda a população.' WHERE id = 65;
+UPDATE project SET description = 'Por meio do Selo de Acessibilidade Digital, avaliar e certificar os sites municipais e também os sites de entes privados interessados.' WHERE id = 66;
+UPDATE project SET description = 'Implementação de atividades vinculadas aos indicadores de integridade e econtomia contratual.' WHERE id = 67;
+UPDATE project SET description = 'Reestruturação do site da PMSP, da posição da comunicação nas mídias sociais, da coordenação de divulgação de notas de assessoria de imprensa e melhoria do diálogo com a população.' WHERE id = 68;
+UPDATE project SET description = 'Modernização e simplificação do atendimento ao cidadão e da prestação de serviços públicos.' WHERE id = 69;
+UPDATE project SET description = 'Programa de melhoria da qualidade e durabilidade das vias públicas.' WHERE id = 70;
+UPDATE project SET description = 'Ações concentradas de zeladoria.' WHERE id = 71;
+
+ALTER TABLE project ALTER COLUMN description SET NOT NULL;
+
+COMMIT;
