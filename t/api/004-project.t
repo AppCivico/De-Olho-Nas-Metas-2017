@@ -83,6 +83,7 @@ db_transaction {
         is( ref($res->{project}), "HASH", "main node is hashref" );
         is( ref($res->{project}->{topics}), "ARRAY", "retrieved topic" );
         is( ref($res->{project}->{action_lines}), "ARRAY", "retrieved action lines" );
+        is( ref($res->{project}->{goals}), "ARRAY", "retrieved goals" );
 
         is( $res->{project}->{id}, 10, "id=10" );
         is(
@@ -90,8 +91,6 @@ db_transaction {
             "Implementar balcões de cidadania (pontos de Direitos Humanos) em toda a cidade.",
             'description',
         );
-
-        p $res;
     };
 
     # Uma meta que não existe deve retornar 404.
