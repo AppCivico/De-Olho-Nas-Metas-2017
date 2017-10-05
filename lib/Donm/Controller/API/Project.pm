@@ -28,15 +28,13 @@ __PACKAGE__->config(
                     topics => [
                         map {
                             my $gp = $_;
-
-                            my $topic = $gp->goal->topic;
-                            my $topic_id = $topic->id;
-
-                            +{ map {  $_ => $topic->get_column($_) } qw/ id name slug / }
+                            +{ map {  $_ => $gp->goal->topic->get_column($_) } qw/ id name slug / }
                         }
-                        # Hack para remover os eixos duplicados, pois um projeto pode estar atrelado à várias metas, e
-                        # consequentemente a diversos eixos.
-                        grep { !$unique_topics{$_->goal->topic->id}++ } $project->goal_projects->all()
+                        grep {
+                            # Hack para remover os eixos duplicados, pois um projeto pode estar atrelado à várias
+                            # metas, e consequentemente a diversos eixos.
+                            !($unique_topics{$_->goal->topic->id}++);
+                        } $project->goal_projects->all()
                     ],
                 ),
 
@@ -97,17 +95,17 @@ sub list_GET {
             projects => [
                 map {
                     my $r = $_;
-
-                    # Um projeto possui várias metas. Essas várias metas possuem eixos. Para que os eixos não
-                    # apareceram duplicados (quando se aplica), vou unificá-los numa hash.
-                    my %topics = map {
-                        $_->{goal}->{topic}->{id} => $_->{goal}->{topic}
-                    } @{ $r->{goal_projects} };
+                    my %unique_topics = ();
 
                     +{
                         ( map { $_ => $r->{$_} } qw/ id title slug description / ),
 
-                        ( topics => [ values %topics ] ),
+                        (
+                            topics => [
+                                map { $_->{goal}->{topic} }
+                                  grep { !($unique_topics{$_->{goal}->{topic_id}}++) } @{ $r->{goal_projects} }
+                            ]
+                        ),
                     };
                 } $c->stash->{collection}->search(
                     {
