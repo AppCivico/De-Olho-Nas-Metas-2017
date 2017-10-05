@@ -19,6 +19,7 @@ __PACKAGE__->config(
     build_row  => sub {
         my ($project, $self, $c) = @_;
 
+        my %unique_topics = ();
         return {
             project => {
                 ( map { $_ => $project->get_column($_) } qw/ id title slug description / ),
@@ -28,9 +29,14 @@ __PACKAGE__->config(
                         map {
                             my $gp = $_;
 
-                            # TODO Remover possíveis duplicações de eixos.
-                            +{ map { $_ => $gp->goal->topic->get_column($_) } qw/ id name slug / }
-                        } $project->goal_projects->all()
+                            my $topic = $gp->goal->topic;
+                            my $topic_id = $topic->id;
+
+                            +{ map {  $_ => $topic->get_column($_) } qw/ id name slug / }
+                        }
+                        # Hack para remover os eixos duplicados, pois um projeto pode estar atrelado à várias metas, e
+                        # consequentemente a diversos eixos.
+                        grep { !$unique_topics{$_->goal->topic->id}++ } $project->goal_projects->all()
                     ],
                 ),
 
@@ -48,12 +54,12 @@ __PACKAGE__->config(
                 (
                     action_lines => [
                         map {
-                            my $al  = $_->action_line;
-                            my $al_id = $al->get_column('id') . "." . $al->get_column('subid');
+                            my $action_line  = $_->action_line;
+                            my $action_line_id = $action_line->get_column('id') . "." . $action_line->get_column('subid');
 
                             +{
-                                id => $al_id,
-                                title => $al->get_column('title'),
+                                id    => $action_line_id,
+                                title => $action_line->get_column('title'),
                             }
                         } $project->project_action_lines->all(),
                     ],

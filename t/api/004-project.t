@@ -99,6 +99,40 @@ db_transaction {
         is_fail => 1,
         code    => 404,
     ;
+
+    # Testando se os eixos não virão duplicados na resposta do endpoint.
+    # O project_id=2 possui três metas do mesmo eixo.
+    is_deeply(
+        [
+            map { $_->get_column("topic_id") }
+              $schema->resultset("GoalProject")->search(
+                  { 'me.project_id' => 2 },
+                  {
+                      'select' => [ "topic.id" ],
+                      'as' => [ "topic_id" ],
+                      join => [ { "goal" => "topic" } ],
+                  },
+              )->all()
+        ],
+        [ 2, 2, 2 ],
+        'topic_id=2',
+    );
+
+    rest_get "/api/project/2",
+        name  => "test duplicated topics",
+        stash => "duplicated_topics",
+    ;
+
+    stash_test "duplicated_topics" => sub {
+        my $res = shift;
+
+        is( ref($res->{project}->{topics}), "ARRAY", 'topics=ARRAY' );
+        is_deeply(
+            $res->{project}->{topics},
+            [ { id => 2, name => "Desenvolvimento Social", slug => "desenvolvimento-social" } ],
+            'retrieved one topic',
+        );
+    };
 };
 
 done_testing();
