@@ -34,7 +34,7 @@ __PACKAGE__->config(
                             my $r = $_;
 
                             +{ map { $_ => $r->get_column($_) } qw/ id name slug / }
-                        } (shuffle($c->model("DB::Region")->all()))[0 .. int(rand(5))]
+                        } (shuffle($c->model("DB::Region")->all()))[0 .. 1 + int(rand(5))]
                     ]
                 ),
 
@@ -105,9 +105,8 @@ sub list_GET {
                         projects => [
                             map {
                                 my $gp = $_;
-                                +{
-                                    project => +{ map { $_ => $gp->{project}->{$_} } qw/ id title slug / },
-                                }
+
+                                +{ map { $_ => $gp->{project}->{$_} } qw/ id title slug / },
                             } @{ $r->{goal_projects} }
                         ],
                     }
@@ -115,7 +114,7 @@ sub list_GET {
                     {
                         (
                             exists($c->req->params->{topic_name})
-                            ? ( 'topic.name' => { ilike => $c->req->params->{topic_name} } )
+                            ? ( 'topic.name' => { ilike => '%' . $c->req->params->{topic_name} . '%' } )
                             : ()
                         ),
                         (
