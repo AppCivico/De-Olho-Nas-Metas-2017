@@ -56,9 +56,10 @@ db_transaction {
     stash_test "goal" => sub {
         my $res = shift;
 
-        is( ref($res->{goal}), "HASH", "main node is hashref" );
-        is( ref($res->{goal}->{topic}), "HASH", "retrieved topic" );
-        is( ref($res->{goal}->{projects}), "ARRAY", "retrieved projects" );
+        is( ref($res->{goal}), "HASH", 'main node is hashref' );
+        is( ref($res->{goal}->{topic}), "HASH", 'retrieved topic' );
+        is( ref($res->{goal}->{projects}), "ARRAY", 'retrieved projects' );
+        is( ref($res->{goal}->{regions}), "ARRAY", 'retrieved regions' );
 
         is( $res->{goal}->{id}, 13, 'id=13' );
         is( $res->{goal}->{title}, "Atingir IDEB de 6,5 nos anos iniciais do Ensino Fundamental.", 'title' );

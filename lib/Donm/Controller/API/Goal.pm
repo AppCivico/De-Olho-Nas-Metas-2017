@@ -5,6 +5,8 @@ use namespace::autoclean;
 
 BEGIN { extends 'CatalystX::Eta::Controller::REST' }
 
+use List::Util qw(shuffle);
+
 with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoResultGET";
 with "CatalystX::Eta::Controller::TypesValidation";
@@ -23,6 +25,17 @@ __PACKAGE__->config(
                 (
                     map { $_ => $goal->get_column($_) }
                     qw/ id title topic_id first_biennium second_biennium slug indicator_description /
+                ),
+
+                # Mockando distritos enquanto não temos a regionalização das metas para facilitar a vida do front-end.
+                (
+                    regions => [
+                        map {
+                            my $r = $_;
+
+                            +{ map { $_ => $r->get_column($_) } qw/ id name slug / }
+                        } (shuffle($c->model("DB::Region")->all()))[0 .. int(rand(5))]
+                    ]
                 ),
 
                 ( topic => { map { $_ => $goal->topic->$_ } qw/ id name slug / } ),
