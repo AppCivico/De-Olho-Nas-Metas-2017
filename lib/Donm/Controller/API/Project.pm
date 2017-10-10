@@ -3,9 +3,9 @@ use common::sense;
 use Moose;
 use namespace::autoclean;
 
-use DDP;
-
 BEGIN { extends 'CatalystX::Eta::Controller::REST' }
+
+use Text::Lorem;
 
 with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoResultGET";
@@ -19,10 +19,15 @@ __PACKAGE__->config(
     build_row  => sub {
         my ($project, $self, $c) = @_;
 
+        my $lorem = Text::Lorem->new();
+
         my %unique_topics = ();
         return {
             project => {
                 ( map { $_ => $project->get_column($_) } qw/ id title slug description / ),
+
+                current_scenario => $lorem->sentences(2 + int(rand(4))),
+                expected_results => $lorem->sentences(3 + int(rand(4))),
 
                 (
                     topics => [
