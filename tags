@@ -264,6 +264,7 @@ LICENSE	./lib/Donm.pm	/^=head1 LICENSE$/;"	p
 LICENSE	./lib/Donm/Model/DB.pm	/^=head1 LICENSE$/;"	p
 LWP::UserAgent	./script/adhoc/update-iota-variables.pl	/^use LWP::UserAgent;$/;"	u
 List::Util qw(shuffle)	./lib/Donm/Controller/API/Goal.pm	/^use List::Util qw(shuffle);$/;"	u
+List::Util qw(shuffle)	./lib/Donm/Controller/API/Project.pm	/^use List::Util qw(shuffle);$/;"	u
 Log::Log4perl qw(:easy)	./script/adhoc/populate-database.pl	/^use Log::Log4perl qw(:easy);$/;"	u
 Log::Log4perl qw(:easy)	./script/adhoc/populate-relationship-goal-project.pl	/^use Log::Log4perl qw(:easy);$/;"	u
 Log::Log4perl qw(:easy)	./script/adhoc/update-iota-variables.pl	/^use Log::Log4perl qw(:easy);$/;"	u
