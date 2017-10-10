@@ -193,6 +193,7 @@ DBIx::Class::Core	./lib/Donm/Schema/Result/Subprefecture.pm	/^extends 'DBIx::Cla
 DBIx::Class::Core	./lib/Donm/Schema/Result/Topic.pm	/^extends 'DBIx::Class::Core';$/;"	e
 DBIx::Class::Core	./lib/Donm/Schema/Result/Variable.pm	/^extends 'DBIx::Class::Core';$/;"	e
 DBIx::Class::Schema	./lib/Donm/Schema.pm	/^extends 'DBIx::Class::Schema';$/;"	e
+DDP	./lib/Donm/Controller/API/Project.pm	/^                            use DDP; p $c;$/;"	u
 DDP	./script/adhoc/populate-database.pl	/^use DDP;$/;"	u
 DDP	./script/adhoc/populate-relationship-goal-project.pl	/^use DDP;$/;"	u
 DDP	./script/adhoc/update-iota-variables.pl	/^use DDP;$/;"	u
