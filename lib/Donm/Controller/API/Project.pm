@@ -6,6 +6,7 @@ use namespace::autoclean;
 BEGIN { extends 'CatalystX::Eta::Controller::REST' }
 
 use Text::Lorem;
+use List::Util qw(shuffle);
 
 with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoResultGET";
@@ -67,6 +68,19 @@ __PACKAGE__->config(
                                 indicator_description => $action_line->get_column("indicator_description"),
                             }
                         } $project->project_action_lines->all(),
+                    ],
+                ),
+
+                # Mockando distritos enquanto não temos a regionalização das metas para facilitar a vida do front-end.
+                (
+                    regions => [
+                        map {
+                            +{
+                                id   => $_->get_column('id'),
+                                name => $_->get_column('name'),
+                                slug => $_->get_column('slug'),
+                            }
+                        } (shuffle($c->model("DB::Region")->all()))[0 .. 1 + int(rand(5))]
                     ],
                 ),
             },
