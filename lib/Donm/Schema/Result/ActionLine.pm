@@ -57,6 +57,16 @@ __PACKAGE__->table("action_line");
   data_type: 'text'
   is_nullable: 0
 
+=head2 indicator_description
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 achievement
+
+  data_type: 'text'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -66,6 +76,10 @@ __PACKAGE__->add_columns(
   { data_type => "integer", is_nullable => 0 },
   "title",
   { data_type => "text", is_nullable => 0 },
+  "indicator_description",
+  { data_type => "text", is_nullable => 1 },
+  "achievement",
+  { data_type => "text", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -103,8 +117,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-09-19 17:34:55
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:LMbR8NCXDXzOWXS4+TbLcQ
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-10 11:20:09
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:U/KsU6uDF9CxhBPZ+OjoQw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

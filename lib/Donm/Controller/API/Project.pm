@@ -56,8 +56,10 @@ __PACKAGE__->config(
                             my $action_line_id = $action_line->get_column('id') . "." . $action_line->get_column('subid');
 
                             +{
-                                id    => $action_line_id,
-                                title => $action_line->get_column('title'),
+                                id                    => $action_line_id,
+                                title                 => $action_line->get_column("title"),
+                                achievement           => $action_line->get_column("achievement"),
+                                indicator_description => $action_line->get_column("indicator_description"),
                             }
                         } $project->project_action_lines->all(),
                     ],
