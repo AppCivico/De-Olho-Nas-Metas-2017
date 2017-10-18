@@ -25,7 +25,10 @@ sub list_GET {
     $c->stash->{collection} = $c->stash->{collection}->search(
         { 'me.id' => { '-not_in' => [ 33, 34, 35 ] } },
         {
-            join => [ "regions" ],
+            '+select' => [ \"ST_ASGEOJSON(ST_SIMPLIFY(ST_TRANSFORM(ST_UNION(regions.geom), 2249), 100))" ],
+            '+as'     => [ qw(geo_json) ],
+            join      => [ qw(regions) ],
+            group_by  => [ 'me.id' ],
         },
     );
 
@@ -37,7 +40,7 @@ sub list_GET {
                     my $s = $_;
 
                     +{
-                        map { $_ => $s->get_column($_) } qw/ id name site email telephone address /
+                        map { $_ => $s->get_column($_) } qw/ id name site email telephone address geo_json /,
                     }
                 } $c->stash->{collection}->all()
             ],
