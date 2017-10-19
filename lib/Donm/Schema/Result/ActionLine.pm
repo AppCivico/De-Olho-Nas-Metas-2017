@@ -42,20 +42,21 @@ __PACKAGE__->table("action_line");
 
 =head1 ACCESSORS
 
-=head2 id
+=head2 project_id
 
   data_type: 'integer'
+  is_foreign_key: 1
   is_nullable: 0
 
-=head2 subid
+=head2 id_reference
 
   data_type: 'integer'
-  is_nullable: 0
+  is_nullable: 1
 
 =head2 title
 
   data_type: 'text'
-  is_nullable: 0
+  is_nullable: 1
 
 =head2 indicator_description
 
@@ -67,19 +68,33 @@ __PACKAGE__->table("action_line");
   data_type: 'text'
   is_nullable: 1
 
+=head2 id
+
+  data_type: 'integer'
+  is_auto_increment: 1
+  is_nullable: 0
+  sequence: 'action_line_id_seq'
+
 =cut
 
 __PACKAGE__->add_columns(
-  "id",
-  { data_type => "integer", is_nullable => 0 },
-  "subid",
-  { data_type => "integer", is_nullable => 0 },
+  "project_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
+  "id_reference",
+  { data_type => "integer", is_nullable => 1 },
   "title",
-  { data_type => "text", is_nullable => 0 },
+  { data_type => "text", is_nullable => 1 },
   "indicator_description",
   { data_type => "text", is_nullable => 1 },
   "achievement",
   { data_type => "text", is_nullable => 1 },
+  "id",
+  {
+    data_type         => "integer",
+    is_auto_increment => 1,
+    is_nullable       => 0,
+    sequence          => "action_line_id_seq",
+  },
 );
 
 =head1 PRIMARY KEY
@@ -88,37 +103,32 @@ __PACKAGE__->add_columns(
 
 =item * L</id>
 
-=item * L</subid>
-
 =back
 
 =cut
 
-__PACKAGE__->set_primary_key("id", "subid");
+__PACKAGE__->set_primary_key("id");
 
 =head1 RELATIONS
 
-=head2 project_action_lines
+=head2 project
 
-Type: has_many
+Type: belongs_to
 
-Related object: L<Donm::Schema::Result::ProjectActionLine>
+Related object: L<Donm::Schema::Result::Project>
 
 =cut
 
-__PACKAGE__->has_many(
-  "project_action_lines",
-  "Donm::Schema::Result::ProjectActionLine",
-  {
-    "foreign.action_line_id"    => "self.id",
-    "foreign.action_line_subid" => "self.subid",
-  },
-  { cascade_copy => 0, cascade_delete => 0 },
+__PACKAGE__->belongs_to(
+  "project",
+  "Donm::Schema::Result::Project",
+  { id => "project_id" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-10 11:20:09
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:U/KsU6uDF9CxhBPZ+OjoQw
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-19 18:01:34
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4N8bv4ibFh5ptIQ03Yam8w
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

@@ -89,6 +89,21 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 RELATIONS
 
+=head2 action_lines
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::ActionLine>
+
+=cut
+
+__PACKAGE__->has_many(
+  "action_lines",
+  "Donm::Schema::Result::ActionLine",
+  { "foreign.project_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 goal_projects
 
 Type: has_many
@@ -104,24 +119,9 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 project_action_lines
 
-Type: has_many
-
-Related object: L<Donm::Schema::Result::ProjectActionLine>
-
-=cut
-
-__PACKAGE__->has_many(
-  "project_action_lines",
-  "Donm::Schema::Result::ProjectActionLine",
-  { "foreign.project_id" => "self.id" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
-
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-04 13:39:55
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ck86COeU6nI/5pYfDbEO8w
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-19 18:01:34
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Mp25KdU3ex2SNvif6tueAA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
