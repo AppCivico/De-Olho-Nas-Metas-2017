@@ -40,7 +40,7 @@ sub list_GET {
                     my $s = $_;
 
                     +{
-                        map { $_ => $s->get_column($_) } qw/ id name site email telephone address geo_json /,
+                        map { $_ => $s->get_column($_) } qw/ id name site email telephone address geo_json slug /,
                     }
                 } $c->stash->{collection}->all()
             ],
