@@ -58,16 +58,15 @@ __PACKAGE__->config(
                 (
                     action_lines => [
                         map {
-                            my $action_line  = $_->action_line;
-                            my $action_line_id = $action_line->get_column('id') . "." . $action_line->get_column('subid');
+                            my $action_line_id = $_->get_column('project_id') . "." . $_->get_column('id_reference');
 
                             +{
                                 id                    => $action_line_id,
-                                title                 => $action_line->get_column("title"),
-                                achievement           => $action_line->get_column("achievement"),
-                                indicator_description => $action_line->get_column("indicator_description"),
+                                title                 => $_->get_column("title"),
+                                achievement           => $_->get_column("achievement"),
+                                indicator_description => $_->get_column("indicator_description"),
                             }
-                        } $project->project_action_lines->all(),
+                        } $project->action_lines->all(),
                     ],
                 ),
 
@@ -97,7 +96,7 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
 
     my $project_rs = $c->stash->{collection}->search(
         {},
-        { prefetch => [ { "goal_projects" => { "goal" => "topic" } }, { "project_action_lines" => "action_line" } ] },
+        { prefetch => [ { "goal_projects" => { "goal" => "topic" } }, "action_lines" ] },
     );
 
     if ( !( $c->stash->{project} = $project_rs->search( { 'me.id' => $project_id } )->next() ) ) {
