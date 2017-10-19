@@ -43,23 +43,30 @@ $schema->txn_do(sub {
         # Obtendo o result 'subprefecture' a partir do acrônimo.
         if ($subprefecture_name =~ m{\(([A-Z]{1,2})\)$}) {
             my $subprefecture_acronym = $1;
-            p $subprefecture_acronym;
 
             my $subprefecture = $schema->resultset('Subprefecture')->search(
                 { 'me.acronym' => $subprefecture_acronym },
                 { prefetch => [ "regions" ] }
             )->next();
 
-            if (!ref($subprefecture)) {
-                LOGDIE "Não foi possível encontrar o acronimo em '$subprefecture_name'.";
-            }
+            LOGDIE "Não foi possível encontrar o acronimo em '$subprefecture_name'." unless ref$subprefecture;
+
+            my $action_line_ids = $line->{'Linha de ação'};
+            my ($action_line_id, $action_line_subid) = split m{\.}, $action_line_ids;
+
+            my $action_line = $schema->resultset('ActionLine')->search(
+                {
+                    'me.id'    => $action_line_id,
+                    'me.subid' => $action_line_subid,
+                }
+            )->next();
+
+            LOGDIE "Não foi possível encontrar a linha de ação id '$action_line_ids'." unless ref $action_line;
         }
         else {
             LOGDIE "Não foi possível encontrar o acronimo em '$subprefecture_name'.";
         }
 
-        my $action_line_ids = $line->{'Linha de ação'};
-        my ($action_line_id, $action_line_subid) = split m{\.}, $action_line_ids;
     }
 });
 
