@@ -126,9 +126,24 @@ __PACKAGE__->belongs_to(
   { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
+=head2 subprefecture_action_lines
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-19 18:01:34
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4N8bv4ibFh5ptIQ03Yam8w
+Type: has_many
+
+Related object: L<Donm::Schema::Result::SubprefectureActionLine>
+
+=cut
+
+__PACKAGE__->has_many(
+  "subprefecture_action_lines",
+  "Donm::Schema::Result::SubprefectureActionLine",
+  { "foreign.action_line_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-19 18:22:53
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TiaT5rjVP4ee+n6SO6tr3Q
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

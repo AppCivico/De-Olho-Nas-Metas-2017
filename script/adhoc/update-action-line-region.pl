@@ -52,14 +52,14 @@ $schema->txn_do(sub {
             LOGDIE "Não foi possível encontrar o acronimo em '$subprefecture_name'." unless ref$subprefecture;
 
             my $action_line_ids = $line->{'Linha de ação'};
-            my ($action_line_id, $action_line_subid) = split m{\.}, $action_line_ids;
+            my ($action_line_project_id, $action_line_id_reference) = split m{\.}, $action_line_ids;
 
             my $action_line = $schema->resultset('ActionLine')->search(
                 {
-                    'me.id'    => $action_line_id,
-                    'me.subid' => $action_line_subid,
+                    'me.project_id'    => $action_line_project_id,
+                    'me.id_reference' => $action_line_id_reference,
                 }
-            )->next();
+            )->next;
 
             LOGDIE "Não foi possível encontrar a linha de ação id '$action_line_ids'." unless ref $action_line;
         }

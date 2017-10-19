@@ -167,9 +167,24 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 subprefecture_action_lines
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-19 17:58:54
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:r8jfegc2rqwEk3XUsqxmog
+Type: has_many
+
+Related object: L<Donm::Schema::Result::SubprefectureActionLine>
+
+=cut
+
+__PACKAGE__->has_many(
+  "subprefecture_action_lines",
+  "Donm::Schema::Result::SubprefectureActionLine",
+  { "foreign.subprefecture_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-19 18:22:53
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Z96IDr1EKLjQgJGDiGV+dg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
