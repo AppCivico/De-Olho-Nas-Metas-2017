@@ -74,7 +74,19 @@ sub list_GET {
                     my $s = $_;
 
                     +{
-                        map { $_ => $s->get_column($_) } qw/ id name site email telephone address geo_json slug /,
+                        ( map { $_ => $s->get_column($_) } qw/ id name site email telephone address geo_json slug / ),
+
+                        regions => [
+                            map {
+                                my $r = $_;
+
+                                +{
+                                    id   => $r->get_column('id'),
+                                    name => $r->get_column('name'),
+                                    slug => $r->get_column('slug'),
+                                }
+                            } $s->regions->all()
+                        ],
                     }
                 } $c->stash->{collection}->all()
             ],
