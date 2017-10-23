@@ -38,7 +38,7 @@ __PACKAGE__->config(
                 action_lines => [
                     map {
                         +{
-                            id                    => $_->action_line->get_real_id(),
+                            id                    => $_->action_line->get_exhibition_id(),
                             title                 => $_->action_line->get_column('title'),
                             indicator_description => $_->action_line->get_column('indicator_description'),
                             achievement           => $_->action_line->get_column('achievement'),

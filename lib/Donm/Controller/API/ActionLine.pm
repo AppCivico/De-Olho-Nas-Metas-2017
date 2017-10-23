@@ -19,7 +19,7 @@ __PACKAGE__->config(
     build_list_row => sub {
         my ($r, $self, $c) = @_;
         +{
-            id                    => $r->get_real_id(),
+            id                    => $r->get_exhibition_id(),
             achievement           => $r->get_column('achievement'),
             title                 => $r->get_column('title'),
             indicator_description => $r->get_column('indicator_description'),
@@ -30,6 +30,8 @@ __PACKAGE__->config(
 sub root : Chained('/api/root') : PathPart('') : CaptureArgs(0) { }
 
 sub base : Chained('root') : PathPart('action-line') : CaptureArgs(0) { }
+
+sub object : Chained('base') : PathPart('') : CaptureArgs(1) { }
 
 sub list : Chained('base') : PathPart('') : Args(0) : ActionClass('REST') { }
 

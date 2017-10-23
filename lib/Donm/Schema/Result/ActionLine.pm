@@ -145,7 +145,7 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-19 18:22:53
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TiaT5rjVP4ee+n6SO6tr3Q
 
-sub get_real_id {
+sub get_exhibition_id {
     my $self = shift;
 
     return $self->get_column('project_id') . "." . $self->get_column('id_reference');
