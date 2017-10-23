@@ -11,6 +11,7 @@ with "CatalystX::Eta::Controller::AutoResultGET";
 __PACKAGE__->config(
     # AutoBase.
     result => 'DB::Subprefecture',
+    result_cond => { 'me.id' => { '-not_in' => [ 33, 34, 35 ] } },
 
     # AutoResultGET.
     object_key => 'subprefecture',
@@ -20,6 +21,8 @@ __PACKAGE__->config(
         return {
             subprefecture => {
                 ( map { $_ => $subprefecture->get_column($_) } qw/ id acronym name site email telephone address slug / ),
+
+                action_lines_count => $subprefecture->get_action_lines_count(),
 
                 regions => [
                     map {
@@ -34,7 +37,6 @@ __PACKAGE__->config(
             }
         };
     },
-
 );
 
 sub root : Chained('/api/root') : PathPart('') : CaptureArgs(0) { }
@@ -57,11 +59,11 @@ sub list_GET {
     my ($self, $c) = @_;
 
     $c->stash->{collection} = $c->stash->{collection}->search(
-        { 'me.id' => { '-not_in' => [ 33, 34, 35 ] } },
+        {},
         {
             '+select' => [ \"ST_ASGEOJSON(ST_SIMPLIFY(ST_TRANSFORM(ST_UNION(regions.geom), 2249), 100))" ],
-            '+as'     => [ qw(geo_json) ],
-            join      => [ qw(regions) ],
+            '+as'     => [ qw/ geo_json/ ],
+            join      => [ qw/ regions / ],
             group_by  => [ 'me.id' ],
         },
     );
@@ -75,6 +77,8 @@ sub list_GET {
 
                     +{
                         ( map { $_ => $s->get_column($_) } qw/ id name site email telephone address geo_json slug / ),
+
+                        action_lines_count => $s->get_action_lines_count(),
 
                         regions => [
                             map {

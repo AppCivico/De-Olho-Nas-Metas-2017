@@ -186,7 +186,11 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-19 18:22:53
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Z96IDr1EKLjQgJGDiGV+dg
 
+sub get_action_lines_count {
+    my ($self) = @_;
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
+    return $self->subprefecture_action_lines->search( {}, { group_by => [ 'me.id' ] } )->count();
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
