@@ -189,7 +189,7 @@ __PACKAGE__->has_many(
 sub get_action_lines_count {
     my ($self) = @_;
 
-    return $self->subprefecture_action_lines->search( {}, { group_by => [ 'me.id' ] } )->count();
+    return $self->subprefecture_action_lines->count();
 }
 
 __PACKAGE__->meta->make_immutable;
