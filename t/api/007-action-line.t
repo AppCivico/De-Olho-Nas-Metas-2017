@@ -32,7 +32,7 @@ stash_test "action_line" => sub {
 
     is_deeply(
         [ sort keys %{ $res->{action_line} } ],
-        [ sort qw/ id achievement title indicator_description / ],
+        [ sort qw/ id achievement title indicator_description subprefectures / ],
     );
 };
 
