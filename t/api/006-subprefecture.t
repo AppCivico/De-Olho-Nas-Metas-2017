@@ -26,6 +26,7 @@ stash_test "subprefecture" => sub {
     is( ref $res->{subprefecture}, 'HASH', 'retrieve one subprefecture' );
 
     is( $res->{subprefecture}->{name}, 'Ipiranga', 'name=Ipiranga' );
+    is( $res->{subprefecture}->{acronym}, 'IP', 'acronym=IP' );
     is( $res->{subprefecture}->{action_lines_count}, 77, 'action_lines_count=77' );
 
     is_deeply(
@@ -36,7 +37,7 @@ stash_test "subprefecture" => sub {
 
     is_deeply(
         [ sort keys %{ $res->{subprefecture} } ],
-        [ sort qw/ id name acronym address email site slug telephone regions action_lines_count / ],
+        [ sort qw/ id name acronym address email site slug telephone regions action_lines_count action_lines / ],
     );
 };
 

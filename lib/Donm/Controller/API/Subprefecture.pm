@@ -34,6 +34,17 @@ __PACKAGE__->config(
                         };
                     } $subprefecture->regions->all()
                 ],
+
+                action_lines => [
+                    map {
+                        +{
+                            id                    => $_->action_line->get_real_id(),
+                            title                 => $_->action_line->get_column('title'),
+                            indicator_description => $_->action_line->get_column('indicator_description'),
+                            achievement           => $_->action_line->get_column('achievement'),
+                        }
+                    } $subprefecture->subprefecture_action_lines->all()
+                ],
             }
         };
     },
@@ -46,7 +57,7 @@ sub base : Chained('root') : PathPart('subprefecture') : CaptureArgs(0) { }
 sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
     my ($self, $c, $subprefecture_id) = @_;
 
-    $c->stash->{collection} = $c->stash->{collection}->search( {}, { prefetch => [ "regions" ] } );
+    $c->stash->{collection} = $c->stash->{collection}->search( {}, { prefetch => [ "regions", { "subprefecture_action_lines" => "action_line" } ] } );
 
     if ( !( $c->stash->{subprefecture} = $c->stash->{collection}->search( { 'me.id' => $subprefecture_id } )->next ) ) {
         $c->detach("/error_404");
