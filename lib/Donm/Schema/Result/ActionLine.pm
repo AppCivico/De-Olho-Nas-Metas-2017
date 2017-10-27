@@ -75,6 +75,11 @@ __PACKAGE__->table("action_line");
   is_nullable: 0
   sequence: 'action_line_id_seq'
 
+=head2 slug
+
+  data_type: 'text'
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -95,6 +100,8 @@ __PACKAGE__->add_columns(
     is_nullable       => 0,
     sequence          => "action_line_id_seq",
   },
+  "slug",
+  { data_type => "text", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -142,8 +149,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-19 18:22:53
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TiaT5rjVP4ee+n6SO6tr3Q
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-27 12:19:26
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:7xbWg0yclnmzEdkSwEwfgg
 
 sub get_exhibition_id {
     my $self = shift;

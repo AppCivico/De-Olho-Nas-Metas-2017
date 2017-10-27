@@ -25,6 +25,8 @@ __PACKAGE__->config(
             achievement           => $r->get_column('achievement'),
             title                 => $r->get_column('title'),
             indicator_description => $r->get_column('indicator_description'),
+            slug                  => $r->get_column('slug'),
+
         };
     },
 
@@ -38,6 +40,7 @@ __PACKAGE__->config(
                 achievement           => $action_line->get_column('achievement'),
                 title                 => $action_line->get_column('title'),
                 indicator_description => $action_line->get_column('indicator_description'),
+                slug                  => $action_line->get_column('slug'),
 
                 subprefectures => [
                     map {

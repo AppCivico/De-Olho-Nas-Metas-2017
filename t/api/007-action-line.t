@@ -15,7 +15,7 @@ stash_test "action_lines" => sub {
 
     is_deeply(
         [ sort keys %{ $res->{action_lines}->[0] } ],
-        [ qw/ achievement id indicator_description title / ],
+        [ sort qw/ achievement id indicator_description title slug / ],
     );
 };
 
@@ -32,7 +32,7 @@ stash_test "action_line" => sub {
 
     is_deeply(
         [ sort keys %{ $res->{action_line} } ],
-        [ sort qw/ id achievement title indicator_description subprefectures / ],
+        [ sort qw/ id achievement title indicator_description subprefectures slug / ],
     );
 };
 
