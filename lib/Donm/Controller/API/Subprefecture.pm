@@ -72,7 +72,8 @@ sub list_GET {
     $c->stash->{collection} = $c->stash->{collection}->search(
         {},
         {
-            '+select' => [ \"ST_ASGEOJSON(ST_SIMPLIFY(ST_TRANSFORM(ST_UNION(regions.geom), 2249), 100))" ],
+            #'+select' => [ \"ST_ASGEOJSON(ST_SIMPLIFY(ST_TRANSFORM(ST_UNION(regions.geom), 2249), 100))" ],
+            '+select' => [ \"ST_ASGEOJSON(ST_UNION(regions.geom))" ],
             '+as'     => [ qw/ geo_json/ ],
             join      => [ qw/ regions / ],
             group_by  => [ 'me.id' ],
