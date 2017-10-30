@@ -25,3 +25,4 @@
 0021-subprefecture-action-line [0020-fix-action-line-id] 2017-10-19T20:28:08Z Junior Moraes <juniorfvox@gmail.com> # subprefecture-action-line
 0022-subprefecture-fix [0021-subprefecture-action-line] 2017-10-27T11:58:05Z Junior Moraes <juniorfvox@gmail.com> # subprefecture-fix
 0023-action-line-slug [0022-subprefecture-fix] 2017-10-27T14:18:16Z Junior Moraes <juniorfvox@gmail.com> # action-line-slug
+0024-fix-action-line-slug [0023-action-line-slug] 2017-10-30T12:25:20Z Junior Moraes <juniorfvox@gmail.com> # fix-action-line-slug
