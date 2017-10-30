@@ -28,8 +28,7 @@ sub list_GET {
                 geo_json => $c->stash->{collection}->search(
                     {},
                     {
-                        #select => [ \"ST_ASGEOJSON(ST_UNION(me.geom))" ],
-                        select => [ \"ST_ASGEOJSON(ST_SIMPLIFY(ST_TRANSFORM(ST_UNION(me.geom), 2249), 100))" ],
+                        select => [ \"ST_ASGEOJSON(ST_TRANSFORM(ST_SIMPLIFY(ST_TRANSFORM(ST_UNION(me.geom), 2249), 25), 4326), 6)" ],
                         as     => [ "geo_json" ],
                     },
                 )->next->get_column('geo_json'),
