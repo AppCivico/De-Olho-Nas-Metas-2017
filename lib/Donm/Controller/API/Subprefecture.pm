@@ -73,7 +73,8 @@ sub list_GET {
         {},
         {
             #'+select' => [ \"ST_ASGEOJSON(ST_SIMPLIFY(ST_TRANSFORM(ST_UNION(regions.geom), 2249), 100))" ],
-            '+select' => [ \"ST_ASGEOJSON(ST_UNION(regions.geom))" ],
+            #'+select' => [ \"ST_ASGEOJSON(ST_UNION(regions.geom))" ],
+            '+select' => [ \"ST_ASGEOJSON(ST_TRANSFORM(ST_SIMPLIFY(ST_TRANSFORM(ST_UNION(regions.geom), 2249), 25), 4326), 6)" ],
             '+as'     => [ qw/ geo_json/ ],
             join      => [ qw/ regions / ],
             group_by  => [ 'me.id' ],
