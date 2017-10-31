@@ -12,7 +12,7 @@ db_transaction {
         my $res = shift;
 
         is( ref($res->{cities}), 'ARRAY', 'main entity=ARRAY' );
-        ok( defined($res->{cities}->[0]->{sao_paulo}->{geo_json}), 'retrieve geojson' );
+        ok( defined($res->{cities}->[0]->{geo_json}), 'retrieve geojson' );
     };
 };
 
