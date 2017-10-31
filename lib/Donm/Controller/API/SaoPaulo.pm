@@ -24,15 +24,19 @@ sub list_GET {
     return $self->status_ok(
         $c,
         entity => {
-            sao_paulo => {
-                geo_json => $c->stash->{collection}->search(
-                    {},
-                    {
-                        select => [ \"ST_ASGEOJSON(ST_TRANSFORM(ST_SIMPLIFY(ST_TRANSFORM(ST_UNION(me.geom), 2249), 25), 4326), 6)" ],
-                        as     => [ "geo_json" ],
-                    },
-                )->next->get_column('geo_json'),
-            }
+            cities => [
+                {
+                    sao_paulo => {
+                        geo_json => $c->stash->{collection}->search(
+                            {},
+                            {
+                                select => [ \"ST_ASGEOJSON(ST_TRANSFORM(ST_SIMPLIFY(ST_TRANSFORM(ST_UNION(me.geom), 2249), 25), 4326), 6)" ],
+                                as     => [ "geo_json" ],
+                            },
+                        )->next->get_column('geo_json'),
+                    }
+                },
+            ],
         },
     );
 }

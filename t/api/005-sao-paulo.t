@@ -11,8 +11,8 @@ db_transaction {
     stash_test "sao_paulo" => sub {
         my $res = shift;
 
-        is( ref($res->{sao_paulo}), "HASH", 'main entity' );
-        ok( defined($res->{sao_paulo}->{geo_json}), 'retrieve geojson' );
+        is( ref($res->{cities}), 'ARRAY', 'main entity=ARRAY' );
+        ok( defined($res->{cities}->[0]->{sao_paulo}->{geo_json}), 'retrieve geojson' );
     };
 };
 
