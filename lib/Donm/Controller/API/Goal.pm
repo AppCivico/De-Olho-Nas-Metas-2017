@@ -5,11 +5,11 @@ use namespace::autoclean;
 
 BEGIN { extends 'CatalystX::Eta::Controller::REST' }
 
-use List::Util qw(shuffle);
-
 with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoResultGET";
 with "CatalystX::Eta::Controller::TypesValidation";
+
+use DDP;
 
 __PACKAGE__->config(
     # AutoBase.
@@ -27,18 +27,26 @@ __PACKAGE__->config(
                     qw/ id title topic_id first_biennium second_biennium slug indicator_description /
                 ),
 
-                # Mockando distritos enquanto não temos a regionalização das metas para facilitar a vida do front-end.
-                (
-                    regions => [
-                        map {
-                            my $r = $_;
-
-                            +{ map { $_ => $r->get_column($_) } qw/ id name slug / }
-                        } (shuffle($c->model("DB::Region")->all()))[0 .. 1 + int(rand(5))]
-                    ]
-                ),
-
                 ( topic => { map { $_ => $goal->topic->$_ } qw/ id name slug / } ),
+
+                (
+                    subprefectures => [
+                        map {
+                            my $gp = $_;
+                            map {
+                                my $action_line = $_;
+                                map {
+                                    +{
+                                        id      => $_->subprefecture->get_column('id'),
+                                        acronym => $_->subprefecture->get_column('acronym'),
+                                        name    => $_->subprefecture->get_column('name'),
+                                        slug    => $_->subprefecture->get_column('slug'),
+                                    }
+                                } $action_line->subprefecture_action_lines->all();
+                            } $gp->project->action_lines->all()
+                        } $goal->goal_projects->all()
+                    ],
+                ),
 
                 (
                     projects => [
@@ -66,10 +74,15 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
 
     my $goal_rs = $c->stash->{collection}->search(
         {},
-        { prefetch => [ "topic", { 'goal_projects' => "project" } ] },
+        {
+            prefetch => [
+                'topic',
+                { 'goal_projects' => { 'project' => { 'action_lines' => { 'subprefecture_action_lines' => 'subprefecture' } } } }
+            ]
+        },
     );
 
-    if ( !( $c->stash->{goal} = $goal_rs->search( { 'me.id' => $goal_id } )->next ) ) {
+    if ( !( $c->stash->{goal} = $goal_rs->search( { 'me.id' => $goal_id } )->next() ) ) {
         $c->detach("/error_404");
     }
 }
