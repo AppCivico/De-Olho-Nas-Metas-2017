@@ -31,42 +31,43 @@ my $fh = Tie::Handle::CSV->new("$RealBin/../../dataset/linhas-de-acao-regionaliz
 
 $schema->txn_do(sub {
     while (my $line = <$fh>) {
-        my $subprefecture_name = $line->{'Região'};
+        my @subprefecture_names = split m{\s+\+\s+}, $line->{'Região'};
 
-        if ($subprefecture_name eq "A definir") {
-            $subprefecture_name = "A definir (ED)";
+        for my $subprefecture_name (@subprefecture_names) {
+            if ($subprefecture_name eq "A definir") {
+                $subprefecture_name = "A definir (ED)";
+            }
+            elsif($subprefecture_name eq "Supraregional") {
+                $subprefecture_name = "Supraregional (SR)";
+            }
+
+            # Obtendo o result 'subprefecture' a partir do acrônimo.
+            if ($subprefecture_name =~ m{\(([A-Z]{1,2})\)$}) {
+                my $subprefecture_acronym = $1;
+
+                my $subprefecture = $schema->resultset('Subprefecture')->search(
+                    { 'me.acronym' => $subprefecture_acronym },
+                    { prefetch => [ "regions" ] }
+                )->next();
+
+                LOGDIE "Não foi possível encontrar o acronimo em '$subprefecture_name'." unless ref$subprefecture;
+
+                my $action_line_ids = $line->{'Linha de ação'};
+                my ($action_line_project_id, $action_line_id_reference) = split m{\.}, $action_line_ids;
+
+                my $action_line = $schema->resultset('ActionLine')->search(
+                    {
+                        'me.project_id'    => $action_line_project_id,
+                        'me.id_reference'  => $action_line_id_reference,
+                    }
+                )->next;
+
+                LOGDIE "Não foi possível encontrar a linha de ação id '$action_line_ids'." unless ref $action_line;
+            }
+            else {
+                LOGDIE "Não foi possível encontrar o acronimo em '$subprefecture_name'.";
+            }
         }
-        elsif($subprefecture_name eq "Supraregional") {
-            $subprefecture_name = "Supraregional (SR)";
-        }
-
-        # Obtendo o result 'subprefecture' a partir do acrônimo.
-        if ($subprefecture_name =~ m{\(([A-Z]{1,2})\)$}) {
-            my $subprefecture_acronym = $1;
-
-            my $subprefecture = $schema->resultset('Subprefecture')->search(
-                { 'me.acronym' => $subprefecture_acronym },
-                { prefetch => [ "regions" ] }
-            )->next();
-
-            LOGDIE "Não foi possível encontrar o acronimo em '$subprefecture_name'." unless ref$subprefecture;
-
-            my $action_line_ids = $line->{'Linha de ação'};
-            my ($action_line_project_id, $action_line_id_reference) = split m{\.}, $action_line_ids;
-
-            my $action_line = $schema->resultset('ActionLine')->search(
-                {
-                    'me.project_id'    => $action_line_project_id,
-                    'me.id_reference' => $action_line_id_reference,
-                }
-            )->next;
-
-            LOGDIE "Não foi possível encontrar a linha de ação id '$action_line_ids'." unless ref $action_line;
-        }
-        else {
-            LOGDIE "Não foi possível encontrar o acronimo em '$subprefecture_name'.";
-        }
-
     }
 });
 
