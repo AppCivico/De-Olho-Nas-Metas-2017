@@ -22,6 +22,8 @@ __PACKAGE__->config(
         my $lorem = Text::Lorem->new();
 
         my %unique_topics = ();
+        my %unique_subprefectures = ();
+
         return {
             project => {
                 ( map { $_ => $project->get_column($_) } qw/ id title slug description / ),
@@ -38,7 +40,7 @@ __PACKAGE__->config(
                         grep {
                             # Hack para remover os eixos duplicados, pois um projeto pode estar atrelado à várias
                             # metas, e consequentemente a diversos eixos.
-                            !($unique_topics{$_->goal->topic->id}++);
+                            !( $unique_topics{$_->goal->topic->id}++ );
                         } $project->goal_projects->all()
                     ],
                 ),
@@ -78,6 +80,10 @@ __PACKAGE__->config(
                                     name    => $_->subprefecture->get_column('name'),
                                     slug    => $_->subprefecture->get_column('slug'),
                                 }
+                            }
+                            grep {
+                                # Removendo subprefeituras duplicadas.
+                                !( $unique_subprefectures{$_->subprefecture->id}++ );
                             } $action_line->subprefecture_action_lines->all();
                         } $project->action_lines->all()
                     ],

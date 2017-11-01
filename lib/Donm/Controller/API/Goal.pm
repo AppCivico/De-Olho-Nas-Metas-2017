@@ -45,6 +45,9 @@ __PACKAGE__->config(
                                         slug    => $_->subprefecture->get_column('slug'),
                                     }
                                 } grep {
+                                    # As metas possuem projetos, e estes projetos possuem diversas linhas de ação. Cada
+                                    # linha de ação possui uma subprefeitura. Sendo assim, para que as subprefeituras
+                                    # não venham duplicadas, dou um grep para unificá-las.
                                     !($unique_subprefectures{$_->subprefecture->id}++)
                                 } $action_line->subprefecture_action_lines->all();
                             } $gp->project->action_lines->all()
