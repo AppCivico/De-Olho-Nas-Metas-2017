@@ -72,7 +72,7 @@ db_transaction {
     };
 
     # Obtendo dados de um projeto específico.
-    rest_get "/api/project/10",
+    rest_get "/api/project/11",
         name  => "get specifc project",
         stash => "project",
     ;
@@ -84,18 +84,19 @@ db_transaction {
         is( ref($res->{project}->{topics}), "ARRAY", "retrieved topic" );
         is( ref($res->{project}->{action_lines}), "ARRAY", "retrieved action lines" );
         is( ref($res->{project}->{goals}), "ARRAY", "retrieved goals" );
+        is( ref($res->{project}->{subprefectures}), "ARRAY", "retrieved subprefectures" );
 
-        is( $res->{project}->{id}, 10, "id=10" );
+        is( $res->{project}->{id}, 11, "id=11" );
         is(
             $res->{project}->{description},
-            "Implementar balcões de cidadania (pontos de Direitos Humanos) em toda a cidade.",
+            "São Paulo será uma cidade Amiga do Idoso, obtendo o Selo Pleno do Programa São Paulo Amigo do Idoso.",
             'description',
         );
     };
 
     # Uma meta que não existe deve retornar 404.
     rest_get [ qw(api project), 100 ],
-        name    => "get project that not exists",
+        name    => "project that does not exists",
         is_fail => 1,
         code    => 404,
     ;

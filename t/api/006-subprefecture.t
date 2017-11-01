@@ -27,7 +27,7 @@ stash_test "subprefecture" => sub {
 
     is( $res->{subprefecture}->{name}, 'Ipiranga', 'name=Ipiranga' );
     is( $res->{subprefecture}->{acronym}, 'IP', 'acronym=IP' );
-    is( $res->{subprefecture}->{action_lines_count}, 77, 'action_lines_count=77' );
+    is( $res->{subprefecture}->{action_lines_count}, 78, 'action_lines_count=78' );
 
     is_deeply(
         [ sort map { $_->{id} } @{ $res->{subprefecture}->{regions} } ],

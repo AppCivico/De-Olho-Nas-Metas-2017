@@ -58,10 +58,8 @@ __PACKAGE__->config(
                 (
                     action_lines => [
                         map {
-                            my $action_line_id = $_->get_column('project_id') . "." . $_->get_column('id_reference');
-
                             +{
-                                id                    => $action_line_id,
+                                id                    => $_->get_exhibition_id(),
                                 title                 => $_->get_column("title"),
                                 achievement           => $_->get_column("achievement"),
                                 indicator_description => $_->get_column("indicator_description"),
@@ -70,16 +68,19 @@ __PACKAGE__->config(
                     ],
                 ),
 
-                # Mockando distritos enquanto não temos a regionalização das metas para facilitar a vida do front-end.
                 (
-                    regions => [
+                    subprefectures => [
                         map {
-                            +{
-                                id   => $_->get_column('id'),
-                                name => $_->get_column('name'),
-                                slug => $_->get_column('slug'),
-                            }
-                        } (shuffle($c->model("DB::Region")->all()))[0 .. 1 + int(rand(5))]
+                            my $action_line = $_;
+                            map {
+                                +{
+                                    id      => $_->subprefecture->get_column('id'),
+                                    acronym => $_->subprefecture->get_column('acronym'),
+                                    name    => $_->subprefecture->get_column('name'),
+                                    slug    => $_->subprefecture->get_column('slug'),
+                                }
+                            } $action_line->subprefecture_action_lines->all();
+                        } $project->action_lines->all()
                     ],
                 ),
             },
@@ -96,7 +97,12 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
 
     my $project_rs = $c->stash->{collection}->search(
         {},
-        { prefetch => [ { "goal_projects" => { "goal" => "topic" } }, "action_lines" ] },
+        {
+            prefetch => [
+                { 'action_lines'  => { 'subprefecture_action_lines' => 'subprefecture' } },
+                { 'goal_projects' => { 'goal' => 'topic' } },
+            ],
+        },
     );
 
     if ( !( $c->stash->{project} = $project_rs->search( { 'me.id' => $project_id } )->next() ) ) {
