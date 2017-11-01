@@ -20,6 +20,8 @@ __PACKAGE__->config(
     build_row  => sub {
         my ($goal, $self, $c) = @_;
 
+        my %unique_subprefectures = ();
+
         return {
             goal => {
                 (
@@ -42,6 +44,8 @@ __PACKAGE__->config(
                                         name    => $_->subprefecture->get_column('name'),
                                         slug    => $_->subprefecture->get_column('slug'),
                                     }
+                                } grep {
+                                    !($unique_subprefectures{$_->subprefecture->id}++)
                                 } $action_line->subprefecture_action_lines->all();
                             } $gp->project->action_lines->all()
                         } $goal->goal_projects->all()

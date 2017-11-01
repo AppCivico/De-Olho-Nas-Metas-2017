@@ -48,7 +48,8 @@ db_transaction {
     };
 
     # Obtendo dados de uma meta específica.
-    rest_get [ qw/ api goal 13 / ],
+    #rest_get [ qw/ api goal 13 / ],
+    rest_get [ qw/ api goal 1 / ],
         name  => "get specifc goal",
         stash => "goal",
     ;
@@ -56,18 +57,20 @@ db_transaction {
     stash_test "goal" => sub {
         my $res = shift;
 
-        p $res->{goal}->{subprefectures};
-
         is( ref($res->{goal}), "HASH", 'main node is hashref' );
         is( ref($res->{goal}->{topic}), "HASH", 'retrieved topic' );
         is( ref($res->{goal}->{projects}), "ARRAY", 'retrieved projects' );
         is( ref($res->{goal}->{subprefectures}), "ARRAY", 'retrieved subprefectures' );
 
-        is( $res->{goal}->{id}, 13, 'id=13' );
-        is( $res->{goal}->{title}, "Atingir IDEB de 6,5 nos anos iniciais do Ensino Fundamental.", 'title' );
+        is( $res->{goal}->{id}, 1, 'id=1' );
+        is(
+            $res->{goal}->{title},
+            "Aumentar a cobertura da Atenção Básica à Saúde para 70% na cidade de São Paulo.",
+            'title',
+        );
         is(
             $res->{goal}->{indicator_description},
-            "IDEB dos anos iniciais do EF, da rede municipal",
+            "Indicador de cobertura populacional estimada da atenção básica.",
             'indicator_description',
         );
     };
