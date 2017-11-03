@@ -23,7 +23,7 @@ __PACKAGE__->config(
 
                 subprefecture => +{
                     map { $_ => $region->subprefecture->$_ }
-                      qw/ id acronym name latitude longitude site email telephone address /
+                      qw/ id acronym name slug latitude longitude site email telephone address /
                 },
 
                 region_variables => [
