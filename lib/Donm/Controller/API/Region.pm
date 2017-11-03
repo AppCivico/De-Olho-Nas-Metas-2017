@@ -93,7 +93,9 @@ sub list_GET {
                         ),
 
                         subprefecture => +{
-                            map { $_ => $r->subprefecture->$_ } qw/ id name /
+                            id   => $r->subprefecture->get_column('id'),
+                            name => $r->subprefecture->get_column('name'),
+                            slug => $r->subprefecture->get_column('slug'),
                         },
                     }
                 } $region_rs->all()
