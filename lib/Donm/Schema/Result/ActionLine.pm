@@ -116,6 +116,20 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key("id");
 
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<action_line_slug_key>
+
+=over 4
+
+=item * L</slug>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint("action_line_slug_key", ["slug"]);
+
 =head1 RELATIONS
 
 =head2 project
@@ -149,8 +163,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-27 12:19:26
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:7xbWg0yclnmzEdkSwEwfgg
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-11-06 18:08:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:cnmIPKTBdwPDG9y4cXimTw
 
 sub get_exhibition_id {
     my $self = shift;

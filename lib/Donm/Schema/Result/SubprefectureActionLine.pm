@@ -61,6 +61,11 @@ __PACKAGE__->table("subprefecture_action_line");
   is_foreign_key: 1
   is_nullable: 0
 
+=head2 indicator
+
+  data_type: 'text'
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -75,6 +80,8 @@ __PACKAGE__->add_columns(
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "action_line_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
+  "indicator",
+  { data_type => "text", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -122,8 +129,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-19 18:22:53
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3XNlCMJYQTTsPlo9cRCQ7Q
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-11-06 18:08:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:k9FU+FW2PwFtMwXQ7+J8gA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
