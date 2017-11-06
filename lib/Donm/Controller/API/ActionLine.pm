@@ -26,7 +26,6 @@ __PACKAGE__->config(
             title                 => $r->get_column('title'),
             indicator_description => $r->get_column('indicator_description'),
             slug                  => $r->get_column('slug'),
-
         };
     },
 
@@ -45,9 +44,10 @@ __PACKAGE__->config(
                 subprefectures => [
                     map {
                         +{
-                            id   => $_->subprefecture->get_column('id'),
-                            name => $_->subprefecture->get_column('name'),
-                            slug => $_->subprefecture->get_column('slug'),
+                            id        => $_->subprefecture->get_column('id'),
+                            name      => $_->subprefecture->get_column('name'),
+                            slug      => $_->subprefecture->get_column('slug'),
+                            indicator => $_->get_column('indicator'),
                         };
                     } $action_line->subprefecture_action_lines->all()
                 ],
