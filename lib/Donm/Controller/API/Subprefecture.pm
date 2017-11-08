@@ -40,6 +40,7 @@ __PACKAGE__->config(
                         +{
                             id                    => $_->action_line->get_exhibition_id(),
                             title                 => $_->action_line->get_column('title'),
+                            slug                  => $_->action_line->get_column('slug'),
                             indicator_description => $_->action_line->get_column('indicator_description'),
                             achievement           => $_->action_line->get_column('achievement'),
                         }
