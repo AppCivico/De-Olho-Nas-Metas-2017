@@ -40,7 +40,7 @@ db_transaction {
 
         is_deeply(
             [ sort keys %{ $res->{topic} } ],
-            [ sort qw/ id name slug goals / ],
+            [ sort qw/ id name slug goals description / ],
         );
     };
 };

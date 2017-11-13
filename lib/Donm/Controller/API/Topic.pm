@@ -24,9 +24,10 @@ __PACKAGE__->config(
 
         return {
             topic => {
-                id   => $topic->get_column('id'),
-                name => $topic->get_column('name'),
-                slug => $topic->get_column('slug'),
+                id          => $topic->get_column('id'),
+                name        => $topic->get_column('name'),
+                slug        => $topic->get_column('slug'),
+                description => $topic->get_column('description'),
 
                 goals => [
                     map {
@@ -66,9 +67,10 @@ sub list_GET {
             topics => [
                 map {
                     +{
-                        id   => $_->get_column('id'),
-                        name => $_->get_column('name'),
-                        slug => $_->get_column('slug'),
+                        id          => $_->get_column('id'),
+                        name        => $_->get_column('name'),
+                        slug        => $_->get_column('slug'),
+                        description => $_->get_column('description'),
                     }
                 } $c->stash->{collection}->all()
             ]

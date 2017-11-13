@@ -59,6 +59,11 @@ __PACKAGE__->table("topic");
   data_type: 'text'
   is_nullable: 0
 
+=head2 description
+
+  data_type: 'text'
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -72,6 +77,8 @@ __PACKAGE__->add_columns(
   "name",
   { data_type => "text", is_nullable => 0 },
   "slug",
+  { data_type => "text", is_nullable => 0 },
+  "description",
   { data_type => "text", is_nullable => 0 },
 );
 
@@ -119,8 +126,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-03 12:07:51
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:PRnskfhvJq5ZzEI99RsNOQ
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-11-13 15:45:21
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:yhBzlclam+quyZgToPv8ug
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

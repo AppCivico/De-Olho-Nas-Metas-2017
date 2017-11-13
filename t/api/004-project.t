@@ -42,6 +42,7 @@ db_transaction {
                             id   => 5,
                             name => "Desenvolvimento Econômico E Gestão",
                             slug => "desenvolvimento-economico-e-gestao",
+                            description => "Foi articulado em torno da ideia de uma cidade inteligente, eficiente, que gera oportunidades e simplifica a vida das pessoas",
                         }
                     ],
                 },
@@ -130,7 +131,13 @@ db_transaction {
         is( ref($res->{project}->{topics}), "ARRAY", 'topics=ARRAY' );
         is_deeply(
             $res->{project}->{topics},
-            [ { id => 2, name => "Desenvolvimento Social", slug => "desenvolvimento-social" } ],
+            [
+                {
+                    id   => 2,
+                    name => "Desenvolvimento Social",
+                    slug => "desenvolvimento-social",
+                }
+            ],
             'retrieved one topic',
         );
     };
