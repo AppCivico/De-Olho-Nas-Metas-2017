@@ -20,7 +20,7 @@ __PACKAGE__->config(
 
         return {
             subprefecture => {
-                ( map { $_ => $subprefecture->get_column($_) } qw/ id acronym name site email telephone address slug / ),
+                ( map { $_ => $subprefecture->get_column($_) } qw/ id acronym name site email telephone address slug deputy_mayor / ),
 
                 action_lines_count => $subprefecture->get_action_lines_count(),
 

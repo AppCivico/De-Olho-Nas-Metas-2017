@@ -37,7 +37,7 @@ stash_test "subprefecture" => sub {
 
     is_deeply(
         [ sort keys %{ $res->{subprefecture} } ],
-        [ sort qw/ id name acronym address email site slug telephone regions action_lines_count action_lines / ],
+        [ sort qw/ id name acronym address email site slug telephone regions action_lines_count action_lines deputy_mayor / ],
     );
 };
 
