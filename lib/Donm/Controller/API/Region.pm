@@ -26,14 +26,13 @@ __PACKAGE__->config(
                       qw/ id acronym name slug latitude longitude site email telephone address /
                 },
 
-                region_variables => [
+                variables => [
                     map {
-                        my $rv = $_;
                         +{
-                            ( map { $_ => $rv->$_ } qw/ id region_id variable_id value / ),
-
-                            variable => +{ map { $_ => $rv->variable->$_ } qw/ id name / },
-                        };
+                            id    => $_->variable->get_column('id'),
+                            name  => $_->variable->get_column('name'),
+                            value => $_->get_column('value'),
+                        }
                     } $region->region_variables->all()
                 ],
             }

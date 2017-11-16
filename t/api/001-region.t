@@ -29,8 +29,8 @@ db_transaction {
         is( $res->{region}->{subprefecture_id}, 11, 'subprefecture_id=11' );
         is( $res->{region}->{subprefecture}->{id}, 11, 'subprefecture_id=11' );
         is( $res->{region}->{subprefecture}->{name}, 'Ipiranga', 'subprefecture_name=Ipiranga' );
-        is( ref $res->{region}->{region_variables}, 'ARRAY', 'region_variables=ARRAY' );
-        is( $res->{region}->{region_variables}->[0]->{variable_id}, 19, 'variable_id=19' );
+        is( ref $res->{region}->{variables}, 'ARRAY', 'region_variables=ARRAY' );
+        is( $res->{region}->{variables}->[0]->{id}, 19, 'variable_id=19' );
     }
 };
 
