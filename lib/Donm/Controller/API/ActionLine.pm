@@ -51,6 +51,13 @@ __PACKAGE__->config(
                         };
                     } $action_line->subprefecture_action_lines->all()
                 ],
+
+                project => {
+                    id          => $action_line->project->get_column('id'),
+                    title       => $action_line->project->get_column('title'),
+                    slug        => $action_line->project->get_column('slug'),
+                    description => $action_line->project->get_column('description'),
+                },
             },
         },
     },
@@ -63,7 +70,11 @@ sub base : Chained('root') : PathPart('action-line') : CaptureArgs(0) { }
 sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
     my ($self, $c, $exhibition_id) = @_;
 
-    $c->stash->{collection} = $c->stash->{collection}->search( {}, { prefetch => [ { "subprefecture_action_lines" => "subprefecture" } ] } );
+    $c->stash->{collection} = $c->stash->{collection}->search(
+        {},
+        { prefetch => [ 'project', { 'subprefecture_action_lines' => 'subprefecture' } ] }
+    );
+
     if ( !( $c->stash->{action_line} = $c->stash->{collection}->search_by_exhibition_id($exhibition_id)->next ) ) {
         $c->detach("/error_404");
     }
