@@ -28,8 +28,8 @@ __PACKAGE__->config(
             project => {
                 ( map { $_ => $project->get_column($_) } qw/ id title slug description / ),
 
-                current_scenario => $lorem->sentences(2 + int(rand(4))),
-                expected_results => $lorem->sentences(3 + int(rand(4))),
+                current_scenario => $project->get_column('current_scenario'),
+                expected_results => $project->get_column('expected_results'),
 
                 (
                     topics => [
