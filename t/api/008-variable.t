@@ -19,7 +19,7 @@ stash_test 'variables' => sub {
     is( ref($res->{variables}->[0]->{regions}), 'ARRAY', 'list of regions' );
     is_deeply(
         [ sort keys %{ $res->{variables}->[0]->{regions}->[0] } ],
-        [ sort qw/ id name value / ],
+        [ sort qw/ id name value source year / ],
     );
 };
 

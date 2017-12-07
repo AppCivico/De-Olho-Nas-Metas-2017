@@ -34,9 +34,11 @@ sub list_GET {
                         regions => [
                             map {
                                 +{
-                                    id    => $_->region->get_column('id'),
-                                    name  => $_->region->get_column('name'),
-                                    value => $_->get_column('value'),
+                                    id     => $_->region->get_column('id'),
+                                    name   => $_->region->get_column('name'),
+                                    value  => $_->get_column('value'),
+                                    year   => $_->get_column('year'),
+                                    source => $_->get_column('source'),
                                 }
                             } $_->region_variables->all()
                         ],
