@@ -29,9 +29,11 @@ __PACKAGE__->config(
                 variables => [
                     map {
                         +{
-                            id    => $_->variable->get_column('id'),
-                            name  => $_->variable->get_column('name'),
-                            value => $_->get_column('value'),
+                            id     => $_->variable->get_column('id'),
+                            name   => $_->variable->get_column('name'),
+                            value  => $_->get_column('value'),
+                            year   => $_->get_column('year'),
+                            source => $_->get_column('source'),
                         }
                     } $region->region_variables->all()
                 ],

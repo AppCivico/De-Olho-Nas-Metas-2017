@@ -28,8 +28,8 @@ sub list_GET {
             variables => [
                 map {
                     +{
-                        id    => $_->get_column('id'),
-                        name  => $_->get_column('name'),
+                        id   => $_->get_column('id'),
+                        name => $_->get_column('name'),
 
                         regions => [
                             map {

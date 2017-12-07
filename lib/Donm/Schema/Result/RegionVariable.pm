@@ -67,6 +67,16 @@ __PACKAGE__->table("region_variable");
   is_nullable: 0
   size: [10,2]
 
+=head2 year
+
+  data_type: 'integer'
+  is_nullable: 0
+
+=head2 source
+
+  data_type: 'text'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -83,6 +93,10 @@ __PACKAGE__->add_columns(
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "value",
   { data_type => "numeric", is_nullable => 0, size => [10, 2] },
+  "year",
+  { data_type => "integer", is_nullable => 0 },
+  "source",
+  { data_type => "text", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -149,8 +163,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-11-13 14:27:23
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:MCMWGBpszTnqWjoR5SDhFA
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-12-07 16:38:23
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:obv2kBosQE+J39QE4dbr+A
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
