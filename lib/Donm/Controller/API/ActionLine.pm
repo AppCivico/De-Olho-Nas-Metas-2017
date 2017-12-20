@@ -13,7 +13,8 @@ use DDP;
 
 __PACKAGE__->config(
     # AutoBase.
-    result => 'DB::ActionLine',
+    result      => 'DB::ActionLine',
+    result_attr => { order_by => [ qw/ me.project_id me.id_reference / ] },
 
     # AutoListGET.
     list_key => 'action_lines',
