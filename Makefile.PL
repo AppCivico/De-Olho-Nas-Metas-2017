@@ -59,6 +59,7 @@ my %WriteMakefileArgs = (
     "MooseX::MarkAsMethods" => 0,
     "MooseX::NonMoose" => 0,
     "Net::Server::SS::PreFork" => 0,
+    "Number::Format" => 0,
     "Scalar::Util" => 0,
     "Server::Starter" => 0,
     "Starman" => 0,
@@ -86,7 +87,7 @@ my %WriteMakefileArgs = (
     "blib" => "1.01",
     "lib" => 0
   },
-  "VERSION" => 20171116,
+  "VERSION" => 20171222,
   "test" => {
     "TESTS" => "t/*.t t/api/*.t t/misc/*.t"
   }
@@ -145,6 +146,7 @@ my %FallbackPrereqs = (
   "MooseX::MarkAsMethods" => 0,
   "MooseX::NonMoose" => 0,
   "Net::Server::SS::PreFork" => 0,
+  "Number::Format" => 0,
   "Scalar::Util" => 0,
   "Server::Starter" => 0,
   "Starman" => 0,
