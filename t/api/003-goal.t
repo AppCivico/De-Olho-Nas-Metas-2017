@@ -48,7 +48,6 @@ db_transaction {
     };
 
     # Obtendo dados de uma meta específica.
-    #rest_get [ qw/ api goal 13 / ],
     rest_get [ qw/ api goal 1 / ],
         name  => "get specifc goal",
         stash => "goal",

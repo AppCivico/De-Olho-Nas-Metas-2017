@@ -26,8 +26,11 @@ __PACKAGE__->config(
             goal => {
                 (
                     map { $_ => $goal->get_column($_) }
-                    qw/ id title topic_id first_biennium second_biennium slug indicator_description /
+                    qw/ id title topic_id slug indicator_description /
                 ),
+
+                first_biennium => $goal->get_readable_first_biennium(),
+                second_biennium => $goal->get_readable_second_biennium(),
 
                 ( topic => { map { $_ => $goal->topic->$_ } qw/ id name slug / } ),
 
