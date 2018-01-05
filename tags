@@ -23,6 +23,8 @@
 "CatalystX::Eta::Controller::TypesValidation"	./lib/Donm/Controller/API/Goal.pm	/^with "CatalystX::Eta::Controller::TypesValidation";$/;"	w
 'Donm::Role::Verification::TransactionalActions'	./lib/Donm/Role/Verification/TransactionalActions/DBIC.pm	/^with 'Donm::Role::Verification::TransactionalActions';$/;"	w
 -- C<action_line_slug_key>	./lib/Donm/Schema/Result/ActionLine.pm	/^=head2 C<action_line_slug_key>$/;"	p
+-- C<indicator_name_key>	./lib/Donm/Schema/Result/Indicator.pm	/^=head2 C<indicator_name_key>$/;"	p
+-- C<region_indicator_region_id_indicator_id_key>	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head2 C<region_indicator_region_id_indicator_id_key>$/;"	p
 -- C<region_variable_region_id_variable_id_key>	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head2 C<region_variable_region_id_variable_id_key>$/;"	p
 -- C<topic_name_key>	./lib/Donm/Schema/Result/Topic.pm	/^=head2 C<topic_name_key>$/;"	p
 -- achievement	./lib/Donm/Schema/Result/ActionLine.pm	/^=head2 achievement$/;"	p
@@ -44,6 +46,7 @@
 -- description	./lib/Donm/Schema/Result/Topic.pm	/^=head2 description$/;"	p
 -- email	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head2 email$/;"	p
 -- expected_results	./lib/Donm/Schema/Result/Project.pm	/^=head2 expected_results$/;"	p
+-- explanation	./lib/Donm/Schema/Result/Indicator.pm	/^=head2 explanation$/;"	p
 -- extent	./lib/Donm/Schema/Result/RasterColumn.pm	/^=head2 extent$/;"	p
 -- f_geography_column	./lib/Donm/Schema/Result/GeographyColumn.pm	/^=head2 f_geography_column$/;"	p
 -- f_geometry_column	./lib/Donm/Schema/Result/GeometryColumn.pm	/^=head2 f_geometry_column$/;"	p
@@ -54,6 +57,7 @@
 -- f_table_schema	./lib/Donm/Schema/Result/GeographyColumn.pm	/^=head2 f_table_schema$/;"	p
 -- f_table_schema	./lib/Donm/Schema/Result/GeometryColumn.pm	/^=head2 f_table_schema$/;"	p
 -- first_biennium	./lib/Donm/Schema/Result/Goal.pm	/^=head2 first_biennium$/;"	p
+-- formula	./lib/Donm/Schema/Result/Indicator.pm	/^=head2 formula$/;"	p
 -- geom	./lib/Donm/Schema/Result/Region.pm	/^=head2 geom$/;"	p
 -- goal	./lib/Donm/Schema/Result/GoalProject.pm	/^=head2 goal$/;"	p
 -- goal_id	./lib/Donm/Schema/Result/GoalProject.pm	/^=head2 goal_id$/;"	p
@@ -63,21 +67,26 @@
 -- id	./lib/Donm/Schema/Result/ActionLine.pm	/^=head2 id$/;"	p
 -- id	./lib/Donm/Schema/Result/Goal.pm	/^=head2 id$/;"	p
 -- id	./lib/Donm/Schema/Result/GoalProject.pm	/^=head2 id$/;"	p
+-- id	./lib/Donm/Schema/Result/Indicator.pm	/^=head2 id$/;"	p
 -- id	./lib/Donm/Schema/Result/Project.pm	/^=head2 id$/;"	p
 -- id	./lib/Donm/Schema/Result/Region.pm	/^=head2 id$/;"	p
+-- id	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head2 id$/;"	p
 -- id	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head2 id$/;"	p
 -- id	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head2 id$/;"	p
 -- id	./lib/Donm/Schema/Result/SubprefectureActionLine.pm	/^=head2 id$/;"	p
 -- id	./lib/Donm/Schema/Result/Topic.pm	/^=head2 id$/;"	p
 -- id	./lib/Donm/Schema/Result/Variable.pm	/^=head2 id$/;"	p
 -- id_reference	./lib/Donm/Schema/Result/ActionLine.pm	/^=head2 id_reference$/;"	p
+-- indicator	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head2 indicator$/;"	p
 -- indicator	./lib/Donm/Schema/Result/SubprefectureActionLine.pm	/^=head2 indicator$/;"	p
 -- indicator_description	./lib/Donm/Schema/Result/ActionLine.pm	/^=head2 indicator_description$/;"	p
 -- indicator_description	./lib/Donm/Schema/Result/Goal.pm	/^=head2 indicator_description$/;"	p
+-- indicator_id	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head2 indicator_id$/;"	p
 -- lat	./lib/Donm/Schema/Result/Region.pm	/^=head2 lat$/;"	p
 -- latitude	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head2 latitude$/;"	p
 -- long	./lib/Donm/Schema/Result/Region.pm	/^=head2 long$/;"	p
 -- longitude	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head2 longitude$/;"	p
+-- name	./lib/Donm/Schema/Result/Indicator.pm	/^=head2 name$/;"	p
 -- name	./lib/Donm/Schema/Result/Region.pm	/^=head2 name$/;"	p
 -- name	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head2 name$/;"	p
 -- name	./lib/Donm/Schema/Result/Topic.pm	/^=head2 name$/;"	p
@@ -104,8 +113,12 @@
 -- r_table_name	./lib/Donm/Schema/Result/RasterOverview.pm	/^=head2 r_table_name$/;"	p
 -- r_table_schema	./lib/Donm/Schema/Result/RasterColumn.pm	/^=head2 r_table_schema$/;"	p
 -- r_table_schema	./lib/Donm/Schema/Result/RasterOverview.pm	/^=head2 r_table_schema$/;"	p
+-- region	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head2 region$/;"	p
 -- region	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head2 region$/;"	p
+-- region_id	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head2 region_id$/;"	p
 -- region_id	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head2 region_id$/;"	p
+-- region_indicators	./lib/Donm/Schema/Result/Indicator.pm	/^=head2 region_indicators$/;"	p
+-- region_indicators	./lib/Donm/Schema/Result/Region.pm	/^=head2 region_indicators$/;"	p
 -- region_variables	./lib/Donm/Schema/Result/Region.pm	/^=head2 region_variables$/;"	p
 -- region_variables	./lib/Donm/Schema/Result/Variable.pm	/^=head2 region_variables$/;"	p
 -- regions	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head2 regions$/;"	p
@@ -122,6 +135,7 @@
 -- slug	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head2 slug$/;"	p
 -- slug	./lib/Donm/Schema/Result/Topic.pm	/^=head2 slug$/;"	p
 -- source	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head2 source$/;"	p
+-- sources	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head2 sources$/;"	p
 -- spatial_index	./lib/Donm/Schema/Result/RasterColumn.pm	/^=head2 spatial_index$/;"	p
 -- srid	./lib/Donm/Schema/Result/GeographyColumn.pm	/^=head2 srid$/;"	p
 -- srid	./lib/Donm/Schema/Result/GeometryColumn.pm	/^=head2 srid$/;"	p
@@ -144,19 +158,23 @@
 -- type	./lib/Donm/Schema/Result/GeographyColumn.pm	/^=head2 type$/;"	p
 -- type	./lib/Donm/Schema/Result/GeometryColumn.pm	/^=head2 type$/;"	p
 -- unit	./lib/Donm/Schema/Result/Goal.pm	/^=head2 unit$/;"	p
+-- value	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head2 value$/;"	p
 -- value	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head2 value$/;"	p
 -- variable	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head2 variable$/;"	p
 -- variable_id	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head2 variable_id$/;"	p
+-- year	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head2 year$/;"	p
 -- year	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head2 year$/;"	p
 ACCESSORS	./lib/Donm/Schema/Result/ActionLine.pm	/^=head1 ACCESSORS$/;"	p
 ACCESSORS	./lib/Donm/Schema/Result/GeographyColumn.pm	/^=head1 ACCESSORS$/;"	p
 ACCESSORS	./lib/Donm/Schema/Result/GeometryColumn.pm	/^=head1 ACCESSORS$/;"	p
 ACCESSORS	./lib/Donm/Schema/Result/Goal.pm	/^=head1 ACCESSORS$/;"	p
 ACCESSORS	./lib/Donm/Schema/Result/GoalProject.pm	/^=head1 ACCESSORS$/;"	p
+ACCESSORS	./lib/Donm/Schema/Result/Indicator.pm	/^=head1 ACCESSORS$/;"	p
 ACCESSORS	./lib/Donm/Schema/Result/Project.pm	/^=head1 ACCESSORS$/;"	p
 ACCESSORS	./lib/Donm/Schema/Result/RasterColumn.pm	/^=head1 ACCESSORS$/;"	p
 ACCESSORS	./lib/Donm/Schema/Result/RasterOverview.pm	/^=head1 ACCESSORS$/;"	p
 ACCESSORS	./lib/Donm/Schema/Result/Region.pm	/^=head1 ACCESSORS$/;"	p
+ACCESSORS	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head1 ACCESSORS$/;"	p
 ACCESSORS	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head1 ACCESSORS$/;"	p
 ACCESSORS	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^=head1 ACCESSORS$/;"	p
 ACCESSORS	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head1 ACCESSORS$/;"	p
@@ -175,10 +193,12 @@ COMPONENTS LOADED	./lib/Donm/Schema/Result/GeographyColumn.pm	/^=head1 COMPONENT
 COMPONENTS LOADED	./lib/Donm/Schema/Result/GeometryColumn.pm	/^=head1 COMPONENTS LOADED$/;"	p
 COMPONENTS LOADED	./lib/Donm/Schema/Result/Goal.pm	/^=head1 COMPONENTS LOADED$/;"	p
 COMPONENTS LOADED	./lib/Donm/Schema/Result/GoalProject.pm	/^=head1 COMPONENTS LOADED$/;"	p
+COMPONENTS LOADED	./lib/Donm/Schema/Result/Indicator.pm	/^=head1 COMPONENTS LOADED$/;"	p
 COMPONENTS LOADED	./lib/Donm/Schema/Result/Project.pm	/^=head1 COMPONENTS LOADED$/;"	p
 COMPONENTS LOADED	./lib/Donm/Schema/Result/RasterColumn.pm	/^=head1 COMPONENTS LOADED$/;"	p
 COMPONENTS LOADED	./lib/Donm/Schema/Result/RasterOverview.pm	/^=head1 COMPONENTS LOADED$/;"	p
 COMPONENTS LOADED	./lib/Donm/Schema/Result/Region.pm	/^=head1 COMPONENTS LOADED$/;"	p
+COMPONENTS LOADED	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head1 COMPONENTS LOADED$/;"	p
 COMPONENTS LOADED	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head1 COMPONENTS LOADED$/;"	p
 COMPONENTS LOADED	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^=head1 COMPONENTS LOADED$/;"	p
 COMPONENTS LOADED	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head1 COMPONENTS LOADED$/;"	p
@@ -203,10 +223,12 @@ DBIx::Class::Core	./lib/Donm/Schema/Result/GeographyColumn.pm	/^extends 'DBIx::C
 DBIx::Class::Core	./lib/Donm/Schema/Result/GeometryColumn.pm	/^extends 'DBIx::Class::Core';$/;"	e
 DBIx::Class::Core	./lib/Donm/Schema/Result/Goal.pm	/^extends 'DBIx::Class::Core';$/;"	e
 DBIx::Class::Core	./lib/Donm/Schema/Result/GoalProject.pm	/^extends 'DBIx::Class::Core';$/;"	e
+DBIx::Class::Core	./lib/Donm/Schema/Result/Indicator.pm	/^extends 'DBIx::Class::Core';$/;"	e
 DBIx::Class::Core	./lib/Donm/Schema/Result/Project.pm	/^extends 'DBIx::Class::Core';$/;"	e
 DBIx::Class::Core	./lib/Donm/Schema/Result/RasterColumn.pm	/^extends 'DBIx::Class::Core';$/;"	e
 DBIx::Class::Core	./lib/Donm/Schema/Result/RasterOverview.pm	/^extends 'DBIx::Class::Core';$/;"	e
 DBIx::Class::Core	./lib/Donm/Schema/Result/Region.pm	/^extends 'DBIx::Class::Core';$/;"	e
+DBIx::Class::Core	./lib/Donm/Schema/Result/RegionIndicator.pm	/^extends 'DBIx::Class::Core';$/;"	e
 DBIx::Class::Core	./lib/Donm/Schema/Result/RegionVariable.pm	/^extends 'DBIx::Class::Core';$/;"	e
 DBIx::Class::Core	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^extends 'DBIx::Class::Core';$/;"	e
 DBIx::Class::Core	./lib/Donm/Schema/Result/Subprefecture.pm	/^extends 'DBIx::Class::Core';$/;"	e
@@ -265,10 +287,12 @@ Donm::Schema::Result::GeographyColumn	./lib/Donm/Schema/Result/GeographyColumn.p
 Donm::Schema::Result::GeometryColumn	./lib/Donm/Schema/Result/GeometryColumn.pm	/^package Donm::Schema::Result::GeometryColumn;$/;"	p
 Donm::Schema::Result::Goal	./lib/Donm/Schema/Result/Goal.pm	/^package Donm::Schema::Result::Goal;$/;"	p
 Donm::Schema::Result::GoalProject	./lib/Donm/Schema/Result/GoalProject.pm	/^package Donm::Schema::Result::GoalProject;$/;"	p
+Donm::Schema::Result::Indicator	./lib/Donm/Schema/Result/Indicator.pm	/^package Donm::Schema::Result::Indicator;$/;"	p
 Donm::Schema::Result::Project	./lib/Donm/Schema/Result/Project.pm	/^package Donm::Schema::Result::Project;$/;"	p
 Donm::Schema::Result::RasterColumn	./lib/Donm/Schema/Result/RasterColumn.pm	/^package Donm::Schema::Result::RasterColumn;$/;"	p
 Donm::Schema::Result::RasterOverview	./lib/Donm/Schema/Result/RasterOverview.pm	/^package Donm::Schema::Result::RasterOverview;$/;"	p
 Donm::Schema::Result::Region	./lib/Donm/Schema/Result/Region.pm	/^package Donm::Schema::Result::Region;$/;"	p
+Donm::Schema::Result::RegionIndicator	./lib/Donm/Schema/Result/RegionIndicator.pm	/^package Donm::Schema::Result::RegionIndicator;$/;"	p
 Donm::Schema::Result::RegionVariable	./lib/Donm/Schema/Result/RegionVariable.pm	/^package Donm::Schema::Result::RegionVariable;$/;"	p
 Donm::Schema::Result::SpatialRefSy	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^package Donm::Schema::Result::SpatialRefSy;$/;"	p
 Donm::Schema::Result::Subprefecture	./lib/Donm/Schema/Result/Subprefecture.pm	/^package Donm::Schema::Result::Subprefecture;$/;"	p
@@ -325,10 +349,12 @@ Moose	./lib/Donm/Schema/Result/GeographyColumn.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Schema/Result/GeometryColumn.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Schema/Result/Goal.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Schema/Result/GoalProject.pm	/^use Moose;$/;"	u
+Moose	./lib/Donm/Schema/Result/Indicator.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Schema/Result/Project.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Schema/Result/RasterColumn.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Schema/Result/RasterOverview.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Schema/Result/Region.pm	/^use Moose;$/;"	u
+Moose	./lib/Donm/Schema/Result/RegionIndicator.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Schema/Result/RegionVariable.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Schema/Result/Subprefecture.pm	/^use Moose;$/;"	u
@@ -346,10 +372,12 @@ MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/GeographyColumn.pm
 MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/GeometryColumn.pm	/^use MooseX::MarkAsMethods autoclean => 1;$/;"	u
 MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/Goal.pm	/^use MooseX::MarkAsMethods autoclean => 1;$/;"	u
 MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/GoalProject.pm	/^use MooseX::MarkAsMethods autoclean => 1;$/;"	u
+MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/Indicator.pm	/^use MooseX::MarkAsMethods autoclean => 1;$/;"	u
 MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/Project.pm	/^use MooseX::MarkAsMethods autoclean => 1;$/;"	u
 MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/RasterColumn.pm	/^use MooseX::MarkAsMethods autoclean => 1;$/;"	u
 MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/RasterOverview.pm	/^use MooseX::MarkAsMethods autoclean => 1;$/;"	u
 MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/Region.pm	/^use MooseX::MarkAsMethods autoclean => 1;$/;"	u
+MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/RegionIndicator.pm	/^use MooseX::MarkAsMethods autoclean => 1;$/;"	u
 MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/RegionVariable.pm	/^use MooseX::MarkAsMethods autoclean => 1;$/;"	u
 MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^use MooseX::MarkAsMethods autoclean => 1;$/;"	u
 MooseX::MarkAsMethods autoclean => 1	./lib/Donm/Schema/Result/Subprefecture.pm	/^use MooseX::MarkAsMethods autoclean => 1;$/;"	u
@@ -361,10 +389,12 @@ MooseX::NonMoose	./lib/Donm/Schema/Result/GeographyColumn.pm	/^use MooseX::NonMo
 MooseX::NonMoose	./lib/Donm/Schema/Result/GeometryColumn.pm	/^use MooseX::NonMoose;$/;"	u
 MooseX::NonMoose	./lib/Donm/Schema/Result/Goal.pm	/^use MooseX::NonMoose;$/;"	u
 MooseX::NonMoose	./lib/Donm/Schema/Result/GoalProject.pm	/^use MooseX::NonMoose;$/;"	u
+MooseX::NonMoose	./lib/Donm/Schema/Result/Indicator.pm	/^use MooseX::NonMoose;$/;"	u
 MooseX::NonMoose	./lib/Donm/Schema/Result/Project.pm	/^use MooseX::NonMoose;$/;"	u
 MooseX::NonMoose	./lib/Donm/Schema/Result/RasterColumn.pm	/^use MooseX::NonMoose;$/;"	u
 MooseX::NonMoose	./lib/Donm/Schema/Result/RasterOverview.pm	/^use MooseX::NonMoose;$/;"	u
 MooseX::NonMoose	./lib/Donm/Schema/Result/Region.pm	/^use MooseX::NonMoose;$/;"	u
+MooseX::NonMoose	./lib/Donm/Schema/Result/RegionIndicator.pm	/^use MooseX::NonMoose;$/;"	u
 MooseX::NonMoose	./lib/Donm/Schema/Result/RegionVariable.pm	/^use MooseX::NonMoose;$/;"	u
 MooseX::NonMoose	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^use MooseX::NonMoose;$/;"	u
 MooseX::NonMoose	./lib/Donm/Schema/Result/Subprefecture.pm	/^use MooseX::NonMoose;$/;"	u
@@ -378,10 +408,12 @@ NAME	./lib/Donm/Schema/Result/GeographyColumn.pm	/^=head1 NAME$/;"	p
 NAME	./lib/Donm/Schema/Result/GeometryColumn.pm	/^=head1 NAME$/;"	p
 NAME	./lib/Donm/Schema/Result/Goal.pm	/^=head1 NAME$/;"	p
 NAME	./lib/Donm/Schema/Result/GoalProject.pm	/^=head1 NAME$/;"	p
+NAME	./lib/Donm/Schema/Result/Indicator.pm	/^=head1 NAME$/;"	p
 NAME	./lib/Donm/Schema/Result/Project.pm	/^=head1 NAME$/;"	p
 NAME	./lib/Donm/Schema/Result/RasterColumn.pm	/^=head1 NAME$/;"	p
 NAME	./lib/Donm/Schema/Result/RasterOverview.pm	/^=head1 NAME$/;"	p
 NAME	./lib/Donm/Schema/Result/Region.pm	/^=head1 NAME$/;"	p
+NAME	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head1 NAME$/;"	p
 NAME	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head1 NAME$/;"	p
 NAME	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^=head1 NAME$/;"	p
 NAME	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head1 NAME$/;"	p
@@ -397,8 +429,10 @@ Number::Format	./lib/Donm/Schema/Result/Goal.pm	/^use Number::Format;$/;"	u
 PRIMARY KEY	./lib/Donm/Schema/Result/ActionLine.pm	/^=head1 PRIMARY KEY$/;"	p
 PRIMARY KEY	./lib/Donm/Schema/Result/Goal.pm	/^=head1 PRIMARY KEY$/;"	p
 PRIMARY KEY	./lib/Donm/Schema/Result/GoalProject.pm	/^=head1 PRIMARY KEY$/;"	p
+PRIMARY KEY	./lib/Donm/Schema/Result/Indicator.pm	/^=head1 PRIMARY KEY$/;"	p
 PRIMARY KEY	./lib/Donm/Schema/Result/Project.pm	/^=head1 PRIMARY KEY$/;"	p
 PRIMARY KEY	./lib/Donm/Schema/Result/Region.pm	/^=head1 PRIMARY KEY$/;"	p
+PRIMARY KEY	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head1 PRIMARY KEY$/;"	p
 PRIMARY KEY	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head1 PRIMARY KEY$/;"	p
 PRIMARY KEY	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^=head1 PRIMARY KEY$/;"	p
 PRIMARY KEY	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head1 PRIMARY KEY$/;"	p
@@ -408,8 +442,10 @@ PRIMARY KEY	./lib/Donm/Schema/Result/Variable.pm	/^=head1 PRIMARY KEY$/;"	p
 RELATIONS	./lib/Donm/Schema/Result/ActionLine.pm	/^=head1 RELATIONS$/;"	p
 RELATIONS	./lib/Donm/Schema/Result/Goal.pm	/^=head1 RELATIONS$/;"	p
 RELATIONS	./lib/Donm/Schema/Result/GoalProject.pm	/^=head1 RELATIONS$/;"	p
+RELATIONS	./lib/Donm/Schema/Result/Indicator.pm	/^=head1 RELATIONS$/;"	p
 RELATIONS	./lib/Donm/Schema/Result/Project.pm	/^=head1 RELATIONS$/;"	p
 RELATIONS	./lib/Donm/Schema/Result/Region.pm	/^=head1 RELATIONS$/;"	p
+RELATIONS	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head1 RELATIONS$/;"	p
 RELATIONS	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head1 RELATIONS$/;"	p
 RELATIONS	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head1 RELATIONS$/;"	p
 RELATIONS	./lib/Donm/Schema/Result/SubprefectureActionLine.pm	/^=head1 RELATIONS$/;"	p
@@ -429,16 +465,19 @@ TABLE: C<geography_columns>	./lib/Donm/Schema/Result/GeographyColumn.pm	/^=head1
 TABLE: C<geometry_columns>	./lib/Donm/Schema/Result/GeometryColumn.pm	/^=head1 TABLE: C<geometry_columns>$/;"	p
 TABLE: C<goal>	./lib/Donm/Schema/Result/Goal.pm	/^=head1 TABLE: C<goal>$/;"	p
 TABLE: C<goal_project>	./lib/Donm/Schema/Result/GoalProject.pm	/^=head1 TABLE: C<goal_project>$/;"	p
+TABLE: C<indicator>	./lib/Donm/Schema/Result/Indicator.pm	/^=head1 TABLE: C<indicator>$/;"	p
 TABLE: C<project>	./lib/Donm/Schema/Result/Project.pm	/^=head1 TABLE: C<project>$/;"	p
 TABLE: C<raster_columns>	./lib/Donm/Schema/Result/RasterColumn.pm	/^=head1 TABLE: C<raster_columns>$/;"	p
 TABLE: C<raster_overviews>	./lib/Donm/Schema/Result/RasterOverview.pm	/^=head1 TABLE: C<raster_overviews>$/;"	p
 TABLE: C<region>	./lib/Donm/Schema/Result/Region.pm	/^=head1 TABLE: C<region>$/;"	p
+TABLE: C<region_indicator>	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head1 TABLE: C<region_indicator>$/;"	p
 TABLE: C<region_variable>	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head1 TABLE: C<region_variable>$/;"	p
 TABLE: C<spatial_ref_sys>	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^=head1 TABLE: C<spatial_ref_sys>$/;"	p
 TABLE: C<subprefecture>	./lib/Donm/Schema/Result/Subprefecture.pm	/^=head1 TABLE: C<subprefecture>$/;"	p
 TABLE: C<subprefecture_action_line>	./lib/Donm/Schema/Result/SubprefectureActionLine.pm	/^=head1 TABLE: C<subprefecture_action_line>$/;"	p
 TABLE: C<topic>	./lib/Donm/Schema/Result/Topic.pm	/^=head1 TABLE: C<topic>$/;"	p
 TABLE: C<variable>	./lib/Donm/Schema/Result/Variable.pm	/^=head1 TABLE: C<variable>$/;"	p
+Text2URI	./script/crontab/update-iota-indicators.pl	/^use Text2URI;$/;"	u
 Text::CSV	./script/adhoc/populate-database.pl	/^use Text::CSV;$/;"	u
 Text::CSV	./script/adhoc/update-action-line-region.pl	/^use Text::CSV;$/;"	u
 Text::CSV	./script/crontab/update-iota-indicators.pl	/^use Text::CSV;$/;"	u
@@ -451,6 +490,8 @@ Tie::Handle::CSV	./script/adhoc/update-action-line-region.pl	/^use Tie::Handle::
 Tie::Handle::CSV	./script/crontab/update-iota-indicators.pl	/^use Tie::Handle::CSV;$/;"	u
 Tie::Handle::CSV	./script/crontab/update-iota-variables.pl	/^use Tie::Handle::CSV;$/;"	u
 UNIQUE CONSTRAINTS	./lib/Donm/Schema/Result/ActionLine.pm	/^=head1 UNIQUE CONSTRAINTS$/;"	p
+UNIQUE CONSTRAINTS	./lib/Donm/Schema/Result/Indicator.pm	/^=head1 UNIQUE CONSTRAINTS$/;"	p
+UNIQUE CONSTRAINTS	./lib/Donm/Schema/Result/RegionIndicator.pm	/^=head1 UNIQUE CONSTRAINTS$/;"	p
 UNIQUE CONSTRAINTS	./lib/Donm/Schema/Result/RegionVariable.pm	/^=head1 UNIQUE CONSTRAINTS$/;"	p
 UNIQUE CONSTRAINTS	./lib/Donm/Schema/Result/Topic.pm	/^=head1 UNIQUE CONSTRAINTS$/;"	p
 VERSION	./lib/Donm.pm	/^our $VERSION = '0.01';$/;"	o
@@ -584,10 +625,12 @@ strict	./lib/Donm/Schema/Result/GeographyColumn.pm	/^use strict;$/;"	u
 strict	./lib/Donm/Schema/Result/GeometryColumn.pm	/^use strict;$/;"	u
 strict	./lib/Donm/Schema/Result/Goal.pm	/^use strict;$/;"	u
 strict	./lib/Donm/Schema/Result/GoalProject.pm	/^use strict;$/;"	u
+strict	./lib/Donm/Schema/Result/Indicator.pm	/^use strict;$/;"	u
 strict	./lib/Donm/Schema/Result/Project.pm	/^use strict;$/;"	u
 strict	./lib/Donm/Schema/Result/RasterColumn.pm	/^use strict;$/;"	u
 strict	./lib/Donm/Schema/Result/RasterOverview.pm	/^use strict;$/;"	u
 strict	./lib/Donm/Schema/Result/Region.pm	/^use strict;$/;"	u
+strict	./lib/Donm/Schema/Result/RegionIndicator.pm	/^use strict;$/;"	u
 strict	./lib/Donm/Schema/Result/RegionVariable.pm	/^use strict;$/;"	u
 strict	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^use strict;$/;"	u
 strict	./lib/Donm/Schema/Result/Subprefecture.pm	/^use strict;$/;"	u
@@ -601,10 +644,12 @@ utf8	./lib/Donm/Schema/Result/GeographyColumn.pm	/^use utf8;$/;"	u
 utf8	./lib/Donm/Schema/Result/GeometryColumn.pm	/^use utf8;$/;"	u
 utf8	./lib/Donm/Schema/Result/Goal.pm	/^use utf8;$/;"	u
 utf8	./lib/Donm/Schema/Result/GoalProject.pm	/^use utf8;$/;"	u
+utf8	./lib/Donm/Schema/Result/Indicator.pm	/^use utf8;$/;"	u
 utf8	./lib/Donm/Schema/Result/Project.pm	/^use utf8;$/;"	u
 utf8	./lib/Donm/Schema/Result/RasterColumn.pm	/^use utf8;$/;"	u
 utf8	./lib/Donm/Schema/Result/RasterOverview.pm	/^use utf8;$/;"	u
 utf8	./lib/Donm/Schema/Result/Region.pm	/^use utf8;$/;"	u
+utf8	./lib/Donm/Schema/Result/RegionIndicator.pm	/^use utf8;$/;"	u
 utf8	./lib/Donm/Schema/Result/RegionVariable.pm	/^use utf8;$/;"	u
 utf8	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^use utf8;$/;"	u
 utf8	./lib/Donm/Schema/Result/Subprefecture.pm	/^use utf8;$/;"	u
@@ -620,10 +665,12 @@ warnings	./lib/Donm/Schema/Result/GeographyColumn.pm	/^use warnings;$/;"	u
 warnings	./lib/Donm/Schema/Result/GeometryColumn.pm	/^use warnings;$/;"	u
 warnings	./lib/Donm/Schema/Result/Goal.pm	/^use warnings;$/;"	u
 warnings	./lib/Donm/Schema/Result/GoalProject.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/Indicator.pm	/^use warnings;$/;"	u
 warnings	./lib/Donm/Schema/Result/Project.pm	/^use warnings;$/;"	u
 warnings	./lib/Donm/Schema/Result/RasterColumn.pm	/^use warnings;$/;"	u
 warnings	./lib/Donm/Schema/Result/RasterOverview.pm	/^use warnings;$/;"	u
 warnings	./lib/Donm/Schema/Result/Region.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/RegionIndicator.pm	/^use warnings;$/;"	u
 warnings	./lib/Donm/Schema/Result/RegionVariable.pm	/^use warnings;$/;"	u
 warnings	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^use warnings;$/;"	u
 warnings	./lib/Donm/Schema/Result/Subprefecture.pm	/^use warnings;$/;"	u

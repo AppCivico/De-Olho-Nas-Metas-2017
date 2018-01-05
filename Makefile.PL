@@ -63,6 +63,7 @@ my %WriteMakefileArgs = (
     "Scalar::Util" => 0,
     "Server::Starter" => 0,
     "Starman" => 0,
+    "Text2URI" => 0,
     "Text::Lorem" => 0,
     "Text::Unaccent::PurePerl" => 0,
     "base" => 0,
@@ -87,7 +88,7 @@ my %WriteMakefileArgs = (
     "blib" => "1.01",
     "lib" => 0
   },
-  "VERSION" => 20171222,
+  "VERSION" => 20180105,
   "test" => {
     "TESTS" => "t/*.t t/api/*.t t/misc/*.t"
   }
@@ -151,6 +152,7 @@ my %FallbackPrereqs = (
   "Server::Starter" => 0,
   "Starman" => 0,
   "Test::More" => 0,
+  "Text2URI" => 0,
   "Text::Lorem" => 0,
   "Text::Unaccent::PurePerl" => 0,
   "base" => 0,
