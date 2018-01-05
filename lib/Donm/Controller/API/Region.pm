@@ -37,6 +37,21 @@ __PACKAGE__->config(
                         }
                     } $region->region_variables->all()
                 ],
+
+                indicators => [
+                    map {
+                        +{
+                            id               => $_->indicator->get_column('id'),
+                            name             => $_->indicator->get_column('name'),
+                            explanation      => $_->indicator->get_column('explanation'),
+                            formula          => $_->indicator->get_column('formula'),
+                            value            => $_->get_column('value'),
+                            year             => $_->get_column('year'),
+                            sources          => $_->get_column('sources'),
+                            url_observatorio => $_->get_column('url_observatorio'),
+                        }
+                    } $region->region_indicators->all()
+                ],
             }
         };
     },
