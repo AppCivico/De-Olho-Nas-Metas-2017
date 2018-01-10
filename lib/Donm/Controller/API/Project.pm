@@ -6,7 +6,6 @@ use namespace::autoclean;
 BEGIN { extends 'CatalystX::Eta::Controller::REST' }
 
 use Text::Lorem;
-use List::Util qw(shuffle);
 
 with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoResultGET";
@@ -23,12 +22,14 @@ __PACKAGE__->config(
         my $lorem = Text::Lorem->new();
 
         my %unique_topics = ();
+        my %unique_subprefectures = ();
+
         return {
             project => {
                 ( map { $_ => $project->get_column($_) } qw/ id title slug description / ),
 
-                current_scenario => $lorem->sentences(2 + int(rand(4))),
-                expected_results => $lorem->sentences(3 + int(rand(4))),
+                current_scenario => $project->get_column('current_scenario'),
+                expected_results => $project->get_column('expected_results'),
 
                 (
                     topics => [
@@ -39,7 +40,7 @@ __PACKAGE__->config(
                         grep {
                             # Hack para remover os eixos duplicados, pois um projeto pode estar atrelado à várias
                             # metas, e consequentemente a diversos eixos.
-                            !($unique_topics{$_->goal->topic->id}++);
+                            !( $unique_topics{$_->goal->topic->id}++ );
                         } $project->goal_projects->all()
                     ],
                 ),
@@ -58,11 +59,10 @@ __PACKAGE__->config(
                 (
                     action_lines => [
                         map {
-                            my $action_line_id = $_->get_column('project_id') . "." . $_->get_column('id_reference');
-
                             +{
-                                id                    => $action_line_id,
+                                id                    => $_->get_exhibition_id(),
                                 title                 => $_->get_column("title"),
+                                slug                  => $_->get_column("slug"),
                                 achievement           => $_->get_column("achievement"),
                                 indicator_description => $_->get_column("indicator_description"),
                             }
@@ -70,16 +70,23 @@ __PACKAGE__->config(
                     ],
                 ),
 
-                # Mockando distritos enquanto não temos a regionalização das metas para facilitar a vida do front-end.
                 (
-                    regions => [
+                    subprefectures => [
                         map {
-                            +{
-                                id   => $_->get_column('id'),
-                                name => $_->get_column('name'),
-                                slug => $_->get_column('slug'),
+                            my $action_line = $_;
+                            map {
+                                +{
+                                    id      => $_->subprefecture->get_column('id'),
+                                    acronym => $_->subprefecture->get_column('acronym'),
+                                    name    => $_->subprefecture->get_column('name'),
+                                    slug    => $_->subprefecture->get_column('slug'),
+                                }
                             }
-                        } (shuffle($c->model("DB::Region")->all()))[0 .. 1 + int(rand(5))]
+                            grep {
+                                # Removendo subprefeituras duplicadas.
+                                !( $unique_subprefectures{$_->subprefecture->id}++ );
+                            } $action_line->subprefecture_action_lines->all();
+                        } $project->action_lines->all()
                     ],
                 ),
             },
@@ -96,7 +103,12 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
 
     my $project_rs = $c->stash->{collection}->search(
         {},
-        { prefetch => [ { "goal_projects" => { "goal" => "topic" } }, "action_lines" ] },
+        {
+            prefetch => [
+                { 'action_lines'  => { 'subprefecture_action_lines' => 'subprefecture' } },
+                { 'goal_projects' => { 'goal' => 'topic' } },
+            ],
+        },
     );
 
     if ( !( $c->stash->{project} = $project_rs->search( { 'me.id' => $project_id } )->next() ) ) {

@@ -23,18 +23,34 @@ __PACKAGE__->config(
 
                 subprefecture => +{
                     map { $_ => $region->subprefecture->$_ }
-                      qw/ id acronym name latitude longitude site email telephone address /
+                      qw/ id acronym name slug latitude longitude site email telephone address /
                 },
 
-                region_variables => [
+                variables => [
                     map {
-                        my $rv = $_;
                         +{
-                            ( map { $_ => $rv->$_ } qw/ id region_id variable_id value / ),
-
-                            variable => +{ map { $_ => $rv->variable->$_ } qw/ id name / },
-                        };
+                            id     => $_->variable->get_column('id'),
+                            name   => $_->variable->get_column('name'),
+                            value  => $_->get_column('value'),
+                            year   => $_->get_column('year'),
+                            source => $_->get_column('source'),
+                        }
                     } $region->region_variables->all()
+                ],
+
+                indicators => [
+                    map {
+                        +{
+                            id               => $_->indicator->get_column('id'),
+                            name             => $_->indicator->get_column('name'),
+                            explanation      => $_->indicator->get_column('explanation'),
+                            formula          => $_->indicator->get_column('formula'),
+                            value            => $_->get_column('value'),
+                            year             => $_->get_column('year'),
+                            sources          => $_->get_column('sources'),
+                            url_observatorio => $_->get_column('url_observatorio'),
+                        }
+                    } $region->region_indicators->all()
                 ],
             }
         };
@@ -93,7 +109,9 @@ sub list_GET {
                         ),
 
                         subprefecture => +{
-                            map { $_ => $r->subprefecture->$_ } qw/ id name /
+                            id   => $r->subprefecture->get_column('id'),
+                            name => $r->subprefecture->get_column('name'),
+                            slug => $r->subprefecture->get_column('slug'),
                         },
                     }
                 } $region_rs->all()

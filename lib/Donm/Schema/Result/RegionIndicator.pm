@@ -1,12 +1,12 @@
 use utf8;
-package Donm::Schema::Result::SubprefectureActionLine;
+package Donm::Schema::Result::RegionIndicator;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
 
 =head1 NAME
 
-Donm::Schema::Result::SubprefectureActionLine
+Donm::Schema::Result::RegionIndicator
 
 =cut
 
@@ -34,11 +34,11 @@ extends 'DBIx::Class::Core';
 
 __PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
 
-=head1 TABLE: C<subprefecture_action_line>
+=head1 TABLE: C<region_indicator>
 
 =cut
 
-__PACKAGE__->table("subprefecture_action_line");
+__PACKAGE__->table("region_indicator");
 
 =head1 ACCESSORS
 
@@ -47,21 +47,37 @@ __PACKAGE__->table("subprefecture_action_line");
   data_type: 'integer'
   is_auto_increment: 1
   is_nullable: 0
-  sequence: 'subprefecture_action_line_id_seq'
+  sequence: 'region_indicator_id_seq'
 
-=head2 subprefecture_id
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 0
-
-=head2 action_line_id
+=head2 region_id
 
   data_type: 'integer'
   is_foreign_key: 1
   is_nullable: 0
 
-=head2 indicator
+=head2 indicator_id
+
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 0
+
+=head2 value
+
+  data_type: 'numeric'
+  is_nullable: 0
+  size: [8,2]
+
+=head2 year
+
+  data_type: 'integer'
+  is_nullable: 0
+
+=head2 sources
+
+  data_type: 'text[]'
+  is_nullable: 1
+
+=head2 url_observatorio
 
   data_type: 'text'
   is_nullable: 0
@@ -74,13 +90,19 @@ __PACKAGE__->add_columns(
     data_type         => "integer",
     is_auto_increment => 1,
     is_nullable       => 0,
-    sequence          => "subprefecture_action_line_id_seq",
+    sequence          => "region_indicator_id_seq",
   },
-  "subprefecture_id",
+  "region_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
-  "action_line_id",
+  "indicator_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
-  "indicator",
+  "value",
+  { data_type => "numeric", is_nullable => 0, size => [8, 2] },
+  "year",
+  { data_type => "integer", is_nullable => 0 },
+  "sources",
+  { data_type => "text[]", is_nullable => 1 },
+  "url_observatorio",
   { data_type => "text", is_nullable => 0 },
 );
 
@@ -96,41 +118,60 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key("id");
 
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<region_indicator_region_id_indicator_id_key>
+
+=over 4
+
+=item * L</region_id>
+
+=item * L</indicator_id>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint(
+  "region_indicator_region_id_indicator_id_key",
+  ["region_id", "indicator_id"],
+);
+
 =head1 RELATIONS
 
-=head2 action_line
+=head2 indicator
 
 Type: belongs_to
 
-Related object: L<Donm::Schema::Result::ActionLine>
+Related object: L<Donm::Schema::Result::Indicator>
 
 =cut
 
 __PACKAGE__->belongs_to(
-  "action_line",
-  "Donm::Schema::Result::ActionLine",
-  { id => "action_line_id" },
+  "indicator",
+  "Donm::Schema::Result::Indicator",
+  { id => "indicator_id" },
   { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
-=head2 subprefecture
+=head2 region
 
 Type: belongs_to
 
-Related object: L<Donm::Schema::Result::Subprefecture>
+Related object: L<Donm::Schema::Result::Region>
 
 =cut
 
 __PACKAGE__->belongs_to(
-  "subprefecture",
-  "Donm::Schema::Result::Subprefecture",
-  { id => "subprefecture_id" },
+  "region",
+  "Donm::Schema::Result::Region",
+  { id => "region_id" },
   { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-11-06 18:08:30
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:k9FU+FW2PwFtMwXQ7+J8gA
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-01-05 14:05:41
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:d+0dNkUrDKiEMZuV+uTqiw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

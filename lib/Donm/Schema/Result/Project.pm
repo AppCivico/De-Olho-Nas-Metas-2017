@@ -62,6 +62,16 @@ __PACKAGE__->table("project");
   data_type: 'text'
   is_nullable: 0
 
+=head2 expected_results
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 current_scenario
+
+  data_type: 'text'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -73,6 +83,10 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 0 },
   "description",
   { data_type => "text", is_nullable => 0 },
+  "expected_results",
+  { data_type => "text", is_nullable => 1 },
+  "current_scenario",
+  { data_type => "text", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -120,8 +134,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-19 18:01:34
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Mp25KdU3ex2SNvif6tueAA
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-12-07 17:52:16
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:77r1JpEpe1OhSyJVVBkViA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

@@ -78,6 +78,11 @@ __PACKAGE__->table("goal");
   data_type: 'text'
   is_nullable: 0
 
+=head2 unit
+
+  data_type: 'text'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -95,6 +100,8 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 0 },
   "indicator_description",
   { data_type => "text", is_nullable => 0 },
+  "unit",
+  { data_type => "text", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -142,9 +149,60 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-04 15:35:28
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:g5N876V0zruUzYSxwqPyTQ
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-12-22 15:31:17
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3txU1oeEHTwJcPC8wqaTiQ
 
+use Number::Format;
+
+sub get_readable_first_biennium {
+    my $self = shift;
+
+    my $unit           = $self->get_column('unit');
+    my $first_biennium = $self->get_column('first_biennium');
+
+    if (defined($unit)) {
+        $first_biennium = $self->_format_value($first_biennium, $unit);
+    }
+
+    return $first_biennium;
+}
+
+sub get_readable_second_biennium {
+    my $self = shift;
+
+    my $unit = $self->get_column('unit');
+    my $second_biennium = $self->get_column('second_biennium');
+
+    if (defined($unit)) {
+        $second_biennium = $self->_format_value($second_biennium, $unit);
+    }
+
+    return $second_biennium;
+}
+
+sub _format_value {
+    my ($self, $value, $unit) = @_;
+
+    my $nf = new Number::Format(-thousands_sep => '.', -decimal_point => ',', '-int_curr_symbol' => 'R$');
+
+    if ($unit eq 'unit') {
+        $value =~ s/,/\./;
+        $value = $nf->format_number($value);
+    }
+
+    if ($unit eq 'R$') {
+        $value = $nf->format_price($value, 2, $unit);
+    }
+
+    if ($unit eq '%') {
+        $value =~ s/,/\./;
+        $value = $value * 100;
+        $value =~ s/\./,/;
+        $value .= $unit;
+    }
+
+    return $value;
+}
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;

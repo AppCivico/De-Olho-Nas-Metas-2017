@@ -1,12 +1,12 @@
 use utf8;
-package Donm::Schema::Result::Topic;
+package Donm::Schema::Result::Indicator;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
 
 =head1 NAME
 
-Donm::Schema::Result::Topic
+Donm::Schema::Result::Indicator
 
 =cut
 
@@ -34,32 +34,30 @@ extends 'DBIx::Class::Core';
 
 __PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
 
-=head1 TABLE: C<topic>
+=head1 TABLE: C<indicator>
 
 =cut
 
-__PACKAGE__->table("topic");
+__PACKAGE__->table("indicator");
 
 =head1 ACCESSORS
 
 =head2 id
 
   data_type: 'integer'
-  is_auto_increment: 1
   is_nullable: 0
-  sequence: 'topic_id_seq'
 
 =head2 name
 
   data_type: 'text'
   is_nullable: 0
 
-=head2 slug
+=head2 explanation
 
   data_type: 'text'
   is_nullable: 0
 
-=head2 description
+=head2 formula
 
   data_type: 'text'
   is_nullable: 0
@@ -68,17 +66,12 @@ __PACKAGE__->table("topic");
 
 __PACKAGE__->add_columns(
   "id",
-  {
-    data_type         => "integer",
-    is_auto_increment => 1,
-    is_nullable       => 0,
-    sequence          => "topic_id_seq",
-  },
+  { data_type => "integer", is_nullable => 0 },
   "name",
   { data_type => "text", is_nullable => 0 },
-  "slug",
+  "explanation",
   { data_type => "text", is_nullable => 0 },
-  "description",
+  "formula",
   { data_type => "text", is_nullable => 0 },
 );
 
@@ -96,7 +89,7 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 UNIQUE CONSTRAINTS
 
-=head2 C<topic_name_key>
+=head2 C<indicator_name_key>
 
 =over 4
 
@@ -106,28 +99,28 @@ __PACKAGE__->set_primary_key("id");
 
 =cut
 
-__PACKAGE__->add_unique_constraint("topic_name_key", ["name"]);
+__PACKAGE__->add_unique_constraint("indicator_name_key", ["name"]);
 
 =head1 RELATIONS
 
-=head2 goals
+=head2 region_indicators
 
 Type: has_many
 
-Related object: L<Donm::Schema::Result::Goal>
+Related object: L<Donm::Schema::Result::RegionIndicator>
 
 =cut
 
 __PACKAGE__->has_many(
-  "goals",
-  "Donm::Schema::Result::Goal",
-  { "foreign.topic_id" => "self.id" },
+  "region_indicators",
+  "Donm::Schema::Result::RegionIndicator",
+  { "foreign.indicator_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-11-13 15:45:21
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:yhBzlclam+quyZgToPv8ug
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-01-04 18:14:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Sh8ACS4W7ZN7bkvPkqxxJQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

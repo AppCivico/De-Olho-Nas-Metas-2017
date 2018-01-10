@@ -20,7 +20,7 @@ __PACKAGE__->config(
 
         return {
             subprefecture => {
-                ( map { $_ => $subprefecture->get_column($_) } qw/ id acronym name site email telephone address slug / ),
+                ( map { $_ => $subprefecture->get_column($_) } qw/ id acronym name site email telephone address slug deputy_mayor / ),
 
                 action_lines_count => $subprefecture->get_action_lines_count(),
 
@@ -34,6 +34,18 @@ __PACKAGE__->config(
                         };
                     } $subprefecture->regions->all()
                 ],
+
+                action_lines => [
+                    map {
+                        +{
+                            id                    => $_->action_line->get_exhibition_id(),
+                            title                 => $_->action_line->get_column('title'),
+                            slug                  => $_->action_line->get_column('slug'),
+                            indicator_description => $_->action_line->get_column('indicator_description'),
+                            achievement           => $_->action_line->get_column('achievement'),
+                        }
+                    } $subprefecture->subprefecture_action_lines->all()
+                ],
             }
         };
     },
@@ -46,7 +58,7 @@ sub base : Chained('root') : PathPart('subprefecture') : CaptureArgs(0) { }
 sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
     my ($self, $c, $subprefecture_id) = @_;
 
-    $c->stash->{collection} = $c->stash->{collection}->search( {}, { prefetch => [ "regions" ] } );
+    $c->stash->{collection} = $c->stash->{collection}->search( {}, { prefetch => [ "regions", { "subprefecture_action_lines" => "action_line" } ] } );
 
     if ( !( $c->stash->{subprefecture} = $c->stash->{collection}->search( { 'me.id' => $subprefecture_id } )->next ) ) {
         $c->detach("/error_404");
@@ -61,7 +73,7 @@ sub list_GET {
     $c->stash->{collection} = $c->stash->{collection}->search(
         {},
         {
-            '+select' => [ \"ST_ASGEOJSON(ST_SIMPLIFY(ST_TRANSFORM(ST_UNION(regions.geom), 2249), 100))" ],
+            '+select' => [ \"ST_ASGEOJSON(ST_TRANSFORM(ST_SIMPLIFY(ST_TRANSFORM(ST_UNION(regions.geom), 2249), 25), 4326), 6)" ],
             '+as'     => [ qw/ geo_json/ ],
             join      => [ qw/ regions / ],
             group_by  => [ 'me.id' ],

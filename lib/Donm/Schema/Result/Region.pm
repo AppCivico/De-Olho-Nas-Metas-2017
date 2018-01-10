@@ -111,6 +111,21 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 RELATIONS
 
+=head2 region_indicators
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::RegionIndicator>
+
+=cut
+
+__PACKAGE__->has_many(
+  "region_indicators",
+  "Donm::Schema::Result::RegionIndicator",
+  { "foreign.region_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 region_variables
 
 Type: has_many
@@ -147,8 +162,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-03 12:07:51
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Xd16NSWp48xZdj26Jiws/w
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-01-04 18:14:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:kR3uOg1csnEpFWMahrAK4g
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

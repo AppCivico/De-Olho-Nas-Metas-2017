@@ -75,6 +75,11 @@ __PACKAGE__->table("action_line");
   is_nullable: 0
   sequence: 'action_line_id_seq'
 
+=head2 slug
+
+  data_type: 'text'
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -95,6 +100,8 @@ __PACKAGE__->add_columns(
     is_nullable       => 0,
     sequence          => "action_line_id_seq",
   },
+  "slug",
+  { data_type => "text", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -108,6 +115,20 @@ __PACKAGE__->add_columns(
 =cut
 
 __PACKAGE__->set_primary_key("id");
+
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<action_line_slug_key>
+
+=over 4
+
+=item * L</slug>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint("action_line_slug_key", ["slug"]);
 
 =head1 RELATIONS
 
@@ -142,9 +163,14 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-10-19 18:22:53
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TiaT5rjVP4ee+n6SO6tr3Q
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-11-06 18:08:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:cnmIPKTBdwPDG9y4cXimTw
 
+sub get_exhibition_id {
+    my $self = shift;
+
+    return $self->get_column('project_id') . "." . $self->get_column('id_reference');
+}
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
