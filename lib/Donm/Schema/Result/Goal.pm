@@ -83,6 +83,11 @@ __PACKAGE__->table("goal");
   data_type: 'text'
   is_nullable: 1
 
+=head2 base_value
+
+  data_type: 'numeric'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -102,6 +107,8 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 0 },
   "unit",
   { data_type => "text", is_nullable => 1 },
+  "base_value",
+  { data_type => "numeric", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -149,8 +156,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-08 14:58:08
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zcFhiYKaVBtCR2QpP/V26w
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-08 17:28:33
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:tlvIcht+Y0GtPTnpBA2+Pg
 
 use Number::Format;
 
