@@ -29,8 +29,8 @@ __PACKAGE__->config(
                     qw/ id title topic_id slug indicator_description /
                 ),
 
-                first_biennium => $goal->get_readable_first_biennium(),
-                second_biennium => $goal->get_readable_second_biennium(),
+                projection_first_biennium => $goal->get_readable_projection_first_biennium(),
+                projection_second_biennium => $goal->get_readable_projection_second_biennium(),
 
                 ( topic => { map { $_ => $goal->topic->$_ } qw/ id name slug / } ),
 

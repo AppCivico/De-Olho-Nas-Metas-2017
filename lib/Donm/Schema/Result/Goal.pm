@@ -58,12 +58,12 @@ __PACKAGE__->table("goal");
   is_foreign_key: 1
   is_nullable: 0
 
-=head2 first_biennium
+=head2 projection_first_biennium
 
   data_type: 'text'
   is_nullable: 0
 
-=head2 second_biennium
+=head2 projection_second_biennium
 
   data_type: 'text'
   is_nullable: 0
@@ -92,9 +92,9 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 0 },
   "topic_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
-  "first_biennium",
+  "projection_first_biennium",
   { data_type => "text", is_nullable => 0 },
-  "second_biennium",
+  "projection_second_biennium",
   { data_type => "text", is_nullable => 0 },
   "slug",
   { data_type => "text", is_nullable => 0 },
@@ -149,16 +149,16 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-12-22 15:31:17
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3txU1oeEHTwJcPC8wqaTiQ
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-08 14:58:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zcFhiYKaVBtCR2QpP/V26w
 
 use Number::Format;
 
-sub get_readable_first_biennium {
+sub get_readable_projection_first_biennium {
     my $self = shift;
 
     my $unit           = $self->get_column('unit');
-    my $first_biennium = $self->get_column('first_biennium');
+    my $first_biennium = $self->get_column('projection_first_biennium');
 
     if (defined($unit)) {
         $first_biennium = $self->_format_value($first_biennium, $unit);
@@ -167,11 +167,11 @@ sub get_readable_first_biennium {
     return $first_biennium;
 }
 
-sub get_readable_second_biennium {
+sub get_readable_projection_second_biennium {
     my $self = shift;
 
     my $unit = $self->get_column('unit');
-    my $second_biennium = $self->get_column('second_biennium');
+    my $second_biennium = $self->get_column('projection_second_biennium');
 
     if (defined($unit)) {
         $second_biennium = $self->_format_value($second_biennium, $unit);
@@ -204,6 +204,6 @@ sub _format_value {
     return $value;
 }
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
+
 1;
