@@ -1,42 +1,43 @@
 #!/usr/bin/env perl
 package Donm::PlanejaSampa::Worker;
 use common::sense;
-use FindBin qw($RealBin);
-use lib "$RealBin/../lib";
-
 use Moo;
-use MooX::late;
-#use EV;
+use MooX::Types::MooseLike::Base ':all';
+
+use EV;
 use JSON::XS;
-use Net::Curl::Easy qw( :constants );
-use Donm::SchemaConnected qw( get_schema );
-use Donm::Utils qw( slugify );
+use Net::Curl::Easy qw(:constants);
+use Donm::SchemaConnected qw(get_schema);
+use Donm::Utils qw(slugify);
+use Donm::PlanejaSampa::Loader;
 
 extends 'YADA::Worker';
 
 use DDP;
 
-has 'action' => (
+has action => (
     is       => 'rw',
-    isa      => 'Str',
-    required => 1,
+    isa      => Str,
 );
 
-has schema => (
-    is   => 'rw',
-    lazy => 1,
-    builder => '_build_schema',
+has loader => (
+    is  => 'rw',
+    isa => AllOf[
+        InstanceOf['Donm::PlanejaSampa::Loader'],
+        ConsumerOf['MooX::Singleton'],
+    ],
+    lazy    => 1,
+    builder => '_build_loader',
 );
 
 after init => sub {
     my ($self) = @_;
 
     $self->setopt(
-        CURLOPT_FOLLOWLOCATION => 1,
-        CURLOPT_VERBOSE        => $ENV{TRACE} || 0,
-        CURLOPT_ENCODING       => '',
-        CURLOPT_TCP_KEEPALIVE  => 1,
-        CURLOPT_USERAGENT      => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36',
+        followlocation => 1,
+        verbose        => $ENV{TRACE} || 0,
+        encoding       => '',
+        useragent      => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36',
     );
 };
 
@@ -67,9 +68,7 @@ around has_error => sub {
     return 0;
 };
 
-sub data_as_json { decode_json(${$_[0]->data}) } ## no critic
-
-sub _build_schema { get_schema() } ## no critic
+sub data_as_json { return decode_json(${$_[0]->data}) } ## no critic
 
 sub index {
     my ($self, $res) = @_;
@@ -77,7 +76,7 @@ sub index {
     for my $goal (@{ $res }) {
         my $goal_id = $goal->{meta_numero};
         my $url = "http://planejasampa.prefeitura.sp.gov.br/api/metas/${goal_id}";
-        next unless $goal_id == 2; # TODO Retirar.
+        #next unless $goal_id == 2; # TODO Retirar.
 
         printf "Appending '%s' to queue.\n", $url;
         $self->queue->append(sub {
@@ -95,15 +94,17 @@ sub goal {
     my $goal_id    = $res->{meta_numero};
     my $base_value = $res->{meta_num_valor_base};
 
-    my $topic = $self->schema->resultset('Topic')->search( { 'me.name' => $res->{eixo}->[0]->{eixo_nome} } )->next;
+    #my $topic = $self->schema->resultset('Topic')->search( { 'me.name' => $res->{eixo}->[0]->{eixo_nome} } )->next;
 
     my $unit = _get_unit($res->{meta_unidade_medida});
 
-    my $goal = $self->schema->resultset('Goal')->update_or_create(
+    #my $goal = $self->schema->resultset('Goal')->update_or_create(
+    $self->loader->add(
+        'goal',
         {
             id                         => $goal_id,
             title                      => $res->{meta_nome},
-            topic                      => $topic,
+            topic                      => $res->{eixo}->[0]->{eixo_nome},
             projection_first_biennium  => $res->{meta_projecao_curta},
             projection_second_biennium => $res->{meta_projecao_longa},
             slug                       => slugify($res->{meta_nome}),
@@ -116,7 +117,7 @@ sub goal {
     # TODO Carregar o progresso
     # TODO Carregar as metas regionalizadas.
     delete $res->{execucao_regional};
-    p $res;
+    #p $res;
 
     # Inserindo os projetos na queue.
     #for my $project_id (keys %{ $res->{projetos} || {} }) {
@@ -154,10 +155,11 @@ sub project {
 
         my ($project_id, $id_reference) = split m{\.};
 
-
         #p $project_id;
         #p $id_reference;
     }
 }
+
+sub _build_loader { return Donm::PlanejaSampa::Loader->instance }
 
 1;
