@@ -199,9 +199,6 @@ sub _format_value {
 
     my $nf = new Number::Format(-thousands_sep => '.', -decimal_point => ',', '-int_curr_symbol' => 'R$');
 
-    use DDP;
-    p $self;
-
     if ($unit eq 'unit') {
         $value =~ s/,/\./;
         $value = $nf->format_number($value);
