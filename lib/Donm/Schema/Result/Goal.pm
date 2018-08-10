@@ -197,7 +197,7 @@ sub get_readable_projection_second_biennium {
 sub _format_value {
     my ($self, $value, $unit) = @_;
 
-    my $nf = new Number::Format(-thousands_sep => '.', -decimal_point => ',', '-int_curr_symbol' => 'R$');
+    my $nf = new Number::Format(-thousands_sep => '.', -decimal_point => ',', '-int_curr_symbol' => 'R$'); ## no critic
 
     if ($unit eq 'unit') {
         $value =~ s/,/\./;
