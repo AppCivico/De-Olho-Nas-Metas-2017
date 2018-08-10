@@ -4,16 +4,20 @@ use FindBin qw($RealBin);
 use lib "$RealBin/../lib";
 use open ':locale';
 
+use Donm::PlanejaSampa::Loader;
 use Donm::PlanejaSampa::Worker;
 use YADA;
 
 use DDP;
 
 my $yada = YADA->new(
-    max        => 12,
+    max        => 4,
     allow_dups => 0,
     timeout    => 30,
+    use_stats  => 1,
 );
+
+my $loader = Donm::PlanejaSampa::Loader->instance;
 
 $yada->append(sub {
     Donm::PlanejaSampa::Worker->new({
@@ -25,5 +29,7 @@ $yada->append(sub {
 });
 
 $yada->wait();
+
+$loader->load_all();
 
 p $yada->stats;

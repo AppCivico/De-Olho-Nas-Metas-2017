@@ -76,6 +76,7 @@ sub index {
     for my $goal (@{ $res }) {
         my $goal_id = $goal->{meta_numero};
         my $url = "http://planejasampa.prefeitura.sp.gov.br/api/metas/${goal_id}";
+
         #next unless $goal_id == 2; # TODO Retirar.
 
         printf "Appending '%s' to queue.\n", $url;
@@ -94,11 +95,8 @@ sub goal {
     my $goal_id    = $res->{meta_numero};
     my $base_value = $res->{meta_num_valor_base};
 
-    #my $topic = $self->schema->resultset('Topic')->search( { 'me.name' => $res->{eixo}->[0]->{eixo_nome} } )->next;
-
     my $unit = _get_unit($res->{meta_unidade_medida});
 
-    #my $goal = $self->schema->resultset('Goal')->update_or_create(
     $self->loader->add(
         'goal',
         {
@@ -117,19 +115,16 @@ sub goal {
     # TODO Carregar o progresso
     # TODO Carregar as metas regionalizadas.
     delete $res->{execucao_regional};
-    #p $res;
 
     # Inserindo os projetos na queue.
-    #for my $project_id (keys %{ $res->{projetos} || {} }) {
-    #    $self->queue->append(sub {
-    #        Donm::PlanejaSampa::Worker->new({
-    #            initial_url => "http://planejasampa.prefeitura.sp.gov.br/api/projetos/${project_id}",
-    #            action      => 'project',
-    #        });
-    #    });
-    #}
-
-    #p $res;
+    for my $project_id (keys %{ $res->{projetos} || {} }) {
+       #$self->queue->append(sub {
+       #    Donm::PlanejaSampa::Worker->new({
+       #        initial_url => "http://planejasampa.prefeitura.sp.gov.br/api/projetos/${project_id}",
+       #        action      => 'project',
+       #    });
+       #});
+    }
 }
 
 sub _get_unit {

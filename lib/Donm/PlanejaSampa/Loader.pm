@@ -7,6 +7,7 @@ use MooX::Types::MooseLike::Base ':all';
 use Text::CSV;
 use File::Copy;
 use File::Temp;
+use SQL::Abstract::Pg;
 
 use Donm::SchemaConnected qw(get_schema);
 
@@ -14,14 +15,9 @@ use Data::Printer;
 
 has schema => (
     is   => 'rw',
+    isa  => InstanceOf['Donm::Schema', 'DBIx::Class::Schema'],
     lazy => 1,
     builder => '_build_schema',
-);
-
-has _filehandles => (
-    is      => 'rw',
-    isa     => HashRef[InstanceOf['File::Temp']],
-    default => sub { {} },
 );
 
 has csv => (
@@ -29,6 +25,19 @@ has csv => (
     isa  => InstanceOf['Text::CSV'],
     lazy => 1,
     builder => '_build_csv',
+);
+
+has sql_abstract => (
+    is   => 'rw',
+    isa  => InstanceOf['SQL::Abstract::Pg'],
+    lazy => 1,
+    builder => '_build_sql_abstract',
+);
+
+has _filehandles => (
+    is      => 'rw',
+    isa     => HashRef[InstanceOf['File::Temp']],
+    default => sub { {} },
 );
 
 has _cache_topics => (
@@ -81,11 +90,72 @@ sub get_filehandle {
     return $self->_filehandles->{$entity};
 }
 
+sub load_all {
+    my $self = shift;
+
+    for my $entity (keys %{ $self->_filehandles }) {
+        my $fh = $self->_filehandles->{$entity};
+
+        $self->load_file($entity, $fh);
+    }
+}
+
+sub load_file {
+    my ($self, $entity, $fh) = @_;
+
+    $self->schema->txn_do(sub {
+        close $fh or die $!;
+
+        $self->schema->storage->dbh_do(sub {
+            my ($storage, $dbh) = @_;
+
+            # TODO Descomentar.
+            return;
+
+            #  Criando uma tabela temporária para inserir os dados.
+            my $table_name = $dbh->quote_identifier(sprintf("%s_%s", $entity, $self->_get_random_string()));
+            my $original = $dbh->quote_identifier($entity);
+
+            $dbh->do(qq{CREATE TEMPORARY TABLE $table_name ( LIKE $original INCLUDING ALL )});
+
+            my $filepath = $dbh->quote($fh->filename);
+            my @columns  = @{ $self->_added_header->{$entity} };
+            my $columns  = join(q{, }, @columns);
+
+            # Copiando os dados para a tabela temporária.
+            $dbh->do(qq{COPY $table_name ($columns) FROM $filepath WITH CSV HEADER QUOTE '"'});
+
+            # Atualizando os dados.
+            my $upsert_query = <<"SQL_QUERY";
+                INSERT INTO $original ($columns)
+                SELECT $columns
+                FROM $table_name
+                ON CONFLICT (id) DO UPDATE
+                SET
+                updated_at = NOW(),
+SQL_QUERY
+            $upsert_query .= join qq{,\n}, map { qq{$_ = EXCLUDED.$_}  } @columns;
+            return $dbh->do($upsert_query);
+        });
+    });
+
+    return 1;
+}
+
+sub _get_random_string {
+    my @chars = (0 .. 9, "a".."z");
+    my $string;
+    $string .= $chars[rand @chars] for 1..8;
+
+    return $string;
+}
+
 sub _get_new_fh {
     my $self = shift;
 
     my $fh = File::Temp->new( UNLINK => 0, SUFFIX => '.csv', DIR => '/home/junior/projects/De-Olho-Nas-Metas-2017/tmp/' );
     binmode $fh, ':encoding(utf8)';
+    chmod 0777, $fh->filename;
 
     return $fh;
 }
