@@ -62,11 +62,7 @@ db_transaction {
         is( ref($res->{goal}->{subprefectures}), "ARRAY", 'retrieved subprefectures' );
 
         is( $res->{goal}->{id}, 1, 'id=1' );
-        is(
-            $res->{goal}->{title},
-            "Aumentar a cobertura da Atenção Básica à Saúde para 70% na cidade de São Paulo.",
-            'title',
-        );
+        like( $res->{goal}->{title}, qr/^Aumentar a cobertura/, 'title' );
         is(
             $res->{goal}->{indicator_description},
             "Indicador de cobertura populacional estimada da atenção básica.",

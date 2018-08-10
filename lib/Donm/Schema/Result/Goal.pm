@@ -85,7 +85,12 @@ __PACKAGE__->table("goal");
 
 =head2 base_value
 
-  data_type: 'numeric'
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 updated_at
+
+  data_type: 'timestamp'
   is_nullable: 1
 
 =cut
@@ -108,7 +113,9 @@ __PACKAGE__->add_columns(
   "unit",
   { data_type => "text", is_nullable => 1 },
   "base_value",
-  { data_type => "numeric", is_nullable => 1 },
+  { data_type => "text", is_nullable => 1 },
+  "updated_at",
+  { data_type => "timestamp", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -156,8 +163,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-08 17:28:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:tlvIcht+Y0GtPTnpBA2+Pg
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-10 15:52:39
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:vwfJT8z1x5RCl0URNpNz0A
 
 use Number::Format;
 
@@ -192,6 +199,9 @@ sub _format_value {
 
     my $nf = new Number::Format(-thousands_sep => '.', -decimal_point => ',', '-int_curr_symbol' => 'R$');
 
+    use DDP;
+    p $self;
+
     if ($unit eq 'unit') {
         $value =~ s/,/\./;
         $value = $nf->format_number($value);
@@ -202,6 +212,7 @@ sub _format_value {
     }
 
     if ($unit eq '%') {
+        ($value) = split m{%}, $value if $value =~ m{%};
         $value =~ s/,/\./;
         $value = $value * 100;
         $value =~ s/\./,/;
