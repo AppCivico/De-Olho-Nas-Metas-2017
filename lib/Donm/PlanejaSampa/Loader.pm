@@ -101,10 +101,7 @@ sub load_file {
         $self->schema->storage->dbh_do(sub {
             my ($storage, $dbh) = @_;
 
-            # TODO Descomentar.
-            return;
-
-            #  Criando uma tabela temporária para inserir os dados.
+            # Criando uma tabela temporária para inserir os dados.
             my $table_name = $dbh->quote_identifier(sprintf("%s_%s", $entity, $self->_get_random_string()));
             my $original = $dbh->quote_identifier($entity);
 
@@ -145,7 +142,7 @@ sub _get_random_string {
 sub _get_new_fh {
     my $self = shift;
 
-    my $fh = File::Temp->new( UNLINK => 0, SUFFIX => '.csv', DIR => '/home/junior/projects/De-Olho-Nas-Metas-2017/tmp/' );
+    my $fh = File::Temp->new( UNLINK => 1, SUFFIX => '.csv', DIR => '/home/junior/projects/De-Olho-Nas-Metas-2017/tmp/' );
     binmode $fh, ':encoding(utf8)';
     chmod 0777, $fh->filename;
 

@@ -14,7 +14,6 @@ my $yada = YADA->new(
     max        => 4,
     allow_dups => 0,
     timeout    => 30,
-    use_stats  => 1,
 );
 
 my $loader = Donm::PlanejaSampa::Loader->instance;
