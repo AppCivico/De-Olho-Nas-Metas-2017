@@ -7,7 +7,6 @@ use MooX::Types::MooseLike::Base ':all';
 use Text::CSV;
 use File::Copy;
 use File::Temp;
-use SQL::Abstract::Pg;
 
 use Donm::SchemaConnected qw(get_schema);
 
@@ -25,13 +24,6 @@ has csv => (
     isa  => InstanceOf['Text::CSV'],
     lazy => 1,
     builder => '_build_csv',
-);
-
-has sql_abstract => (
-    is   => 'rw',
-    isa  => InstanceOf['SQL::Abstract::Pg'],
-    lazy => 1,
-    builder => '_build_sql_abstract',
 );
 
 has _filehandles => (
