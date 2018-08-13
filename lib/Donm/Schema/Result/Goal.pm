@@ -167,18 +167,16 @@ __PACKAGE__->belongs_to(
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:vwfJT8z1x5RCl0URNpNz0A
 
 use Number::Format;
-use DDP;
 
 sub get_readable_projection_first_biennium {
     my $self = shift;
 
     my $unit           = $self->get_column('unit');
-    #my $first_biennium = $self->get_column('projection_first_biennium');
-    my $first_biennium = $self->get_first_biennium_as_numeric();
+    my $first_biennium = $self->get_column('projection_first_biennium');
 
-    if (defined($unit)) {
-        return $self->_format_to_readable_value($first_biennium, $unit);
-    }
+    #if (defined($unit)) {
+    #    $first_biennium = $self->_format_value($first_biennium, $unit);
+    #}
 
     return $first_biennium;
 }
@@ -189,67 +187,14 @@ sub get_readable_projection_second_biennium {
     my $unit = $self->get_column('unit');
     my $second_biennium = $self->get_column('projection_second_biennium');
 
-    if (defined($unit)) {
-        $second_biennium = $self->_format_to_readable_value($second_biennium, $unit);
-    }
+    #if (defined($unit)) {
+    #    $second_biennium = $self->_format_value($second_biennium, $unit);
+    #}
 
     return $second_biennium;
 }
 
-sub get_first_biennium_as_numeric {
-    my ($self) = @_;
-
-    my $value = $self->get_column('projection_first_biennium');
-    #($value)  = split /\n/, $value;
-    my $unit  = $self->get_column('unit');
-
-    return $value;
-
-    my $nf = new Number::Format(-thousands_sep => '.', -decimal_point => ',', '-int_curr_symbol' => 'R$'); ## no critic
-
-    if (!defined($unit)) {
-        ($value) = split /\n/, $value;
-        return $value;
-    }
-    elsif ($unit eq 'R$') {
-        if ($value =~ m{\(R\$ ([0-9,\.]+)}) {
-            $value = $1;
-            $value =~ s|\.||g;
-            $value =~ s|,|.|g;
-            return $nf->format_price($value, 2, $unit);
-        }
-        ...;
-    }
-    elsif ($unit eq '%') {
-        if ($value =~ m{^[0-9,]+\%}) {
-            ($value) = split /\n/, $value;
-            return $value;
-        }
-        return $value;
-    }
-    elsif ($unit eq 'unit') {
-        ($value) = split /\n/, $value;
-        $value =~ s/\s+$//g;
-
-        if ($value =~ m{^([0-9\.,]+)$}) {
-            $value = $1;
-            $value =~ s|\.||g;
-            $value =~ s|,|.|g;
-            return $value;
-        }
-        elsif ($value =~ m{:\s*([0-9\.]+)}) {
-            $value = $1;
-            $value =~ s|\.||g;
-            $value =~ s|,|.|g;
-            return $value;
-        }
-        p $value;
-        ...;
-    }
-    else { die "Unknown unit '$unit'" }
-}
-
-sub _format_to_readable_value {
+sub _format_value {
     my ($self, $value, $unit) = @_;
 
     my $nf = new Number::Format(-thousands_sep => '.', -decimal_point => ',', '-int_curr_symbol' => 'R$'); ## no critic
