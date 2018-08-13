@@ -76,6 +76,18 @@ db_transaction {
         is_fail => 1,
         code    => 404,
     ;
+
+    subtest 'format all values' => sub {
+
+        # Este teste foi criado para cobrir todos os casos de cálculo do progresso das metas.
+        my $goal_rs = $schema->resultset('Goal');
+        #my $goal_rs = $schema->resultset("Goal")->search( { 'me.id' => [ 50 ] } );
+        while (my $goal = $goal_rs->next()) {
+            rest_get [ "api/goal", $goal->id ], name => 'get goal_id=' . $goal->id;
+        }
+
+        #rest_get [ "api/goal", 45 ], name => 'get 45';
+    };
 };
 
 done_testing();
