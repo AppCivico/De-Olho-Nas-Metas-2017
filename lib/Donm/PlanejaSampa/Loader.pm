@@ -8,6 +8,7 @@ use Text::CSV;
 use File::Copy;
 use File::Temp;
 
+use Donm::Utils qw(slugify);
 use Donm::SchemaConnected qw(get_schema);
 
 use Data::Printer;
@@ -53,6 +54,11 @@ sub add {
 
         my $topic_name = delete $args->{topic};
         $args->{topic_id} = $self->_cache_topics->{$topic_name};
+
+        $args->{slug} = slugify($args->{title});
+    }
+    elsif ($entity eq 'project') {
+        $args->{slug} = slugify($args->{title});
     }
     else { die "die invalid entity '$entity'" }
 
