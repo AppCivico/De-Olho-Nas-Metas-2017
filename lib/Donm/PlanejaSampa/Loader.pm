@@ -90,6 +90,7 @@ sub load_all {
 
         $self->load_file($entity, $fh);
     }
+    return;
 }
 
 sub load_file {

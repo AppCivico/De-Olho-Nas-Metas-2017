@@ -114,16 +114,43 @@ sub goal {
 
     # TODO Carregar o progresso
     # TODO Carregar as metas regionalizadas.
-    delete $res->{execucao_regional};
+    #delete $res->{execucao_regional};
 
     # Inserindo os projetos na queue.
     for my $project_id (keys %{ $res->{projetos} || {} }) {
        #$self->queue->append(sub {
-       #    Donm::PlanejaSampa::Worker->new({
-       #        initial_url => "http://planejasampa.prefeitura.sp.gov.br/api/projetos/${project_id}",
-       #        action      => 'project',
-       #    });
-       #});
+       $self->queue->prepend(sub {
+           Donm::PlanejaSampa::Worker->new({
+               initial_url => "http://planejasampa.prefeitura.sp.gov.br/api/projetos/${project_id}",
+               action      => 'project',
+           });
+       });
+    }
+}
+
+sub project {
+    my ($self, $res) = @_;
+
+    $self->loader->add(
+        'project',
+        {
+            id               => $res->{dados_cadastrais}->{projeto_numero},
+            title            => $res->{dados_cadastrais}->{projeto_nome},
+            description      => $res->{dados_cadastrais}->{projeto_descricao},
+            expected_results => $res->{dados_cadastrais}->{projeto_resultados_esperados},
+            current_scenario => $res->{dados_cadastrais}->{projeto_justificativa},
+        }
+    )
+    for (keys %{ $res->{linhas_acao} }) {
+        my $action_line = $res->{linhas_acao}->{$_};
+
+        #my ($project_id, $id_reference) = split m{\.};
+        #for my $exec (@{ $action_line->{execucao} }) {
+        #    print STDERR '"' . $exec->{linha_acao_execucao_valor} . "\"\n";
+        #}
+
+        #p $project_id;
+        #p $id_reference;
     }
 }
 
@@ -140,19 +167,6 @@ sub _get_unit {
         return $unit;
     }
     return;
-}
-
-sub project {
-    my ($self, $res) = @_;
-
-    for (keys %{ $res->{linhas_acao} }) {
-        my $action_line = $res->{linhas_acao}->{$_};
-
-        my ($project_id, $id_reference) = split m{\.};
-
-        #p $project_id;
-        #p $id_reference;
-    }
 }
 
 sub _build_loader { return Donm::PlanejaSampa::Loader->instance }
