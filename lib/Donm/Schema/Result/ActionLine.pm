@@ -80,6 +80,11 @@ __PACKAGE__->table("action_line");
   data_type: 'text'
   is_nullable: 0
 
+=head2 updated_at
+
+  data_type: 'timestamp'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -102,6 +107,8 @@ __PACKAGE__->add_columns(
   },
   "slug",
   { data_type => "text", is_nullable => 0 },
+  "updated_at",
+  { data_type => "timestamp", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -117,6 +124,23 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 =head1 UNIQUE CONSTRAINTS
+
+=head2 C<action_line_id_reference_project_id_key>
+
+=over 4
+
+=item * L</id_reference>
+
+=item * L</project_id>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint(
+  "action_line_id_reference_project_id_key",
+  ["id_reference", "project_id"],
+);
 
 =head2 C<action_line_slug_key>
 
@@ -163,8 +187,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-11-06 18:08:30
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:cnmIPKTBdwPDG9y4cXimTw
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-14 17:17:58
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Z8L8iFA+Rcvg1ZrZ9Mm1uA
 
 sub get_exhibition_id {
     my $self = shift;
