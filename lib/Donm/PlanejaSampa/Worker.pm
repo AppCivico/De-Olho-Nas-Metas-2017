@@ -8,7 +8,6 @@ use EV;
 use JSON::XS;
 use Net::Curl::Easy qw(:constants);
 use Donm::SchemaConnected qw(get_schema);
-use Donm::Utils qw(slugify);
 use Donm::PlanejaSampa::Loader;
 
 extends 'YADA::Worker';
@@ -105,7 +104,6 @@ sub goal {
             topic                      => $res->{eixo}->[0]->{eixo_nome},
             projection_first_biennium  => $res->{meta_projecao_curta},
             projection_second_biennium => $res->{meta_projecao_longa},
-            slug                       => slugify($res->{meta_nome}),
             indicator_description      => $res->{meta_descricao},
             unit                       => $unit,
             base_value                 => $res->{meta_num_valor_base},
@@ -140,7 +138,8 @@ sub project {
             expected_results => $res->{dados_cadastrais}->{projeto_resultados_esperados},
             current_scenario => $res->{dados_cadastrais}->{projeto_justificativa},
         }
-    )
+    );
+
     for (keys %{ $res->{linhas_acao} }) {
         my $action_line = $res->{linhas_acao}->{$_};
 
