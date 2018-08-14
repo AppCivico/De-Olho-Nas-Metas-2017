@@ -20,8 +20,8 @@ my $loader = Donm::PlanejaSampa::Loader->instance;
 
 $yada->append(sub {
     Donm::PlanejaSampa::Worker->new({
-        #initial_url => 'http://planejasampa.prefeitura.sp.gov.br/api/metas',
-        initial_url => 'http://127.0.0.1:3000/metas',
+        initial_url => 'http://planejasampa.prefeitura.sp.gov.br/api/metas',
+        #initial_url => 'http://127.0.0.1:3000/metas',
         action      => 'index',
         retry       => 3,
     });

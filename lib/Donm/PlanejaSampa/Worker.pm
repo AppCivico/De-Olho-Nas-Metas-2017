@@ -76,8 +76,6 @@ sub index {
         my $goal_id = $goal->{meta_numero};
         my $url = "http://planejasampa.prefeitura.sp.gov.br/api/metas/${goal_id}";
 
-        #next unless $goal_id == 2; # TODO Retirar.
-
         printf "Appending '%s' to queue.\n", $url;
         $self->queue->append(sub {
             Donm::PlanejaSampa::Worker->new({
@@ -130,8 +128,7 @@ sub project {
     my ($self, $res) = @_;
 
     $self->loader->add(
-        'project',
-        {
+        'project', {
             id               => $res->{dados_cadastrais}->{projeto_numero},
             title            => $res->{dados_cadastrais}->{projeto_nome},
             description      => $res->{dados_cadastrais}->{projeto_descricao},
@@ -143,14 +140,19 @@ sub project {
     for (keys %{ $res->{linhas_acao} }) {
         my $action_line = $res->{linhas_acao}->{$_};
 
-        #my ($project_id, $id_reference) = split m{\.};
-        #for my $exec (@{ $action_line->{execucao} }) {
-        #    print STDERR '"' . $exec->{linha_acao_execucao_valor} . "\"\n";
-        #}
+        my ($project_id, $id_reference) = split m{\.};
 
-        #p $project_id;
-        #p $id_reference;
+        $self->loader->add(
+            'action_line', {
+                project_id            => $project_id,
+                id_reference          => $id_reference,
+                title                 => $action_line->{linha_acao_nome},
+                indicator_description => $action_line->{linha_acao_indicadores},
+                achievement           => $action_line->{linha_acao_marco},
+            }
+        );
     }
+    return;
 }
 
 sub _get_unit {

@@ -60,6 +60,9 @@ sub add {
     elsif ($entity eq 'project') {
         $args->{slug} = slugify($args->{title});
     }
+    elsif ($entity eq 'action_line') {
+        $args->{slug} = slugify($args->{title});
+    }
     else { die "die invalid entity '$entity'" }
 
     my $fh = $self->get_filehandle($entity);
@@ -121,16 +124,20 @@ sub load_file {
             # Copiando os dados para a tabela temporária.
             $dbh->do(qq{COPY $table_name ($columns) FROM $filepath WITH CSV HEADER QUOTE '"'});
 
+            my $conflict = 'id';
+            $conflict = join q{, }, qw(id_reference project_id) if 'action_line' eq $entity;
+
             # Atualizando os dados.
             my $upsert_query = <<"SQL_QUERY";
                 INSERT INTO $original ($columns)
                 SELECT $columns
                 FROM $table_name
-                ON CONFLICT (id) DO UPDATE
+                ON CONFLICT ($conflict) DO UPDATE
                 SET
                 updated_at = NOW(),
 SQL_QUERY
             $upsert_query .= join qq{,\n}, map { qq{$_ = EXCLUDED.$_}  } @columns;
+
             return $dbh->do($upsert_query);
         });
     });
@@ -149,9 +156,9 @@ sub _get_random_string {
 sub _get_new_fh {
     my $self = shift;
 
-    my $fh = File::Temp->new( UNLINK => 1, SUFFIX => '.csv', DIR => '/home/junior/projects/De-Olho-Nas-Metas-2017/tmp/' );
+    my $fh = File::Temp->new( UNLINK => 1, SUFFIX => '.csv', DIR => '/tmp' );
     binmode $fh, ':encoding(utf8)';
-    chmod 0777, $fh->filename;
+    chmod 0644, $fh->filename;
 
     return $fh;
 }
