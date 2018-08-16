@@ -132,6 +132,21 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 RELATIONS
 
+=head2 goal_executions
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::GoalExecution>
+
+=cut
+
+__PACKAGE__->has_many(
+  "goal_executions",
+  "Donm::Schema::Result::GoalExecution",
+  { "foreign.goal_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 goal_projects
 
 Type: has_many
@@ -163,8 +178,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-10 15:52:39
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:vwfJT8z1x5RCl0URNpNz0A
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-16 14:36:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:uNje2smfy2i5hgWzfyFImw
 
 use Number::Format;
 

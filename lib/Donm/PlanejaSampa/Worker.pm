@@ -108,9 +108,20 @@ sub goal {
         }
     );
 
-    # TODO Carregar o progresso
     # TODO Carregar as metas regionalizadas.
     #delete $res->{execucao_regional};
+
+    # Carregando a execução da meta.
+    for my $e (@{ $res->{execucao} }) {
+        $self->loader->add(
+            'goal_execution', {
+                goal_id     => $goal_id,
+                period      => $e->{meta_execucao_num_periodo},
+                value       => $e->{meta_execucao_valor},
+                accumulated => $e->{meta_execucao_valor_acumulado},
+            }
+        );
+    }
 
     # Inserindo os projetos na queue.
     for my $project_id (keys %{ $res->{projetos} || {} }) {

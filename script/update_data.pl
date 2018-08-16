@@ -11,7 +11,7 @@ use YADA;
 use DDP;
 
 my $yada = YADA->new(
-    max        => 2,
+    max        => 4,
     allow_dups => 0,
     timeout    => 30,
 );

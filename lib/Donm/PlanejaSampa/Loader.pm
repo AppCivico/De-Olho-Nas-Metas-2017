@@ -63,6 +63,7 @@ sub add {
     elsif ($entity eq 'action_line') {
         $args->{slug} = slugify($args->{title});
     }
+    elsif ($entity eq 'goal_execution') { }
     else { die "die invalid entity '$entity'" }
 
     my $fh = $self->get_filehandle($entity);
@@ -121,11 +122,14 @@ sub load_file {
             my @columns  = @{ $self->_added_header->{$entity} };
             my $columns  = join(q{, }, @columns);
 
+            printf "Loading file '%s'\n", $filepath;
+
             # Copiando os dados para a tabela temporária.
             $dbh->do(qq{COPY $table_name ($columns) FROM $filepath WITH CSV HEADER QUOTE '"'});
 
             my $conflict = 'id';
-            $conflict = join q{, }, qw(id_reference project_id) if 'action_line' eq $entity;
+            $conflict = join q{, }, qw(id_reference project_id)    if 'action_line'    eq $entity;
+            $conflict = join q{, }, qw(goal_id period accumulated) if 'goal_execution' eq $entity;
 
             # Atualizando os dados.
             my $upsert_query = <<"SQL_QUERY";
