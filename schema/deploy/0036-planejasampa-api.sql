@@ -17,6 +17,4 @@ ALTER TABLE goal ADD COLUMN updated_at TIMESTAMP WITHOUT TIME ZONE;
 ALTER TABLE action_line ADD COLUMN updated_at TIMESTAMP WITHOUT TIME ZONE;
 ALTER TABLE action_line ADD UNIQUE(id_reference, project_id);
 
-CREATE UNIQUE INDEX project_unique_id ON table_name (columns);
-
 COMMIT;
