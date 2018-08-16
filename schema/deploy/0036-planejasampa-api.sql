@@ -17,4 +17,14 @@ ALTER TABLE goal ADD COLUMN updated_at TIMESTAMP WITHOUT TIME ZONE;
 ALTER TABLE action_line ADD COLUMN updated_at TIMESTAMP WITHOUT TIME ZONE;
 ALTER TABLE action_line ADD UNIQUE(id_reference, project_id);
 
+CREATE TABLE goal_execution (
+    id          SERIAL PRIMARY KEY,
+    goal_id     INTEGER NOT NULL REFERENCES goal(id),
+    period      INTEGER NOT NULL,
+    value       TEXT NOT NULL,
+    accumulated BOOLEAN NOT NULL,
+    updated_at  TIMESTAMP WITHOUT TIME ZONE,
+    UNIQUE(goal_id, period, accumulated)
+);
+
 COMMIT;
