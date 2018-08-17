@@ -95,8 +95,7 @@ sub goal {
     my $unit = _get_unit($res->{meta_unidade_medida});
 
     $self->loader->add(
-        'goal',
-        {
+        'goal', {
             id                         => $goal_id,
             title                      => $res->{meta_nome},
             topic                      => $res->{eixo}->[0]->{eixo_nome},
@@ -119,6 +118,22 @@ sub goal {
                 period      => $e->{meta_execucao_num_periodo},
                 value       => $e->{meta_execucao_valor},
                 accumulated => $e->{meta_execucao_valor_acumulado},
+            }
+        );
+    }
+
+    # Carregando execução da meta por região.
+    #if (@{ $res->{execucao_regional} || [] }) {
+    #    p $res;
+    #    exit 0;
+    #}
+    for my $e (@{ $res->{execucao_regional} }) {
+        $self->loader->add(
+            'goal_execution_subprefecture', {
+                goal_id            => $goal_id,
+                subprefecture_name => $e->{prefeitura_regional_nome},
+                period             => $e->{meta_execucao_prefeitura_regional_num_periodo},
+                value              => $e->{meta_execucao_prefeitura_regional_valor},
             }
         );
     }

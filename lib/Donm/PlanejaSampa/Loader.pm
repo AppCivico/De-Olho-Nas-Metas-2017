@@ -40,6 +40,13 @@ has _cache_topics => (
     builder => '_build_cache_topics',
 );
 
+has _cache_subprefectures => (
+    is   => 'rw',
+    isa  => HashRef[Int],
+    lazy => 1,
+    builder => '_build_cache_subprefectures',
+);
+
 has _added_header => (
     is      => 'rw',
     isa     => HashRef[ArrayRef[Str]],
@@ -50,7 +57,7 @@ sub add {
     my ($self, $entity, $args) = @_;
 
     if ($entity eq 'goal') {
-        $self->_cache_topics; # Build topics cache.
+        $self->_cache_topics(); # Build topics cache.
 
         my $topic_name = delete $args->{topic};
         $args->{topic_id} = $self->_cache_topics->{$topic_name};
@@ -64,6 +71,17 @@ sub add {
         $args->{slug} = slugify($args->{title});
     }
     elsif ($entity eq 'goal_execution') { }
+    elsif ($entity eq 'goal_execution_subprefecture') {
+        $self->_cache_subprefectures();
+
+        my $subprefecture_name = delete $args->{subprefecture_name};
+        if (defined($subprefecture_name)) { $subprefecture_name =~ s/^PR\-//  }
+        else                              { $subprefecture_name = 'A definir' }
+
+        my $subprefecture_id = $self->_cache_subprefectures->{$subprefecture_name} or die "Unknown subprefecture '$subprefecture_name'";
+
+        $args->{subprefecture_id} = $self->_cache_subprefectures->{$subprefecture_name};
+    }
     else { die "die invalid entity '$entity'" }
 
     my $fh = $self->get_filehandle($entity);
@@ -122,14 +140,15 @@ sub load_file {
             my @columns  = @{ $self->_added_header->{$entity} };
             my $columns  = join(q{, }, @columns);
 
-            printf "Loading file '%s'\n", $filepath;
+            printf "Loading file '%s'\n", $fh->filename;
 
             # Copiando os dados para a tabela temporária.
             $dbh->do(qq{COPY $table_name ($columns) FROM $filepath WITH CSV HEADER QUOTE '"'});
 
             my $conflict = 'id';
-            $conflict = join q{, }, qw(id_reference project_id)    if 'action_line'    eq $entity;
-            $conflict = join q{, }, qw(goal_id period accumulated) if 'goal_execution' eq $entity;
+            $conflict = join q{, }, qw(id_reference project_id)         if 'action_line'                  eq $entity;
+            $conflict = join q{, }, qw(goal_id period accumulated)      if 'goal_execution'               eq $entity;
+            $conflict = join q{, }, qw(goal_id subprefecture_id period) if 'goal_execution_subprefecture' eq $entity;
 
             # Atualizando os dados.
             my $upsert_query = <<"SQL_QUERY";
@@ -160,7 +179,7 @@ sub _get_random_string {
 sub _get_new_fh {
     my $self = shift;
 
-    my $fh = File::Temp->new( UNLINK => 1, SUFFIX => '.csv', DIR => '/tmp' );
+    my $fh = File::Temp->new( UNLINK => 0, SUFFIX => '.csv', DIR => '/tmp' );
     binmode $fh, ':encoding(utf8)';
     chmod 0644, $fh->filename;
 
@@ -170,13 +189,24 @@ sub _get_new_fh {
 sub _build_schema { return get_schema() }
 
 sub _build_cache_topics {
-    my ($self) = @_;
+    my $self = shift;
 
     return +{
         map {
             my $topic_name = $_->get_column('name');
             $topic_name => $_->id
         } $self->schema->resultset('Topic')->all()
+    };
+}
+
+sub _build_cache_subprefectures {
+    my $self = shift;
+
+    return +{
+        map {
+            my $subprefecture = $_;
+            $subprefecture->get_column('name') => $subprefecture->id
+        } $self->schema->resultset('Subprefecture')->all()
     };
 }
 
