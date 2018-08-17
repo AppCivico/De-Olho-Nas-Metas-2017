@@ -67,7 +67,7 @@ around has_error => sub {
     return 0;
 };
 
-sub data_as_json { return decode_json(${$_[0]->data}) } ## no critic
+sub data_as_json { decode_json(${$_[0]->data}) } ## no critic
 
 sub index {
     my ($self, $res) = @_;
@@ -107,8 +107,6 @@ sub goal {
         }
     );
 
-    # TODO Carregar as metas regionalizadas.
-    #delete $res->{execucao_regional};
 
     # Carregando a execução da meta.
     for my $e (@{ $res->{execucao} }) {
@@ -122,11 +120,7 @@ sub goal {
         );
     }
 
-    # Carregando execução da meta por região.
-    #if (@{ $res->{execucao_regional} || [] }) {
-    #    p $res;
-    #    exit 0;
-    #}
+    # Carregando a execução da meta por região.
     for my $e (@{ $res->{execucao_regional} }) {
         $self->loader->add(
             'goal_execution_subprefecture', {
@@ -140,8 +134,7 @@ sub goal {
 
     # Inserindo os projetos na queue.
     for my $project_id (keys %{ $res->{projetos} || {} }) {
-       #$self->queue->append(sub {
-       $self->queue->prepend(sub {
+       $self->queue->append(sub {
            Donm::PlanejaSampa::Worker->new({
                initial_url => "http://planejasampa.prefeitura.sp.gov.br/api/projetos/${project_id}",
                action      => 'project',
