@@ -55,6 +55,12 @@ sub add {
         $args->{topic_id} = $self->_cache->{topic}->{$topic_name};
 
         $args->{slug} = slugify($args->{title});
+
+        my $unit = delete $args->{unit};
+        $args->{unit} = undef;
+        $args->{unit} = 'unit' if $unit eq 'Unidade';
+        $args->{unit} = '%'    if $unit eq '%';
+        $args->{unit} = 'R$'   if $unit =~ m{^R\$};
     }
     elsif ($entity eq 'project') {
         $args->{slug} = slugify($args->{title});

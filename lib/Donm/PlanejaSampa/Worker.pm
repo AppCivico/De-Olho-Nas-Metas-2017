@@ -92,8 +92,6 @@ sub goal {
     my $goal_id    = $res->{meta_numero};
     my $base_value = $res->{meta_num_valor_base};
 
-    my $unit = _get_unit($res->{meta_unidade_medida});
-
     $self->loader->add(
         'goal', {
             id                         => $goal_id,
@@ -102,11 +100,10 @@ sub goal {
             projection_first_biennium  => $res->{meta_projecao_curta},
             projection_second_biennium => $res->{meta_projecao_longa},
             indicator_description      => $res->{meta_descricao},
-            unit                       => $unit,
+            unit                       => $res->{meta_unidade_medida},
             base_value                 => $res->{meta_num_valor_base},
         }
     );
-
 
     # Carregando a execução da meta.
     for my $e (@{ $res->{execucao} }) {
@@ -170,21 +167,6 @@ sub project {
                 achievement           => $action_line->{linha_acao_marco},
             }
         );
-    }
-    return;
-}
-
-sub _get_unit {
-    my ($unit) = @_;
-
-    if ($unit eq 'Unidade') {
-        return 'unit';
-    }
-    elsif ($unit =~ m{^R\$}) {
-        return 'R$';
-    }
-    elsif ($unit eq '%') {
-        return $unit;
     }
     return;
 }
