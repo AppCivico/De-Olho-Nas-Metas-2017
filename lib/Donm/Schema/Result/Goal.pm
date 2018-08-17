@@ -132,6 +132,21 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 RELATIONS
 
+=head2 goal_execution_subprefectures
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::GoalExecutionSubprefecture>
+
+=cut
+
+__PACKAGE__->has_many(
+  "goal_execution_subprefectures",
+  "Donm::Schema::Result::GoalExecutionSubprefecture",
+  { "foreign.goal_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 goal_executions
 
 Type: has_many
@@ -178,8 +193,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-16 14:36:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:uNje2smfy2i5hgWzfyFImw
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-17 14:16:13
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:q0f9TqChhiZaT5D1Sfm+nw
 
 use Number::Format;
 
