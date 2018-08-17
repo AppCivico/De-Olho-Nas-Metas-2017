@@ -47,6 +47,8 @@ has _added_header => (
 sub add {
     my ($self, $entity, $args) = @_;
 
+    $args->{$_} =~ s/(^\s+|\s+$)//g for keys %{$args}; # Trim.
+
     $self->_cache;
     if ($entity eq 'goal') {
         my $topic_name = delete $args->{topic};
@@ -129,14 +131,15 @@ sub load_file {
             my $table_name = $dbh->quote_identifier(sprintf("%s_%s", $entity, $self->_get_random_string()));
             my $original = $dbh->quote_identifier($entity);
 
-            $dbh->do(qq{CREATE TEMPORARY TABLE $table_name ( LIKE $original INCLUDING ALL )});
+            #$dbh->do(qq{CREATE TEMPORARY TABLE $table_name ( LIKE $original INCLUDING ALL )});
+            $dbh->do(qq{CREATE TABLE $table_name ( LIKE $original INCLUDING ALL )});
 
             my $filepath = $dbh->quote($fh->filename);
             my @columns  = @{ $self->_added_header->{$entity} };
             my $columns  = join(q{, }, @columns);
 
             # Copiando os dados para a tabela temporária.
-            $dbh->do(qq{COPY $table_name ($columns) FROM $filepath WITH CSV HEADER QUOTE '"'});
+            $dbh->do(qq{COPY $table_name ($columns) FROM $filepath WITH CSV HEADER});
 
             my $conflict = 'id';
             $conflict = join q{, }, qw(id_reference project_id)         if 'action_line'                  eq $entity;
@@ -172,7 +175,7 @@ sub _get_random_string {
 sub _get_new_fh {
     my $self = shift;
 
-    my $fh = File::Temp->new( UNLINK => 1, SUFFIX => '.csv', DIR => '/tmp' );
+    my $fh = File::Temp->new( UNLINK => 0, SUFFIX => '.csv', DIR => '/tmp' );
     binmode $fh, ':encoding(utf8)';
     chmod 0644, $fh->filename;
 
