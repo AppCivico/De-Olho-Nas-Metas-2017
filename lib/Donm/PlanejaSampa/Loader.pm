@@ -33,18 +33,11 @@ has _filehandles => (
     default => sub { {} },
 );
 
-has _cache_topics => (
-    is   => 'rw',
-    isa  => HashRef[Int],
+has _cache => (
+    is   => 'ro',
+    isa  => HashRef[HashRef[Int]],
     lazy => 1,
-    builder => '_build_cache_topics',
-);
-
-has _cache_subprefectures => (
-    is   => 'rw',
-    isa  => HashRef[Int],
-    lazy => 1,
-    builder => '_build_cache_subprefectures',
+    builder => '_build_cache',
 );
 
 has _added_header => (
@@ -56,11 +49,10 @@ has _added_header => (
 sub add {
     my ($self, $entity, $args) = @_;
 
+    $self->_cache;
     if ($entity eq 'goal') {
-        $self->_cache_topics(); # Build topics cache.
-
         my $topic_name = delete $args->{topic};
-        $args->{topic_id} = $self->_cache_topics->{$topic_name};
+        $args->{topic_id} = $self->_cache->{topic}->{$topic_name};
 
         $args->{slug} = slugify($args->{title});
     }
@@ -72,15 +64,14 @@ sub add {
     }
     elsif ($entity eq 'goal_execution') { }
     elsif ($entity eq 'goal_execution_subprefecture') {
-        $self->_cache_subprefectures();
-
         my $subprefecture_name = delete $args->{subprefecture_name};
         if (defined($subprefecture_name)) { $subprefecture_name =~ s/^PR\-//  }
         else                              { $subprefecture_name = 'A definir' }
 
-        my $subprefecture_id = $self->_cache_subprefectures->{$subprefecture_name} or die "Unknown subprefecture '$subprefecture_name'";
+        my $subprefecture_id = $self->_cache->{subprefecture}->{$subprefecture_name}
+          or die "Unknown subprefecture '$subprefecture_name'";
 
-        $args->{subprefecture_id} = $self->_cache_subprefectures->{$subprefecture_name};
+        $args->{subprefecture_id} = $subprefecture_id;
     }
     else { die "die invalid entity '$entity'" }
 
@@ -179,7 +170,7 @@ sub _get_random_string {
 sub _get_new_fh {
     my $self = shift;
 
-    my $fh = File::Temp->new( UNLINK => 0, SUFFIX => '.csv', DIR => '/tmp' );
+    my $fh = File::Temp->new( UNLINK => 1, SUFFIX => '.csv', DIR => '/tmp' );
     binmode $fh, ':encoding(utf8)';
     chmod 0644, $fh->filename;
 
@@ -188,25 +179,23 @@ sub _get_new_fh {
 
 sub _build_schema { return get_schema() }
 
-sub _build_cache_topics {
+sub _build_cache {
     my $self = shift;
 
-    return +{
-        map {
-            my $topic_name = $_->get_column('name');
-            $topic_name => $_->id
-        } $self->schema->resultset('Topic')->all()
-    };
-}
+    return {
+        topic => +{
+            map {
+                my $topic_name = $_->get_column('name');
+                $topic_name => $_->id
+            } $self->schema->resultset('Topic')->all()
+        },
 
-sub _build_cache_subprefectures {
-    my $self = shift;
-
-    return +{
-        map {
-            my $subprefecture = $_;
-            $subprefecture->get_column('name') => $subprefecture->id
-        } $self->schema->resultset('Subprefecture')->all()
+        subprefecture => +{
+            map {
+                my $subprefecture = $_;
+                $subprefecture->get_column('name') => $subprefecture->id
+            } $self->schema->resultset('Subprefecture')->all()
+        }
     };
 }
 
