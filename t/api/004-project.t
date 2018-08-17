@@ -40,7 +40,7 @@ db_transaction {
                     topics => [
                         {
                             id   => 5,
-                            name => "Desenvolvimento Econômico E Gestão",
+                            name => "Desenvolvimento Econômico e Gestão",
                             slug => "desenvolvimento-economico-e-gestao",
                             description => "Foi articulado em torno da ideia de uma cidade inteligente, eficiente, que gera oportunidades e simplifica a vida das pessoas",
                         }
