@@ -12,8 +12,6 @@ use Donm::PlanejaSampa::Loader;
 
 extends 'YADA::Worker';
 
-use DDP;
-
 has action => (
     is       => 'rw',
     isa      => Str,
@@ -48,8 +46,6 @@ after finish => sub {
         return 0;
     }
 
-    printf "Download '%s' (%d bytes)\n", $self->final_url, length ${$self->data};
-
     my $action = $self->action;
     $self->$action($self->data_as_json) if $action;
 };
@@ -76,7 +72,6 @@ sub index {
         my $goal_id = $goal->{meta_numero};
         my $url = "http://planejasampa.prefeitura.sp.gov.br/api/metas/${goal_id}";
 
-        printf "Appending '%s' to queue.\n", $url;
         $self->queue->append(sub {
             Donm::PlanejaSampa::Worker->new({
                 initial_url => $url,

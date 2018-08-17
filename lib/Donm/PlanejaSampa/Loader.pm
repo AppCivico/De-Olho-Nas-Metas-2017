@@ -11,8 +11,6 @@ use File::Temp;
 use Donm::Utils qw(slugify);
 use Donm::SchemaConnected qw(get_schema);
 
-use Data::Printer;
-
 has schema => (
     is   => 'rw',
     isa  => InstanceOf['Donm::Schema', 'DBIx::Class::Schema'],
@@ -136,8 +134,6 @@ sub load_file {
             my $filepath = $dbh->quote($fh->filename);
             my @columns  = @{ $self->_added_header->{$entity} };
             my $columns  = join(q{, }, @columns);
-
-            printf "Loading file '%s'\n", $fh->filename;
 
             # Copiando os dados para a tabela temporária.
             $dbh->do(qq{COPY $table_name ($columns) FROM $filepath WITH CSV HEADER QUOTE '"'});
