@@ -7,6 +7,7 @@ use MooX::Types::MooseLike::Base ':all';
 use Text::CSV;
 use File::Copy;
 use File::Temp;
+use File::Slurp;
 
 use Donm::Utils qw(slugify);
 use Donm::SchemaConnected qw(get_schema);
@@ -139,7 +140,11 @@ sub load_file {
             my $columns  = join(q{, }, @columns);
 
             # Copiando os dados para a tabela temporária.
-            $dbh->do(qq{COPY $table_name ($columns) FROM $filepath WITH CSV HEADER});
+            $dbh->do(qq{COPY $table_name ($columns) FROM stdin WITH CSV HEADER QUOTE '"';});
+
+            my @file_content = map { s/\r//g } read_file($fh->filename);
+            $dbh->pg_putcopydata($_) for @file_content;
+            $dbh->pg_putcopyend();
 
             my $conflict = 'id';
             $conflict = join q{, }, qw(id_reference project_id)         if 'action_line'                  eq $entity;
