@@ -97,6 +97,7 @@ sub goal {
             unit                       => $res->{meta_unidade_medida},
             base_value                 => $res->{meta_num_valor_base},
             status                     => $res->{meta_estado},
+            secretariat                => $res->{secretaria_descricao},
         }
     );
 
