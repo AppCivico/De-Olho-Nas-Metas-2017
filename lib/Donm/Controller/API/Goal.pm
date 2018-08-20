@@ -40,7 +40,7 @@ __PACKAGE__->config(
                             year        => $execution->get_year(),
                             semester    => $execution->get_semester(),
                         };
-                    } $goal->goal_executions->all()
+                    } $goal->goal_executions->search( { 'me.accumulated' => 'false' } )->all()
                 ],
 
                 projection_first_biennium => $goal->get_readable_projection_first_biennium(),
