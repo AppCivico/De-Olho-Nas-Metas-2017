@@ -132,8 +132,7 @@ sub load_file {
             my $table_name = $dbh->quote_identifier(sprintf("%s_%s", $entity, $self->_get_random_string()));
             my $original = $dbh->quote_identifier($entity);
 
-            #$dbh->do(qq{CREATE TEMPORARY TABLE $table_name ( LIKE $original INCLUDING ALL )});
-            $dbh->do(qq{CREATE TABLE $table_name ( LIKE $original INCLUDING ALL )});
+            $dbh->do(qq{CREATE TEMPORARY TABLE $table_name ( LIKE $original INCLUDING ALL )});
 
             my $filepath = $dbh->quote($fh->filename);
             my @columns  = @{ $self->_added_header->{$entity} };
@@ -142,7 +141,7 @@ sub load_file {
             # Copiando os dados para a tabela temporária.
             $dbh->do(qq{COPY $table_name ($columns) FROM stdin WITH CSV HEADER QUOTE '"';});
 
-            my @file_content = map { s/\r//g } read_file($fh->filename);
+            my @file_content = read_file($fh->filename);
             $dbh->pg_putcopydata($_) for @file_content;
             $dbh->pg_putcopyend();
 
@@ -224,4 +223,3 @@ sub _build_csv {
 __PACKAGE__->meta->make_immutable;
 
 1;
-

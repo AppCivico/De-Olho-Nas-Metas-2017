@@ -84,8 +84,7 @@ sub index {
 sub goal {
     my ($self, $res) = @_;
 
-    my $goal_id    = $res->{meta_numero};
-    my $base_value = $res->{meta_num_valor_base};
+    my $goal_id = $res->{meta_numero};
 
     $self->loader->add(
         'goal', {
@@ -97,6 +96,7 @@ sub goal {
             indicator_description      => $res->{meta_descricao},
             unit                       => $res->{meta_unidade_medida},
             base_value                 => $res->{meta_num_valor_base},
+            status                     => $res->{meta_estado},
         }
     );
 
