@@ -151,7 +151,31 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-17 14:16:13
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3MZsYuOFdtaL+tb5+sMsYw
 
+sub get_year {
+    my $self = shift;
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
+    my $period = $self->get_column('period');
+
+    if    ($period =~ m{^[12]$}) { return 2017 }
+    elsif ($period =~ m{^[23]$}) { return 2018 }
+    elsif ($period =~ m{^[34]$}) { return 2019 }
+    elsif ($period =~ m{^[56]$}) { return 2020 }
+
+    return undef; ## no critic
+}
+
+sub get_semester {
+    my $self = shift;
+
+    my $period = $self->get_column('period');
+
+    if    ($period =~ m{^[135]$}) { return 1 }
+    elsif ($period =~ m{^[246]$}) { return 2 }
+
+    return undef; ## no critic
+}
+
 __PACKAGE__->meta->make_immutable;
+
 1;
+

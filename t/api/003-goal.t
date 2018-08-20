@@ -77,16 +77,36 @@ db_transaction {
         code    => 404,
     ;
 
-    subtest 'format all values' => sub {
+    subtest 'goal execution' => sub {
 
-        # Este teste foi criado para cobrir todos os casos de cálculo do progresso das metas.
-        my $goal_rs = $schema->resultset('Goal');
-        #my $goal_rs = $schema->resultset("Goal")->search( { 'me.id' => [ 50 ] } );
-        while (my $goal = $goal_rs->next()) {
-            rest_get [ "api/goal", $goal->id ], name => 'get goal_id=' . $goal->id;
-        }
+        my $goal_id = 4;
+        my $goal_execution_rs = $schema->resultset('GoalExecution')->search( { 'me.goal_id' => $goal_id } );
 
-        #rest_get [ "api/goal", 45 ], name => 'get 45';
+        ok( $goal_execution_rs->delete(), 'delete goal execution' );
+        ok(
+            $schema->resultset('GoalExecution')
+            ->create(
+                {
+                    goal_id     => $goal_id,
+                    period      => 5,
+                    value       => 10,
+                    accumulated => 'false',
+                }
+            ),
+            'add goal execution',
+        );
+
+        rest_get [ qw/ api goal /, $goal_id ],
+            name  => 'get goal id=4',
+            stash => 'goal_execution',
+        ;
+
+        stash_test 'goal_execution' => sub {
+            my $res = shift;
+
+            is( $res->{goal}->{execution}->[0]->{semester}, 1,    'semester=1' );
+            is( $res->{goal}->{execution}->[0]->{year},     2020, 'year=2020'  );
+        };
     };
 };
 

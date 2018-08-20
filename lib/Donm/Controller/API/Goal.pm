@@ -29,6 +29,20 @@ __PACKAGE__->config(
                     qw/ id title topic_id slug indicator_description /
                 ),
 
+                execution => [
+                    map {
+                        my $execution = $_;
+
+                        +{
+                            value       => $execution->get_column('value'),
+                            updated_at  => $execution->get_column('updated_at'),
+                            accumulated => $execution->get_column('accumulated'),
+                            year        => $execution->get_year(),
+                            semester    => $execution->get_semester(),
+                        };
+                    } $goal->goal_executions->all()
+                ],
+
                 projection_first_biennium => $goal->get_readable_projection_first_biennium(),
                 projection_second_biennium => $goal->get_readable_projection_second_biennium(),
 
@@ -129,7 +143,7 @@ sub list_GET {
                             map {
                                 my $gp = $_;
 
-                                +{ map { $_ => $gp->{project}->{$_} } qw/ id title slug / },
+                                +{ map { $_ => $gp->{project}->{$_} } qw/ id title slug / }
                             } @{ $r->{goal_projects} }
                         ],
                     }
@@ -147,9 +161,9 @@ sub list_GET {
                         ),
                     },
                     {
-                        prefetch     => [ "topic", { 'goal_projects' => "project" } ],
-                        order_by     => [ "me.id" ],
-                        result_class => "DBIx::Class::ResultClass::HashRefInflator",
+                        prefetch     => [ 'topic', { 'goal_projects' => 'project' }, 'goal_executions' ],
+                        order_by     => [ 'me.id' ],
+                        result_class => 'DBIx::Class::ResultClass::HashRefInflator',
                     }
                 )->all()
             ],
