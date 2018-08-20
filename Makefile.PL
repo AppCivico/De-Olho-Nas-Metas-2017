@@ -52,6 +52,7 @@ my %WriteMakefileArgs = (
     "EV" => 0,
     "Exporter" => 0,
     "File::Copy" => 0,
+    "File::Slurp" => 0,
     "File::Temp" => 0,
     "FindBin" => 0,
     "JSON::XS" => 0,
@@ -98,7 +99,7 @@ my %WriteMakefileArgs = (
     "blib" => "1.01",
     "lib" => 0
   },
-  "VERSION" => 20180817,
+  "VERSION" => 20180820,
   "test" => {
     "TESTS" => "t/*.t t/api/*.t t/misc/*.t"
   }
@@ -146,6 +147,7 @@ my %FallbackPrereqs = (
   "EV" => 0,
   "Exporter" => 0,
   "File::Copy" => 0,
+  "File::Slurp" => 0,
   "File::Spec" => 0,
   "File::Temp" => 0,
   "FindBin" => 0,
