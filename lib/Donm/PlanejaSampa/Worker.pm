@@ -127,12 +127,12 @@ sub goal {
 
     # Inserindo os projetos na queue.
     for my $project_id (keys %{ $res->{projetos} || {} }) {
-       $self->queue->append(sub {
-           Donm::PlanejaSampa::Worker->new({
-               initial_url => "http://planejasampa.prefeitura.sp.gov.br/api/projetos/${project_id}",
-               action      => 'project',
-           });
-       });
+        $self->queue->append(sub {
+             Donm::PlanejaSampa::Worker->new({
+                initial_url => "http://planejasampa.prefeitura.sp.gov.br/api/projetos/${project_id}",
+                action      => 'project',
+            });
+        });
     }
 }
 
@@ -149,6 +149,17 @@ sub project {
         }
     );
 
+    # Carregando a relação no banco.
+    for my $goal_id (keys %{ $res->{dados_cadastrais}->{metas} || {} }) {
+        $self->loader->add(
+            'goal_project',
+            {
+                goal_id    => $goal_id,
+                project_id => $res->{dados_cadastrais}->{projeto_numero},
+            }
+        );
+    }
+
     for (keys %{ $res->{linhas_acao} }) {
         my $action_line = $res->{linhas_acao}->{$_};
 
@@ -163,6 +174,7 @@ sub project {
                 achievement           => $action_line->{linha_acao_marco},
             }
         );
+        # TODO Adicionar a subprefecture_action_line.
     }
     return;
 }
