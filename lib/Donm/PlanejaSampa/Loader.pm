@@ -4,6 +4,7 @@ use Moo;
 with 'MooX::Singleton';
 
 use MooX::Types::MooseLike::Base ':all';
+use Encode;
 use Text::CSV;
 use File::Copy;
 use File::Temp;
@@ -96,7 +97,7 @@ sub add {
         $fh,
         [
             map {
-                my $value = $args->{$_ };
+                my $value = encode_utf8($args->{$_});
                 $value =~ s/\R/\n/g if defined $value;
                 $value;
             } @columns
