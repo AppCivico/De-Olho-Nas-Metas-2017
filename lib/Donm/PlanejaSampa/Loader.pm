@@ -98,10 +98,7 @@ sub add {
         [
             map {
                 my $value = $args->{$_};
-                if (defined($value)) {
-                    $value =~ s/\R/\n/g;
-                    $value = encode_utf8($value);
-                }
+                $value =~ s/\R/\n/g if defined $value;
                 $value;
             } @columns
         ]
