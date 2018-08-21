@@ -8,7 +8,7 @@ use Encode;
 use Text::CSV;
 use File::Copy;
 use File::Temp;
-use File::Slurp;
+use File::Slurper 'read_text';
 
 use Donm::Utils qw(slugify);
 use Donm::SchemaConnected qw(get_schema);
@@ -149,8 +149,7 @@ sub load_file {
             # Copiando os dados para a tabela temporária.
             $dbh->do(qq{COPY $table_name ($columns) FROM stdin WITH CSV HEADER QUOTE '"';});
 
-            my @file_content = read_file($fh->filename);
-            $dbh->pg_putcopydata($_) for @file_content;
+            $dbh->pg_putcopydata(read_text($fh->filename));
             $dbh->pg_putcopyend();
 
             my $conflict = 'id';
