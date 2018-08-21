@@ -97,8 +97,11 @@ sub add {
         $fh,
         [
             map {
-                my $value = encode_utf8($args->{$_});
-                $value =~ s/\R/\n/g if defined $value;
+                my $value = $args->{$_};
+                if (defined($value)) {
+                    $value =~ s/\R/\n/g;
+                    $value = encode_utf8($value);
+                }
                 $value;
             } @columns
         ]
