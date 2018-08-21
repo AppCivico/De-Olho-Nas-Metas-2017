@@ -94,7 +94,13 @@ sub add {
 
     $self->csv->print(
         $fh,
-        [ map { $args->{$_ } } @columns ]
+        [
+            map {
+                my $value = $args->{$_ };
+                $value =~ s/\R/\n/g if defined $value;
+                $value;
+            } @columns
+        ]
     );
 
     return 1;
