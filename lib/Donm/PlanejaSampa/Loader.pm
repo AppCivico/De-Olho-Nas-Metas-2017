@@ -69,7 +69,8 @@ sub add {
     elsif ($entity eq 'action_line') {
         $args->{slug} = slugify($args->{title});
     }
-    elsif ($entity eq 'goal_execution') { }
+    elsif ($entity eq 'goal_project')   {}
+    elsif ($entity eq 'goal_execution') {}
     elsif ($entity eq 'goal_execution_subprefecture') {
         my $subprefecture_name = delete $args->{subprefecture_name};
         if (defined($subprefecture_name)) { $subprefecture_name =~ s/^PR\-//  }

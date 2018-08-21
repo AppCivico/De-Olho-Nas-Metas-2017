@@ -32,6 +32,16 @@ sub synchronize {
         });
     });
 
+    for my $project_id ( 1 .. 75 ) {
+        $self->yada->append(sub {
+            Donm::PlanejaSampa::Worker->new({
+                initial_url => "http://planejasampa.prefeitura.sp.gov.br/api/projetos/${project_id}",
+                action      => 'project',
+                retry       => 3,
+            });
+        });
+    }
+
     $self->yada->wait();
     $self->loader->load_all();
 

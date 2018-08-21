@@ -42,9 +42,10 @@ after finish => sub {
     my ($self, $result) = @_;
 
     if ($self->has_error) {
-        printf "Error at '%s': %s\n", $self->final_url, $result;
+        printf "Error at '%s': %s\n", $self->final_url, $result unless $result =~ m{^No error$};
         return 0;
     }
+    printf "Download '%s' (%d bytes)\n", $self->final_url, length ${$self->data};
 
     my $action = $self->action;
     $self->$action($self->data_as_json) if $action;
@@ -70,11 +71,10 @@ sub index {
 
     for my $goal (@{ $res }) {
         my $goal_id = $goal->{meta_numero};
-        my $url = "http://planejasampa.prefeitura.sp.gov.br/api/metas/${goal_id}";
 
         $self->queue->append(sub {
             Donm::PlanejaSampa::Worker->new({
-                initial_url => $url,
+                initial_url => "http://planejasampa.prefeitura.sp.gov.br/api/metas/${goal_id}",
                 action      => 'goal',
             });
         });
@@ -151,6 +151,13 @@ sub project {
 
     # Carregando a relação no banco.
     for my $goal_id (keys %{ $res->{dados_cadastrais}->{metas} || {} }) {
+        $self->queue->append(sub {
+            Donm::PlanejaSampa::Worker->new({
+                initial_url => "http://planejasampa.prefeitura.sp.gov.br/api/metas/${goal_id}",
+                action      => 'goal',
+            });
+        });
+
         $self->loader->add(
             'goal_project',
             {
