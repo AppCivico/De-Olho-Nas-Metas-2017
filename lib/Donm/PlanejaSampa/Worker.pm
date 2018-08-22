@@ -102,6 +102,15 @@ sub goal {
         }
     );
 
+    for my $s ( @{ $res->{selos} || [] } ) {
+        $self->loader->add(
+            'goal_badge', {
+                goal_id => $goal_id,
+                badge   => $s->{selo_nome},
+            }
+        );
+    }
+
     # Carregando a execução da meta.
     for my $e (@{ $res->{execucao} }) {
         $self->loader->add(
