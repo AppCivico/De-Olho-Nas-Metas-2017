@@ -147,6 +147,10 @@ sub project {
             description      => $res->{dados_cadastrais}->{projeto_descricao},
             expected_results => $res->{dados_cadastrais}->{projeto_resultados_esperados},
             current_scenario => $res->{dados_cadastrais}->{projeto_justificativa},
+            budget_own_resources_investment   => $res->{dados_cadastrais}->{orcamento_planejado}->{recursos_proprios}->{investimento},
+            budget_own_resources_costing      => $res->{dados_cadastrais}->{orcamento_planejado}->{recursos_proprios}->{custeio},
+            budget_other_resources_investment => $res->{dados_cadastrais}->{orcamento_planejado}->{outros_recursos}->{investimento},
+            budget_other_resources_costing    => $res->{dados_cadastrais}->{orcamento_planejado}->{outros_recursos}->{custeio},
         }
     );
 

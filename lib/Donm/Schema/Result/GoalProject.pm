@@ -68,6 +68,11 @@ __PACKAGE__->table("goal_project");
   is_nullable: 0
   original: {default_value => \"now()"}
 
+=head2 updated_at
+
+  data_type: 'timestamp'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -89,6 +94,8 @@ __PACKAGE__->add_columns(
     is_nullable   => 0,
     original      => { default_value => \"now()" },
   },
+  "updated_at",
+  { data_type => "timestamp", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -136,8 +143,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-09-19 16:13:23
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:GtjOnCdEVMW2pSTU9QoxEA
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-22 11:46:13
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NbwhF88JwPQ30TU1cVjIBw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

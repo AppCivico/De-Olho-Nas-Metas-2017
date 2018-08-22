@@ -77,6 +77,26 @@ __PACKAGE__->table("project");
   data_type: 'timestamp'
   is_nullable: 1
 
+=head2 budget_own_resources_investment
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 budget_own_resources_costing
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 budget_other_resources_investment
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 budget_other_resources_costing
+
+  data_type: 'text'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -94,6 +114,14 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 1 },
   "updated_at",
   { data_type => "timestamp", is_nullable => 1 },
+  "budget_own_resources_investment",
+  { data_type => "text", is_nullable => 1 },
+  "budget_own_resources_costing",
+  { data_type => "text", is_nullable => 1 },
+  "budget_other_resources_investment",
+  { data_type => "text", is_nullable => 1 },
+  "budget_other_resources_costing",
+  { data_type => "text", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -141,8 +169,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-14 17:17:58
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Xnl5Evr5eDusClSk5QpGhA
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-22 11:46:13
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1Bn4mHYEQmw9iigjawLwAw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
