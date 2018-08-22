@@ -356,9 +356,10 @@ Donm::Utils	./lib/Donm/Utils.pm	/^package Donm::Utils;$/;"	p
 Donm::Utils qw(slugify)	./lib/Donm/PlanejaSampa/Loader.pm	/^use Donm::Utils qw(slugify);$/;"	u
 EV	./lib/Donm/PlanejaSampa/Worker.pm	/^use EV;$/;"	u
 EXPORT	./lib/Donm/SchemaConnected.pm	/^our @EXPORT = qw(get_schema get_connection_info);$/;"	o
+Encode	./lib/Donm/PlanejaSampa/Loader.pm	/^use Encode;$/;"	u
 Exporter	./lib/Donm/SchemaConnected.pm	/^require Exporter;$/;"	r
 File::Copy	./lib/Donm/PlanejaSampa/Loader.pm	/^use File::Copy;$/;"	u
-File::Slurp	./lib/Donm/PlanejaSampa/Loader.pm	/^use File::Slurp;$/;"	u
+File::Slurper 'read_text'	./lib/Donm/PlanejaSampa/Loader.pm	/^use File::Slurper 'read_text';$/;"	u
 File::Temp	./lib/Donm/PlanejaSampa/Loader.pm	/^use File::Temp;$/;"	u
 FindBin qw($RealBin $Script)	./script/adhoc/populate-database.pl	/^use FindBin qw($RealBin $Script);$/;"	u
 FindBin qw($RealBin $Script)	./script/adhoc/update-action-line-region.pl	/^use FindBin qw($RealBin $Script);$/;"	u
