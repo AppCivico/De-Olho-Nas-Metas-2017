@@ -45,7 +45,7 @@ sub synchronize {
     $self->yada->wait();
     $self->loader->load_all();
 
-    return 1;
+    return 0;
 }
 
 sub _build_loader { return Donm::PlanejaSampa::Loader->instance }
