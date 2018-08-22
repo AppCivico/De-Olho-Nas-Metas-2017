@@ -5,4 +5,4 @@ use lib "$RealBin/../lib";
 
 use Donm::PlanejaSampa;
 
-Donm::PlanejaSampa->new()->synchronize();
+exit Donm::PlanejaSampa->new()->synchronize;

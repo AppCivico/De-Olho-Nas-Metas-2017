@@ -32,6 +32,19 @@ __PACKAGE__->config(
                 expected_results => $project->get_column('expected_results'),
 
                 (
+                    budget => {
+                        own_resources => {
+                            investment => $project->get_column('budget_own_resources_investment'),
+                            costing    => $project->get_column('budget_own_resources_costing'),
+                        },
+                        other_resources => {
+                            investment => $project->get_column('budget_other_resources_investment'),
+                            costing    => $project->get_column('budget_other_resources_costing'),
+                        }
+                    },
+                ),
+
+                (
                     topics => [
                         map {
                             my $gp = $_;

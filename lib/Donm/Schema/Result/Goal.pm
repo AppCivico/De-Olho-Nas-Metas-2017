@@ -93,9 +93,19 @@ __PACKAGE__->table("goal");
   data_type: 'timestamp'
   is_nullable: 1
 
+=head2 secretariat
+
+  data_type: 'text'
+  is_nullable: 1
+
 =head2 status
 
   data_type: 'text'
+  is_nullable: 1
+
+=head2 last_updated_at
+
+  data_type: 'timestamp'
   is_nullable: 1
 
 =cut
@@ -121,8 +131,12 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 1 },
   "updated_at",
   { data_type => "timestamp", is_nullable => 1 },
+  "secretariat",
+  { data_type => "text", is_nullable => 1 },
   "status",
   { data_type => "text", is_nullable => 1 },
+  "last_updated_at",
+  { data_type => "timestamp", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -200,8 +214,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-20 11:34:49
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:bgiI0e4TkIIFpoZb6lvDMQ
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-22 11:46:13
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:tUvE3TQAfqmPY+uJJALghQ
 
 use Number::Format;
 
