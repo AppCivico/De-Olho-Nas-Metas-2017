@@ -98,6 +98,7 @@ sub goal {
             base_value                 => $res->{meta_num_valor_base},
             status                     => $res->{meta_estado},
             secretariat                => $res->{secretaria_descricao},
+            last_updated_at            => $res->{meta_ultimo_atualizacao_reg},
         }
     );
 
