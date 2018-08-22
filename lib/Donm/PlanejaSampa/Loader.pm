@@ -159,6 +159,7 @@ sub load_file {
             $dbh->pg_putcopyend();
 
             my $conflict = 'id';
+            $conflict = join q{, }, qw(goal_id badge_id)                if 'goal_badge'                   eq $entity;
             $conflict = join q{, }, qw(id_reference project_id)         if 'action_line'                  eq $entity;
             $conflict = join q{, }, qw(goal_id period accumulated)      if 'goal_execution'               eq $entity;
             $conflict = join q{, }, qw(goal_id subprefecture_id period) if 'goal_execution_subprefecture' eq $entity;
