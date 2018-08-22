@@ -43,7 +43,7 @@ __PACKAGE__->config(
                     } $goal->goal_executions->search( { 'me.accumulated' => 'false' } )->all()
                 ],
 
-                projection_first_biennium => $goal->get_readable_projection_first_biennium(),
+                projection_first_biennium  => $goal->get_readable_projection_first_biennium(),
                 projection_second_biennium => $goal->get_readable_projection_second_biennium(),
 
                 ( topic => { map { $_ => $goal->topic->$_ } qw/ id name slug / } ),
@@ -82,6 +82,18 @@ __PACKAGE__->config(
                         } $goal->goal_projects->all()
                     ],
                 ),
+
+                (
+                    badges => [
+                        map {
+                            my $badge = $_->badge;
+                            +{
+                                id   => $badge->get_column('id'),
+                                name => $badge->get_column('name'),
+                            }
+                        } $goal->goal_badges->all()
+                    ],
+                ),
             },
         };
     },
@@ -101,8 +113,9 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
         {
             prefetch => [
                 'topic',
-                { 'goal_projects' => { 'project' => { 'action_lines' => { 'subprefecture_action_lines' => 'subprefecture' } } } }
-            ]
+                { 'goal_badges' => 'badge' },
+                { 'goal_projects' => { 'project' => { 'action_lines' => { 'subprefecture_action_lines' => 'subprefecture' } } } },
+            ],
         },
     );
 

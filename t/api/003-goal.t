@@ -77,6 +77,33 @@ db_transaction {
         code    => 404,
     ;
 
+    subtest 'goal badge' => sub {
+
+        ok( my $goal  = $schema->resultset('Goal')->search( { 'me.id' => 1 } )->next  );
+        ok( my $badge = $schema->resultset('Badge')->search( { 'me.id' => 1 } )->next );
+
+        ok(
+            $schema->resultset('GoalBadge')->create({
+                goal_id  => $goal->id,
+                badge_id => $badge->id
+            }),
+            'add relationship'
+        );
+
+        rest_get [ qw/ api goal /, $goal->id ],
+            name  => 'get goal',
+            stash => 'goal_badge',
+        ;
+
+        stash_test 'goal_badge' => sub {
+            my $res = shift;
+
+            is( ref $res->{goal}->{badges},          'ARRAY', 'badges=ARRAY' );
+            is( $res->{goal}->{badges}->[0]->{id},   '1',     'badge_id=1' );
+            is( $res->{goal}->{badges}->[0]->{name}, 'Erradicação da pobreza', 'name' );
+        };
+    };
+
     subtest 'goal execution' => sub {
 
         my $goal_id = 4;

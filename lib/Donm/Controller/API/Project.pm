@@ -5,8 +5,6 @@ use namespace::autoclean;
 
 BEGIN { extends 'CatalystX::Eta::Controller::REST' }
 
-use Text::Lorem;
-
 with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoResultGET";
 
@@ -18,8 +16,6 @@ __PACKAGE__->config(
     object_key => "project",
     build_row  => sub {
         my ($project, $self, $c) = @_;
-
-        my $lorem = Text::Lorem->new();
 
         my %unique_topics = ();
         my %unique_subprefectures = ();
