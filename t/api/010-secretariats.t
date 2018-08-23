@@ -31,7 +31,7 @@ db_transaction {
         my $res = shift;
 
         is( ref $res->{secretariats}, 'ARRAY', 'secretariats=array' );
-        is( scalar(grep { m{^(?!Secretaria)} } @{ $res->{secretariats} }), '0' );
+        is( scalar(grep { !m{^Secretaria} } @{ $res->{secretariats} }), '0' );
     };
 };
 

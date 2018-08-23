@@ -16,7 +16,7 @@ __PACKAGE__->config(
 
     # AutoListGET.
     list_key => 'secretariats',
-    build_list_row => sub { use DDP; p $_[0]->get_column('name'); $_[0]->get_column('name'); },
+    build_list_row => sub { $_[0]->get_column('name') },
 );
 
 sub root : Chained('/api/root') : PathPart('') : CaptureArgs(0) { }
