@@ -148,7 +148,7 @@ sub list_GET {
                 map {
                     my $r = $_;
                     +{
-                        ( map { $_ => $r->{$_} } qw/ id title topic_id topic slug indicator_description / ),
+                        ( map { $_ => $r->{$_} } qw/ id title topic_id topic slug indicator_description secretariat / ),
 
                         topic => +{ map { $_ => $r->{topic}->{$_} } qw/ id name slug / },
 
@@ -158,6 +158,15 @@ sub list_GET {
 
                                 +{ map { $_ => $gp->{project}->{$_} } qw/ id title slug / }
                             } @{ $r->{goal_projects} }
+                        ],
+                        badges => [
+                            map {
+                                my $badge = $_->{badge};
+                                +{
+                                    id   => $badge->{id},
+                                    name => $badge->{name},
+                                }
+                            } @{ $r->{goal_badges} }
                         ],
                     }
                 } $c->stash->{collection}->search(
@@ -174,7 +183,7 @@ sub list_GET {
                         ),
                     },
                     {
-                        prefetch     => [ 'topic', { 'goal_projects' => 'project' }, 'goal_executions' ],
+                        prefetch     => [ 'topic', { 'goal_projects' => 'project' }, 'goal_executions', { 'goal_badges' => 'badge' } ],
                         order_by     => [ 'me.id' ],
                         result_class => 'DBIx::Class::ResultClass::HashRefInflator',
                     }
