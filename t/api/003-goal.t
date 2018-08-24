@@ -144,7 +144,7 @@ db_transaction {
         ok $schema->resultset('GoalExecutionSubprefecture')->create({
             goal_id          => $goal->id,
             subprefecture_id => $subprefecture->id,
-            period           => fake_int(1, 10)->(),
+            period           => 2,
             value            => fake_int(1, 10000)->(),
             updated_at       => \'NOW()',
         });
@@ -160,6 +160,7 @@ db_transaction {
             is ref $res->{goal}->{execution_subprefecture}, 'ARRAY', 'execution_subprefecture=ARRAY';
             is ref $res->{goal}->{execution_subprefecture}->[0]->{subprefecture}, 'HASH', 'subprefecture=HASH';
             is scalar @{ $res->{goal}->{execution_subprefecture} }, 1, 'one item';
+            is $res->{goal}->{execution_subprefecture}->[0]->{year}, '2017', 'year=2017';
         };
     };
 };

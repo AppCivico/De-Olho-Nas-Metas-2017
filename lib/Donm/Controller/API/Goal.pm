@@ -45,7 +45,8 @@ __PACKAGE__->config(
                     map {
                         +{
                             id         => $_->get_column('id'),
-                            period     => $_->get_column('period'),
+                            year       => $_->get_year(),
+                            semester   => $_->get_semester(),
                             value      => $_->get_column('value'),
                             updated_at => $_->get_column('updated_at'),
                             subprefecture => {
@@ -54,7 +55,7 @@ __PACKAGE__->config(
                                 acronym => $_->subprefecture->get_column('acronym'),
                             },
                         }
-                    } $goal->goal_execution_subprefectures->all()
+                    } $goal->goal_execution_subprefectures->search({}, { order_by => [qw( subprefecture_id )] })->all()
                 ],
 
                 projection_first_biennium  => $goal->get_readable_projection_first_biennium(),
