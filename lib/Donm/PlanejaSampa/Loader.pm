@@ -70,8 +70,9 @@ sub add {
     elsif ($entity eq 'action_line') {
         $args->{slug} = slugify($args->{title});
     }
-    elsif ($entity eq 'goal_project')   {}
-    elsif ($entity eq 'goal_execution') {}
+    elsif ($entity eq 'goal_project')                {}
+    elsif ($entity eq 'goal_execution')              {}
+    elsif ($entity eq 'goal_additional_information') {}
     elsif ($entity eq 'goal_execution_subprefecture') {
         my $subprefecture_name = delete $args->{subprefecture_name};
         if (defined($subprefecture_name)) { $subprefecture_name =~ s/^PR\-//  }
@@ -146,11 +147,13 @@ sub load_file {
             my $table_name = $dbh->quote_identifier(sprintf("%s_%s", $entity, $self->_get_random_string()));
             my $original = $dbh->quote_identifier($entity);
 
-            $dbh->do(qq{CREATE TEMPORARY TABLE $table_name ( LIKE $original INCLUDING ALL )});
+            $dbh->do(qq{CREATE TEMPORARY TABLE $table_name ( LIKE $original INCLUDING DEFAULTS INCLUDING CONSTRAINTS INCLUDING STORAGE)});
 
             my $filepath = $dbh->quote($fh->filename);
             my @columns  = @{ $self->_added_header->{$entity} };
             my $columns  = join(q{, }, @columns);
+
+            printf "Loading file '%s'...\n", $fh->filename;
 
             # Copiando os dados para a tabela temporária.
             $dbh->do(qq{COPY $table_name ($columns) FROM stdin WITH CSV HEADER QUOTE '"';});
@@ -163,12 +166,13 @@ sub load_file {
             $conflict = join q{, }, qw(id_reference project_id)         if 'action_line'                  eq $entity;
             $conflict = join q{, }, qw(goal_id project_id)              if 'goal_project'                 eq $entity;
             $conflict = join q{, }, qw(goal_id period accumulated)      if 'goal_execution'               eq $entity;
+            $conflict = join q{, }, qw(goal_id description)             if 'goal_additional_information'  eq $entity;
             $conflict = join q{, }, qw(goal_id subprefecture_id period) if 'goal_execution_subprefecture' eq $entity;
 
             # Atualizando os dados.
             my $upsert_query = <<"SQL_QUERY";
                 INSERT INTO $original ($columns)
-                SELECT $columns
+                SELECT DISTINCT ON($conflict) $columns
                 FROM $table_name
                 ON CONFLICT ($conflict) DO UPDATE
                 SET

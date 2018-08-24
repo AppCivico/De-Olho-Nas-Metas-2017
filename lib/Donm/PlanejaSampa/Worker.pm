@@ -102,6 +102,7 @@ sub goal {
         }
     );
 
+    # Selos.
     for my $s ( @{ $res->{selos} || [] } ) {
         $self->loader->add(
             'goal_badge', {
@@ -111,7 +112,7 @@ sub goal {
         );
     }
 
-    # Carregando a execução da meta.
+    # Execução da meta.
     for my $e (@{ $res->{execucao} }) {
         $self->loader->add(
             'goal_execution', {
@@ -123,7 +124,7 @@ sub goal {
         );
     }
 
-    # Carregando a execução da meta por região.
+    # Execução da meta por região.
     for my $e (@{ $res->{execucao_regional} }) {
         $self->loader->add(
             'goal_execution_subprefecture', {
@@ -131,6 +132,17 @@ sub goal {
                 subprefecture_name => $e->{prefeitura_regional_nome},
                 period             => $e->{meta_execucao_prefeitura_regional_num_periodo},
                 value              => $e->{meta_execucao_prefeitura_regional_valor},
+            }
+        );
+    }
+
+    # Informações adicionais.
+    for my $information (@{ $res->{informacao_adicional} }) {
+        $self->loader->add(
+            'goal_additional_information', {
+                goal_id => $goal_id,
+                description => $information->{meta_informacao_adicional_descricao},
+                inserted_at => $information->{meta_informacao_adicional_dt_informacao},
             }
         );
     }
