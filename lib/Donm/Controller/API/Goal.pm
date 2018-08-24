@@ -31,16 +31,30 @@ __PACKAGE__->config(
 
                 execution => [
                     map {
-                        my $execution = $_;
-
                         +{
-                            value       => $execution->get_column('value'),
-                            updated_at  => $execution->get_column('updated_at'),
-                            accumulated => $execution->get_column('accumulated'),
-                            year        => $execution->get_year(),
-                            semester    => $execution->get_semester(),
+                            value       => $_->get_column('value'),
+                            updated_at  => $_->get_column('updated_at'),
+                            accumulated => $_->get_column('accumulated'),
+                            year        => $_->get_year(),
+                            semester    => $_->get_semester(),
                         };
                     } $goal->goal_executions->search( { 'me.accumulated' => 'false' } )->all()
+                ],
+
+                execution_subprefecture => [
+                    map {
+                        +{
+                            id         => $_->get_column('id'),
+                            period     => $_->get_column('period'),
+                            value      => $_->get_column('value'),
+                            updated_at => $_->get_column('updated_at'),
+                            subprefecture => {
+                                id      => $_->subprefecture->get_column('id'),
+                                name    => $_->subprefecture->get_column('name'),
+                                acronym => $_->subprefecture->get_column('acronym'),
+                            },
+                        }
+                    } $goal->goal_execution_subprefectures->all()
                 ],
 
                 projection_first_biennium  => $goal->get_readable_projection_first_biennium(),
@@ -113,6 +127,8 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
         {
             prefetch => [
                 'topic',
+                'goal_executions',
+                { 'goal_execution_subprefectures' => 'subprefecture' },
                 { 'goal_badges' => 'badge' },
                 { 'goal_projects' => { 'project' => { 'action_lines' => { 'subprefecture_action_lines' => 'subprefecture' } } } },
             ],

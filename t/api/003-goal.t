@@ -135,6 +135,33 @@ db_transaction {
             is( $res->{goal}->{execution}->[0]->{year},     2020, 'year=2020'  );
         };
     };
+
+    subtest 'goal execution by subprefecture' => sub {
+
+        my $goal = $schema->resultset('Goal')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+        my $subprefecture = $schema->resultset('Subprefecture')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+
+        ok $schema->resultset('GoalExecutionSubprefecture')->create({
+            goal_id          => $goal->id,
+            subprefecture_id => $subprefecture->id,
+            period           => fake_int(1, 10)->(),
+            value            => fake_int(1, 10000)->(),
+            updated_at       => \'NOW()',
+        });
+
+        rest_get [ qw/ api goal /, $goal->id ],
+            name  => 'get goal',
+            stash => 'goal_execution_subprefecture',
+        ;
+
+        stash_test 'goal_execution_subprefecture' => sub {
+            my $res = shift;
+
+            is ref $res->{goal}->{execution_subprefecture}, 'ARRAY', 'execution_subprefecture=ARRAY';
+            is ref $res->{goal}->{execution_subprefecture}->[0]->{subprefecture}, 'HASH', 'subprefecture=HASH';
+            is scalar @{ $res->{goal}->{execution_subprefecture} }, 1, 'one item';
+        };
+    };
 };
 
 done_testing();
