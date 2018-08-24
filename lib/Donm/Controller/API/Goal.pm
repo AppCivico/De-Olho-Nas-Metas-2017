@@ -53,7 +53,9 @@ __PACKAGE__->config(
                                 acronym => $_->subprefecture->get_column('acronym'),
                             },
                         }
-                    } $goal->goal_execution_subprefectures->search({}, { order_by => [qw( subprefecture_id )] })->all()
+                    } $goal->goal_execution_subprefectures
+                      ->search_only_not_accumulated()
+                      ->search({}, { order_by => [qw( subprefecture_id )] })->all()
                 ],
 
                 projection_first_biennium  => $goal->get_readable_projection_first_biennium(),

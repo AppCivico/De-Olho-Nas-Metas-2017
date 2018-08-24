@@ -149,6 +149,14 @@ db_transaction {
             updated_at       => \'NOW()',
         });
 
+        ok $schema->resultset('GoalExecutionSubprefecture')->create({
+            goal_id          => $goal->id,
+            subprefecture_id => $subprefecture->id,
+            period           => 9,
+            value            => fake_int(1, 10000)->(),
+            updated_at       => \'NOW()',
+        });
+
         rest_get [ qw/ api goal /, $goal->id ],
             name  => 'get goal',
             stash => 'goal_execution_subprefecture',
@@ -161,6 +169,7 @@ db_transaction {
             is ref $res->{goal}->{execution_subprefecture}->[0]->{subprefecture}, 'HASH', 'subprefecture=HASH';
             is scalar @{ $res->{goal}->{execution_subprefecture} }, 1, 'one item';
             is $res->{goal}->{execution_subprefecture}->[0]->{year}, '2017', 'year=2017';
+            is $res->{goal}->{execution_subprefecture}->[1], undef, 'accumulated=undef';
         };
     };
 };
