@@ -153,6 +153,21 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 RELATIONS
 
+=head2 goal_additional_informations
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::GoalAdditionalInformation>
+
+=cut
+
+__PACKAGE__->has_many(
+  "goal_additional_informations",
+  "Donm::Schema::Result::GoalAdditionalInformation",
+  { "foreign.goal_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 goal_badges
 
 Type: has_many
@@ -229,8 +244,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-22 16:29:51
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:XzTSRkieavWSJKqZFq8Qzw
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-24 17:26:58
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:0mfz+2Y6+tg3z0c/4o9Y0Q
 
 use Number::Format;
 
