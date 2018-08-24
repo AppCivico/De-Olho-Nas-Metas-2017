@@ -9,8 +9,6 @@ with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoResultGET";
 with "CatalystX::Eta::Controller::TypesValidation";
 
-use DDP;
-
 __PACKAGE__->config(
     # AutoBase.
     result => "DB::Goal",
