@@ -172,6 +172,30 @@ db_transaction {
             is $res->{goal}->{execution_subprefecture}->[1], undef, 'accumulated=undef';
         };
     };
+
+    subtest 'goal additional information' => sub {
+
+        my $goal = $schema->resultset('Goal')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+        my $description = fake_paragraphs(1)->();
+
+        ok $goal->goal_additional_informations->create({
+            description => $description,
+            inserted_at => fake_past_datetime->(),
+            updated_at  => \'NOW()',
+        });
+
+        rest_get [ qw/ api goal /, $goal->id ],
+            name  => 'get goal',
+            stash => 'goal_additional_information',
+        ;
+
+        stash_test 'goal_additional_information' => sub {
+            my $res = shift;
+
+            is ref $res->{goal}->{additional_information}, 'ARRAY', 'additional_information=ARRAY';
+            is $res->{goal}->{additional_information}->[0]->{description}, $description, 'description';
+        };
+    };
 };
 
 done_testing();

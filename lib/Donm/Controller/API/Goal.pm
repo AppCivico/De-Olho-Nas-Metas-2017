@@ -109,6 +109,18 @@ __PACKAGE__->config(
                         } $goal->goal_badges->all()
                     ],
                 ),
+
+                (
+                    additional_information => [
+                        map {
+                            my $ai = $_;
+                            +{
+                                description => $ai->get_column('description'),
+                                inserted_at => $ai->get_column('inserted_at'),
+                            }
+                        } $goal->goal_additional_informations->all()
+                    ],
+                )
             },
         };
     },
