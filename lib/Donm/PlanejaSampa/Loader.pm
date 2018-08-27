@@ -34,7 +34,7 @@ has _filehandles => (
 );
 
 has _cache => (
-    is   => 'ro',
+    is   => 'rw',
     isa  => HashRef[HashRef[Int]],
     lazy => 1,
     builder => '_build_cache',
