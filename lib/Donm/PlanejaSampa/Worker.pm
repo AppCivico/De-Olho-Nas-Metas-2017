@@ -235,8 +235,27 @@ sub project {
                 achievement           => $action_line->{linha_acao_marco},
             }
         );
-        # TODO Adicionar a subprefecture_action_line.
     }
+
+    my $budget_execution = $res->{dados_cadastrais}->{execucao_orcamentaria};
+    for my $year (keys %{ $budget_execution }) {
+        $self->loader->add(
+            'project_budget_execution', {
+                project_id => $res->{dados_cadastrais}->{projeto_numero},
+                year       => $year,
+                own_resources_investment   => $budget_execution->{$year}->{recursos_proprios}->{investimento},
+                own_resources_costing      => $budget_execution->{$year}->{recursos_proprios}->{custeio},
+                own_resources_total        => $budget_execution->{$year}->{recursos_proprios}->{total},
+                other_resources_investment => $budget_execution->{$year}->{outros_recursos}->{investimento},
+                other_resources_costing    => $budget_execution->{$year}->{outros_recursos}->{custeio},
+                other_resources_total      => $budget_execution->{$year}->{outros_recursos}->{total},
+                total_year_investment      => $budget_execution->{$year}->{total_ano}->{investimento},
+                total_year_costing         => $budget_execution->{$year}->{total_ano}->{custeio},
+                total_year_total           => $budget_execution->{$year}->{total_ano}->{total},
+            },
+        );
+    }
+
     return;
 }
 
