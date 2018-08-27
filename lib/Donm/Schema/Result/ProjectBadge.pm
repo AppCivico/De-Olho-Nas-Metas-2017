@@ -1,12 +1,12 @@
 use utf8;
-package Donm::Schema::Result::GoalBadge;
+package Donm::Schema::Result::ProjectBadge;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
 
 =head1 NAME
 
-Donm::Schema::Result::GoalBadge
+Donm::Schema::Result::ProjectBadge
 
 =cut
 
@@ -34,11 +34,11 @@ extends 'DBIx::Class::Core';
 
 __PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
 
-=head1 TABLE: C<goal_badge>
+=head1 TABLE: C<project_badge>
 
 =cut
 
-__PACKAGE__->table("goal_badge");
+__PACKAGE__->table("project_badge");
 
 =head1 ACCESSORS
 
@@ -47,9 +47,9 @@ __PACKAGE__->table("goal_badge");
   data_type: 'integer'
   is_auto_increment: 1
   is_nullable: 0
-  sequence: 'goal_badge_id_seq'
+  sequence: 'project_badge_id_seq'
 
-=head2 goal_id
+=head2 project_id
 
   data_type: 'integer'
   is_foreign_key: 1
@@ -74,9 +74,9 @@ __PACKAGE__->add_columns(
     data_type         => "integer",
     is_auto_increment => 1,
     is_nullable       => 0,
-    sequence          => "goal_badge_id_seq",
+    sequence          => "project_badge_id_seq",
   },
-  "goal_id",
+  "project_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "badge_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
@@ -98,11 +98,11 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 UNIQUE CONSTRAINTS
 
-=head2 C<goal_badge_goal_id_badge_id_key>
+=head2 C<project_badge_project_id_badge_id_key>
 
 =over 4
 
-=item * L</goal_id>
+=item * L</project_id>
 
 =item * L</badge_id>
 
@@ -110,7 +110,10 @@ __PACKAGE__->set_primary_key("id");
 
 =cut
 
-__PACKAGE__->add_unique_constraint("goal_badge_goal_id_badge_id_key", ["goal_id", "badge_id"]);
+__PACKAGE__->add_unique_constraint(
+  "project_badge_project_id_badge_id_key",
+  ["project_id", "badge_id"],
+);
 
 =head1 RELATIONS
 
@@ -129,24 +132,24 @@ __PACKAGE__->belongs_to(
   { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
-=head2 goal
+=head2 project
 
 Type: belongs_to
 
-Related object: L<Donm::Schema::Result::Goal>
+Related object: L<Donm::Schema::Result::Project>
 
 =cut
 
 __PACKAGE__->belongs_to(
-  "goal",
-  "Donm::Schema::Result::Goal",
-  { id => "goal_id" },
+  "project",
+  "Donm::Schema::Result::Project",
+  { id => "project_id" },
   { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
 # Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-27 15:22:12
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:tYgxPOHHymB/4JsMnZPP7g
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:pTgcw9Y8sinu6zEyRF+6lA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

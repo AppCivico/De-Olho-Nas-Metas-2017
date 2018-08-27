@@ -42,23 +42,37 @@ __PACKAGE__->table("badge");
 
 =head1 ACCESSORS
 
-=head2 id
-
-  data_type: 'integer'
-  is_nullable: 0
-
 =head2 name
 
   data_type: 'text'
   is_nullable: 0
 
+=head2 id
+
+  data_type: 'integer'
+  is_auto_increment: 1
+  is_nullable: 0
+  sequence: 'badge_id_seq'
+
+=head2 updated_at
+
+  data_type: 'timestamp'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
-  "id",
-  { data_type => "integer", is_nullable => 0 },
   "name",
   { data_type => "text", is_nullable => 0 },
+  "id",
+  {
+    data_type         => "integer",
+    is_auto_increment => 1,
+    is_nullable       => 0,
+    sequence          => "badge_id_seq",
+  },
+  "updated_at",
+  { data_type => "timestamp", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -90,9 +104,24 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 project_badges
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-22 16:29:51
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9wqNHiZH2fAuqSW8oZQ3ew
+Type: has_many
+
+Related object: L<Donm::Schema::Result::ProjectBadge>
+
+=cut
+
+__PACKAGE__->has_many(
+  "project_badges",
+  "Donm::Schema::Result::ProjectBadge",
+  { "foreign.badge_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-27 15:22:12
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6WbmGt2tpFXgt5ncCgx+Qw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
