@@ -105,9 +105,15 @@ sub goal {
     # Selos.
     for my $s ( @{ $res->{selos} || [] } ) {
         $self->loader->add(
+            'badge', {
+                name => $s->{selo_nome},
+            }
+        );
+
+        $self->loader->add(
             'goal_badge', {
-                goal_id => $goal_id,
-                badge   => $s->{selo_nome},
+                goal_id    => $goal_id,
+                badge_name => $s->{selo_nome},
             }
         );
     }
@@ -174,6 +180,17 @@ sub project {
             budget_other_resources_costing    => $res->{dados_cadastrais}->{orcamento_planejado}->{outros_recursos}->{custeio},
         }
     );
+
+    for my $badge ( @{ $res->{dados_cadastrais}->{selos} } ) {
+        $self->loader->add('badge', { name => $badge->{selo_nome} });
+
+        $self->loader->add(
+            'project_badge', {
+                project_id => $res->{dados_cadastrais}->{projeto_numero},
+                badge_name => $badge->{selo_nome},
+            }
+        );
+    }
 
     # Carregando a relação no banco.
     for my $goal_id (keys %{ $res->{dados_cadastrais}->{metas} || {} }) {

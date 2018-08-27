@@ -83,10 +83,30 @@ sub add {
 
         $args->{subprefecture_id} = $subprefecture_id;
     }
+    elsif ($entity eq 'badge') {
+        my $name = delete $args->{name};
+        $name =~ s/^[0-9]+\s+\-\s+//g;
+        $args->{name} = $name;
+    }
     elsif ($entity eq 'goal_badge') {
-        my $badge = delete $args->{badge};
-        my ($badge_id) = split m{\s+\-\s+}, $badge;
-        $badge_id =~ s/^0+//;
+        my $badge = delete $args->{badge_name};
+        $badge =~ s/^[0-9]+\s+\-\s+//g;
+        my $badge_id = $self->_cache->{badge}->{$badge};
+        if (!$badge_id) {
+            $self->_cache($self->_build_cache());
+            my $badge_id = $self->_cache->{badge}->{$badge} or die "Unknown badge '$badge'";
+        }
+        $args->{badge_id} = $badge_id;
+
+    }
+    elsif ($entity eq 'project_badge') {
+        my $badge = delete $args->{badge_name};
+        $badge =~ s/^[0-9]+\s+\-\s+//g;
+        my $badge_id = $self->_cache->{badge}->{$badge};
+        if (!$badge_id) {
+            $self->_cache($self->_build_cache());
+            my $badge_id = $self->_cache->{badge}->{$badge} or die "Unknown badge '$badge'";
+        }
         $args->{badge_id} = $badge_id;
     }
     else { die "die invalid entity '$entity'" }
@@ -126,9 +146,13 @@ sub get_filehandle {
 sub load_all {
     my $self = shift;
 
-    for my $entity (keys %{ $self->_filehandles }) {
-        my $fh = $self->_filehandles->{$entity};
-
+    my @entities = qw(
+        badge project goal action_line goal_project goal_badge project_badge goal_execution goal_additional_information
+        goal_execution_subprefecture
+    );
+    for my $entity (@entities) {
+        my $fh = $self->_filehandles->{$entity} or die die "There is no entity '$entity'.";
+        printf "Loading entity '%s'...\n", $entity;
         $self->load_file($entity, $fh);
     }
     return;
@@ -165,6 +189,7 @@ sub load_file {
             $conflict = join q{, }, qw(goal_id badge_id)                if 'goal_badge'                   eq $entity;
             $conflict = join q{, }, qw(id_reference project_id)         if 'action_line'                  eq $entity;
             $conflict = join q{, }, qw(goal_id project_id)              if 'goal_project'                 eq $entity;
+            $conflict = join q{, }, qw(project_id badge_id)             if 'project_badge'                eq $entity;
             $conflict = join q{, }, qw(goal_id period accumulated)      if 'goal_execution'               eq $entity;
             $conflict = join q{, }, qw(goal_id description)             if 'goal_additional_information'  eq $entity;
             $conflict = join q{, }, qw(goal_id subprefecture_id period) if 'goal_execution_subprefecture' eq $entity;
@@ -223,7 +248,13 @@ sub _build_cache {
                 my $subprefecture = $_;
                 $subprefecture->get_column('name') => $subprefecture->id
             } $self->schema->resultset('Subprefecture')->all()
-        }
+        },
+
+        badge => +{
+            map {
+                $_->get_column('name') => $_->id
+            } $self->schema->resultset('Badge')->all()
+        },
     };
 }
 
