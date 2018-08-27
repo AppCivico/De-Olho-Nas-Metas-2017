@@ -98,6 +98,18 @@ __PACKAGE__->config(
                         } $project->action_lines->all()
                     ],
                 ),
+
+                (
+                    badges => [
+                        map {
+                            my $badge = $_->badge;
+                            +{
+                                id   => $badge->get_column('id'),
+                                name => $badge->get_column('name'),
+                            }
+                        } $project->project_badges->all()
+                    ],
+                ),
             },
         };
     },

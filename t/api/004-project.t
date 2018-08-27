@@ -141,6 +141,33 @@ db_transaction {
             'retrieved one topic',
         );
     };
+
+    subtest 'project badges' => sub {
+
+        ok( my $project = $schema->resultset('Project')->search( {}, { rows => 1, order_by => \['RANDOM()'] } )->next );
+        ok( my $badge   = $schema->resultset('Badge')->search( {}, { rows => 1, order_by => \['RANDOM()'] } )->next );
+
+        ok(
+            $schema->resultset('ProjectBadge')->create({
+                project_id => $project->id,
+                badge_id   => $badge->id,
+            }),
+            'add relationship'
+        );
+
+        rest_get [ qw/ api project /, $project->id ],
+            name  => 'get project',
+            stash => 'project_badge',
+        ;
+
+        stash_test 'project_badge' => sub {
+            my $res = shift;
+
+            is( ref $res->{project}->{badges},          'ARRAY',      'badges=ARRAY' );
+            is( $res->{project}->{badges}->[0]->{id},   $badge->id,   'badge_id' );
+            is( $res->{project}->{badges}->[0]->{name}, $badge->name, 'name' );
+        };
+    };
 };
 
 done_testing();
