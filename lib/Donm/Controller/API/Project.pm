@@ -120,6 +120,25 @@ __PACKAGE__->config(
                             }
                         } $project->project_additional_informations->all()
                     ],
+                ),
+
+                (
+                    budget_executions => [
+                        map {
+                            +{
+                                year => $_->get_column('year'),
+                                own_resources_investment   => $_->get_column('own_resources_investment'),
+                                own_resources_costing      => $_->get_column('own_resources_costing'),
+                                own_resources_total        => $_->get_column('own_resources_total'),
+                                other_resources_investment => $_->get_column('other_resources_investment'),
+                                other_resources_costing    => $_->get_column('other_resources_costing'),
+                                other_resources_total      => $_->get_column('other_resources_total'),
+                                total_year_investment      => $_->get_column('total_year_investment'),
+                                total_year_costing         => $_->get_column('total_year_costing'),
+                                total_year_total           => $_->get_column('total_year_total'),
+                            }
+                        } $project->project_budget_executions->all()
+                    ],
                 )
             },
         };

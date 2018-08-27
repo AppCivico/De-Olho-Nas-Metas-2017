@@ -198,9 +198,24 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 project_budget_executions
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-27 17:29:08
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TIJ+LWg88WGShPlERPnKlg
+Type: has_many
+
+Related object: L<Donm::Schema::Result::ProjectBudgetExecution>
+
+=cut
+
+__PACKAGE__->has_many(
+  "project_budget_executions",
+  "Donm::Schema::Result::ProjectBudgetExecution",
+  { "foreign.project_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-27 18:41:55
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:nI2wreAZnAnMsh9pUjSlUQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
