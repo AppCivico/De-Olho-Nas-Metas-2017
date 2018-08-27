@@ -4,11 +4,12 @@ use Moo;
 with 'MooX::Singleton';
 
 use MooX::Types::MooseLike::Base ':all';
-use Encode;
+use Encode 'encode_utf8';
 use Text::CSV;
 use File::Copy;
 use File::Temp;
 use File::Slurper 'read_text';
+use Digest::SHA qw(sha256_hex);
 
 use Donm::Utils qw(slugify);
 use Donm::SchemaConnected qw(get_schema);
@@ -70,9 +71,13 @@ sub add {
     elsif ($entity eq 'action_line') {
         $args->{slug} = slugify($args->{title});
     }
-    elsif ($entity eq 'goal_project')                {}
-    elsif ($entity eq 'goal_execution')              {}
-    elsif ($entity eq 'goal_additional_information') {}
+    elsif ($entity eq 'goal_project')                   {}
+    elsif ($entity eq 'goal_execution')                 {}
+    elsif ($entity eq 'goal_additional_information')    {}
+    elsif ($entity eq 'project_additional_information') {
+        my $description = $args->{description};
+        $args->{hash} = sha256_hex(encode_utf8($description));
+    }
     elsif ($entity eq 'goal_execution_subprefecture') {
         my $subprefecture_name = delete $args->{subprefecture_name};
         if (defined($subprefecture_name)) { $subprefecture_name =~ s/^PR\-//  }
@@ -148,7 +153,7 @@ sub load_all {
 
     my @entities = qw(
         badge project goal action_line goal_project goal_badge project_badge goal_execution goal_additional_information
-        goal_execution_subprefecture
+        goal_execution_subprefecture project_additional_information
     );
     for my $entity (@entities) {
         my $fh = $self->_filehandles->{$entity} or die die "There is no entity '$entity'.";
@@ -186,13 +191,15 @@ sub load_file {
             $dbh->pg_putcopyend();
 
             my $conflict = 'id';
-            $conflict = join q{, }, qw(goal_id badge_id)                if 'goal_badge'                   eq $entity;
-            $conflict = join q{, }, qw(id_reference project_id)         if 'action_line'                  eq $entity;
-            $conflict = join q{, }, qw(goal_id project_id)              if 'goal_project'                 eq $entity;
-            $conflict = join q{, }, qw(project_id badge_id)             if 'project_badge'                eq $entity;
-            $conflict = join q{, }, qw(goal_id period accumulated)      if 'goal_execution'               eq $entity;
-            $conflict = join q{, }, qw(goal_id description)             if 'goal_additional_information'  eq $entity;
-            $conflict = join q{, }, qw(goal_id subprefecture_id period) if 'goal_execution_subprefecture' eq $entity;
+            $conflict = join q{, }, qw(name)                            if 'badge'                          eq $entity;
+            $conflict = join q{, }, qw(goal_id badge_id)                if 'goal_badge'                     eq $entity;
+            $conflict = join q{, }, qw(id_reference project_id)         if 'action_line'                    eq $entity;
+            $conflict = join q{, }, qw(goal_id project_id)              if 'goal_project'                   eq $entity;
+            $conflict = join q{, }, qw(project_id badge_id)             if 'project_badge'                  eq $entity;
+            $conflict = join q{, }, qw(goal_id period accumulated)      if 'goal_execution'                 eq $entity;
+            $conflict = join q{, }, qw(goal_id description)             if 'goal_additional_information'    eq $entity;
+            $conflict = join q{, }, qw(goal_id subprefecture_id period) if 'goal_execution_subprefecture'   eq $entity;
+            $conflict = join q{, }, qw(project_id hash)                 if 'project_additional_information' eq $entity;
 
             # Atualizando os dados.
             my $upsert_query = <<"SQL_QUERY";

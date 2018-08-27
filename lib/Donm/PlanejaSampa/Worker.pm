@@ -210,6 +210,17 @@ sub project {
         );
     }
 
+    # Informações adicionais.
+    for my $information (@{ $res->{dados_cadastrais}->{projeto_informacao_adicional} }) {
+        $self->loader->add(
+            'project_additional_information', {
+                project_id  => $res->{dados_cadastrais}->{projeto_numero},
+                description => $information->{projeto_informacao_adicional_descricao},
+                inserted_at => $information->{projeto_informacao_adicional_dt_informacao},
+            }
+        );
+    }
+
     for (keys %{ $res->{linhas_acao} }) {
         my $action_line = $res->{linhas_acao}->{$_};
 
