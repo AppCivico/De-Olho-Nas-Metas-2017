@@ -89,6 +89,10 @@ sub add {
         $badge_id =~ s/^0+//;
         $args->{badge_id} = $badge_id;
     }
+    elsif ($entity eq 'project_badge') {
+        my $badge = delete $args->{badge};
+        #$args->{badge_id} = $badge_id;
+    }
     else { die "die invalid entity '$entity'" }
 
     my $fh = $self->get_filehandle($entity);
@@ -223,7 +227,13 @@ sub _build_cache {
                 my $subprefecture = $_;
                 $subprefecture->get_column('name') => $subprefecture->id
             } $self->schema->resultset('Subprefecture')->all()
-        }
+        },
+
+        badge => +{
+            map {
+                $_->get_column('name') => $_->id
+            } $self->schema->resultset('Badge')->all()
+        },
     };
 }
 

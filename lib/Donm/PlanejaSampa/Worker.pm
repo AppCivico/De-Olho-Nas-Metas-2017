@@ -175,6 +175,15 @@ sub project {
         }
     );
 
+    for my $badge ( @{ $res->{dados_cadastrais}->{selos} } ) {
+        $self->loader->add(
+            'project_badge', {
+                project_id => $res->{dados_cadastrais}->{projeto_numero},
+                badge      => $badge->{selo_nome},
+            }
+        );
+    }
+
     # Carregando a relação no banco.
     for my $goal_id (keys %{ $res->{dados_cadastrais}->{metas} || {} }) {
         $self->queue->append(sub {

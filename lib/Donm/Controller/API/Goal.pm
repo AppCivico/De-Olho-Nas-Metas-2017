@@ -24,7 +24,7 @@ __PACKAGE__->config(
             goal => {
                 (
                     map { $_ => $goal->get_column($_) }
-                    qw/ id title topic_id slug indicator_description last_updated_at secretariat /
+                    qw/ id title topic_id slug indicator_description last_updated_at secretariat status /
                 ),
 
                 execution => [
@@ -61,7 +61,7 @@ __PACKAGE__->config(
                 projection_first_biennium  => $goal->get_readable_projection_first_biennium(),
                 projection_second_biennium => $goal->get_readable_projection_second_biennium(),
 
-                ( topic => { map { $_ => $goal->topic->$_ } qw/ id name slug / } ),
+                ( topic => [ { map { $_ => $goal->topic->$_ } qw/ id name slug / } ] ),
 
                 (
                     subprefectures => [
