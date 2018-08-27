@@ -168,6 +168,31 @@ db_transaction {
             is( $res->{project}->{badges}->[0]->{name}, $badge->name, 'name' );
         };
     };
+
+    subtest 'project additional information' => sub {
+
+        my $project = $schema->resultset('Project')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+        my $description = fake_paragraphs(1)->();
+
+        ok $project->project_additional_informations->create({
+            description => $description,
+            inserted_at => fake_past_datetime->(),
+            hash        => 'foobar',
+            updated_at  => \'NOW()',
+        });
+
+        rest_get [ qw/ api project /, $project->id ],
+            name  => 'get project',
+            stash => 'project_additional_information',
+        ;
+
+        stash_test 'project_additional_information' => sub {
+            my $res = shift;
+
+            is ref $res->{project}->{additional_information}, 'ARRAY', 'additional_information=ARRAY';
+            is $res->{project}->{additional_information}->[0]->{description}, $description, 'description';
+        };
+    };
 };
 
 done_testing();
