@@ -57,7 +57,7 @@ db_transaction {
         my $res = shift;
 
         is( ref($res->{goal}), "HASH", 'main node is hashref' );
-        is( ref($res->{goal}->{topic}), "HASH", 'retrieved topic' );
+        is( ref($res->{goal}->{topics}), 'ARRAY', 'retrieved topic' );
         is( ref($res->{goal}->{projects}), "ARRAY", 'retrieved projects' );
         is( ref($res->{goal}->{subprefectures}), "ARRAY", 'retrieved subprefectures' );
 
