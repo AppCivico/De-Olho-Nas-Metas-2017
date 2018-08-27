@@ -193,6 +193,31 @@ db_transaction {
             is $res->{project}->{additional_information}->[0]->{description}, $description, 'description';
         };
     };
+
+    subtest 'project budget execution' => sub {
+
+        my $project = $schema->resultset('Project')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+        ok $project->project_budget_executions->create({
+            year => 2018,
+            (
+                map { $_ => fake_words(3)->() }
+                qw/ own_resources_investment own_resources_costing own_resources_total other_resources_investment
+                other_resources_costing other_resources_total total_year_investment total_year_costing total_year_total /
+            ),
+        });
+
+        rest_get [ qw/ api project /, $project->id ],
+            name  => 'get project',
+            stash => 'project_budget_execution',
+        ;
+
+        stash_test 'project_budget_execution' => sub {
+            my $res = shift;
+
+            is ref $res->{project}->{budget_executions}, 'ARRAY', 'budget_executions=ARRAY';
+            is $res->{project}->{budget_executions}->[0]->{year}, 2018, 'year=2018';
+        };
+    };
 };
 
 done_testing();
