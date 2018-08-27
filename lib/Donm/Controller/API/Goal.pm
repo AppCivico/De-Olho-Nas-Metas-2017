@@ -24,7 +24,7 @@ __PACKAGE__->config(
             goal => {
                 (
                     map { $_ => $goal->get_column($_) }
-                    qw/ id title topic_id slug indicator_description last_updated_at secretariat /
+                    qw/ id title topic_id slug indicator_description last_updated_at secretariat status /
                 ),
 
                 execution => [
