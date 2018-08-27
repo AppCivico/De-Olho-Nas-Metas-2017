@@ -110,6 +110,17 @@ __PACKAGE__->config(
                         } $project->project_badges->all()
                     ],
                 ),
+
+                (
+                    additional_information => [
+                        map {
+                            +{
+                                description => $_->get_column('description'),
+                                inserted_at => $_->get_column('inserted_at'),
+                            }
+                        } $project->project_additional_informations->all()
+                    ],
+                )
             },
         };
     },

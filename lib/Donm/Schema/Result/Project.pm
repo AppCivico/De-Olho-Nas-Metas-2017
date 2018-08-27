@@ -168,6 +168,21 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 project_additional_informations
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::ProjectAdditionalInformation>
+
+=cut
+
+__PACKAGE__->has_many(
+  "project_additional_informations",
+  "Donm::Schema::Result::ProjectAdditionalInformation",
+  { "foreign.project_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 project_badges
 
 Type: has_many
@@ -184,8 +199,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-27 15:20:11
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:McMfQMfAeXRsdQf2UwpxRw
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-27 17:29:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TIJ+LWg88WGShPlERPnKlg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
