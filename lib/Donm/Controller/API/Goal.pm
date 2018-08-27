@@ -61,7 +61,7 @@ __PACKAGE__->config(
                 projection_first_biennium  => $goal->get_readable_projection_first_biennium(),
                 projection_second_biennium => $goal->get_readable_projection_second_biennium(),
 
-                ( topic => [ { map { $_ => $goal->topic->$_ } qw/ id name slug / } ] ),
+                ( topics => [ +{ map { $_ => $goal->topic->$_ } qw/ id name slug / } ] ),
 
                 (
                     subprefectures => [
@@ -179,7 +179,7 @@ sub list_GET {
                     +{
                         ( map { $_ => $r->{$_} } qw/ id title topic_id topic slug indicator_description secretariat / ),
 
-                        topic => +{ map { $_ => $r->{topic}->{$_} } qw/ id name slug / },
+                        topics => [ +{ map { $_ => $r->{topic}->{$_} } qw/ id name slug / } ],
 
                         projects => [
                             map {
