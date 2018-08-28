@@ -45,7 +45,7 @@ db_transaction {
 
         is_deeply(
             [ sort keys %{ $res->{action_line} } ],
-            [ sort qw/ id achievement title indicator_description subprefectures project slug executions execution_subprefectures / ],
+            [ sort qw/ id achievement title indicator_description subprefectures project slug executions execution_subprefectures status indicator last_updated_at / ],
         );
     };
 
