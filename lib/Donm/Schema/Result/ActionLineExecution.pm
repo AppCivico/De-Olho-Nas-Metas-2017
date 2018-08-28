@@ -1,12 +1,12 @@
 use utf8;
-package Donm::Schema::Result::GoalExecutionSubprefecture;
+package Donm::Schema::Result::ActionLineExecution;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
 
 =head1 NAME
 
-Donm::Schema::Result::GoalExecutionSubprefecture
+Donm::Schema::Result::ActionLineExecution
 
 =cut
 
@@ -34,11 +34,11 @@ extends 'DBIx::Class::Core';
 
 __PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp", "PassphraseColumn");
 
-=head1 TABLE: C<goal_execution_subprefecture>
+=head1 TABLE: C<action_line_execution>
 
 =cut
 
-__PACKAGE__->table("goal_execution_subprefecture");
+__PACKAGE__->table("action_line_execution");
 
 =head1 ACCESSORS
 
@@ -47,18 +47,23 @@ __PACKAGE__->table("goal_execution_subprefecture");
   data_type: 'integer'
   is_auto_increment: 1
   is_nullable: 0
-  sequence: 'goal_execution_subprefecture_id_seq'
+  sequence: 'action_line_execution_id_seq'
 
-=head2 goal_id
+=head2 action_line_project_id
 
   data_type: 'integer'
   is_foreign_key: 1
   is_nullable: 0
 
-=head2 subprefecture_id
+=head2 action_line_id_reference
 
   data_type: 'integer'
   is_foreign_key: 1
+  is_nullable: 0
+
+=head2 value
+
+  data_type: 'text'
   is_nullable: 0
 
 =head2 period
@@ -66,9 +71,9 @@ __PACKAGE__->table("goal_execution_subprefecture");
   data_type: 'integer'
   is_nullable: 0
 
-=head2 value
+=head2 accumulated
 
-  data_type: 'text'
+  data_type: 'boolean'
   is_nullable: 0
 
 =head2 updated_at
@@ -84,16 +89,18 @@ __PACKAGE__->add_columns(
     data_type         => "integer",
     is_auto_increment => 1,
     is_nullable       => 0,
-    sequence          => "goal_execution_subprefecture_id_seq",
+    sequence          => "action_line_execution_id_seq",
   },
-  "goal_id",
+  "action_line_project_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
-  "subprefecture_id",
+  "action_line_id_reference",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
-  "period",
-  { data_type => "integer", is_nullable => 0 },
   "value",
   { data_type => "text", is_nullable => 0 },
+  "period",
+  { data_type => "integer", is_nullable => 0 },
+  "accumulated",
+  { data_type => "boolean", is_nullable => 0 },
   "updated_at",
   { data_type => "timestamp", is_nullable => 1 },
 );
@@ -112,60 +119,55 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 UNIQUE CONSTRAINTS
 
-=head2 C<goal_execution_subprefecture_subprefecture_id_goal_id_perio_key>
+=head2 C<action_line_execution_action_line_project_id_action_line_id_key>
 
 =over 4
 
-=item * L</subprefecture_id>
+=item * L</action_line_project_id>
 
-=item * L</goal_id>
+=item * L</action_line_id_reference>
 
 =item * L</period>
+
+=item * L</accumulated>
 
 =back
 
 =cut
 
 __PACKAGE__->add_unique_constraint(
-  "goal_execution_subprefecture_subprefecture_id_goal_id_perio_key",
-  ["subprefecture_id", "goal_id", "period"],
+  "action_line_execution_action_line_project_id_action_line_id_key",
+  [
+    "action_line_project_id",
+    "action_line_id_reference",
+    "period",
+    "accumulated",
+  ],
 );
 
 =head1 RELATIONS
 
-=head2 goal
+=head2 action_line
 
 Type: belongs_to
 
-Related object: L<Donm::Schema::Result::Goal>
+Related object: L<Donm::Schema::Result::ActionLine>
 
 =cut
 
 __PACKAGE__->belongs_to(
-  "goal",
-  "Donm::Schema::Result::Goal",
-  { id => "goal_id" },
-  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
-);
-
-=head2 subprefecture
-
-Type: belongs_to
-
-Related object: L<Donm::Schema::Result::Subprefecture>
-
-=cut
-
-__PACKAGE__->belongs_to(
-  "subprefecture",
-  "Donm::Schema::Result::Subprefecture",
-  { id => "subprefecture_id" },
+  "action_line",
+  "Donm::Schema::Result::ActionLine",
+  {
+    id_reference => "action_line_id_reference",
+    project_id   => "action_line_project_id",
+  },
   { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-17 14:16:13
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1KdDLBvhaePzLpij+MX2EQ
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-28 10:38:11
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:wD9y4XfyiAd0eYJTtNmZyQ
 
 sub get_year {
     my $self = shift;

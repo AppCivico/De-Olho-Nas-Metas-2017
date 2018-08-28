@@ -85,6 +85,21 @@ __PACKAGE__->table("action_line");
   data_type: 'timestamp'
   is_nullable: 1
 
+=head2 indicator
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 status
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 last_updated_at
+
+  data_type: 'timestamp'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -108,6 +123,12 @@ __PACKAGE__->add_columns(
   "slug",
   { data_type => "text", is_nullable => 0 },
   "updated_at",
+  { data_type => "timestamp", is_nullable => 1 },
+  "indicator",
+  { data_type => "text", is_nullable => 1 },
+  "status",
+  { data_type => "text", is_nullable => 1 },
+  "last_updated_at",
   { data_type => "timestamp", is_nullable => 1 },
 );
 
@@ -156,6 +177,42 @@ __PACKAGE__->add_unique_constraint("action_line_slug_key", ["slug"]);
 
 =head1 RELATIONS
 
+=head2 action_line_execution_subprefectures
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::ActionLineExecutionSubprefecture>
+
+=cut
+
+__PACKAGE__->has_many(
+  "action_line_execution_subprefectures",
+  "Donm::Schema::Result::ActionLineExecutionSubprefecture",
+  {
+    "foreign.action_line_id_reference" => "self.id_reference",
+    "foreign.action_line_project_id"   => "self.project_id",
+  },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 action_line_executions
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::ActionLineExecution>
+
+=cut
+
+__PACKAGE__->has_many(
+  "action_line_executions",
+  "Donm::Schema::Result::ActionLineExecution",
+  {
+    "foreign.action_line_id_reference" => "self.id_reference",
+    "foreign.action_line_project_id"   => "self.project_id",
+  },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 project
 
 Type: belongs_to
@@ -187,8 +244,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-14 17:17:58
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Z8L8iFA+Rcvg1ZrZ9Mm1uA
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-28 10:56:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3xRnRml7W34FKni0ohdoHw
 
 sub get_exhibition_id {
     my $self = shift;

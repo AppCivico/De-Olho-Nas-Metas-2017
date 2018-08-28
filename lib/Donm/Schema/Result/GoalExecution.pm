@@ -157,9 +157,9 @@ sub get_year {
     my $period = $self->get_column('period');
 
     if    ($period =~ m{^[12]$}) { return 2017 }
-    elsif ($period =~ m{^[23]$}) { return 2018 }
-    elsif ($period =~ m{^[34]$}) { return 2019 }
-    elsif ($period =~ m{^[56]$}) { return 2020 }
+    elsif ($period =~ m{^[34]$}) { return 2018 }
+    elsif ($period =~ m{^[56]$}) { return 2019 }
+    elsif ($period =~ m{^[78]$}) { return 2020 }
 
     return undef; ## no critic
 }
@@ -169,8 +169,8 @@ sub get_semester {
 
     my $period = $self->get_column('period');
 
-    if    ($period =~ m{^[135]$}) { return 1 }
-    elsif ($period =~ m{^[246]$}) { return 2 }
+    if    ($period =~ m{^[1357]$}) { return 1 }
+    elsif ($period =~ m{^[2468]$}) { return 2 }
 
     return undef; ## no critic
 }
