@@ -28,10 +28,14 @@ __PACKAGE__->config(
                 ),
 
                 secretariats => [
-                    +{
-                        id   => $goal->secretariat->get_column('id'),
-                        name => $goal->secretariat->get_column('name'),
-                    }
+                    (
+                        ref $goal->secretariat
+                        ? +{
+                            id   => $goal->secretariat->get_column('id'),
+                            name => $goal->secretariat->get_column('name'),
+                        }
+                        : ()
+                    ),
                 ],
 
                 execution => [
@@ -191,7 +195,7 @@ sub list_GET {
                             +{
                                 id   => $r->{secretariat}->{id},
                                 name => $r->{secretariat}->{name},
-                            }
+                            },
                         ],
 
                         topics => [ +{ map { $_ => $r->{topic}->{$_} } qw/ id name slug / } ],
