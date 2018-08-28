@@ -177,6 +177,24 @@ __PACKAGE__->add_unique_constraint("action_line_slug_key", ["slug"]);
 
 =head1 RELATIONS
 
+=head2 action_line_execution_subprefectures
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::ActionLineExecutionSubprefecture>
+
+=cut
+
+__PACKAGE__->has_many(
+  "action_line_execution_subprefectures",
+  "Donm::Schema::Result::ActionLineExecutionSubprefecture",
+  {
+    "foreign.action_line_id_reference" => "self.id_reference",
+    "foreign.action_line_project_id"   => "self.project_id",
+  },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 action_line_executions
 
 Type: has_many
@@ -226,8 +244,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-28 10:38:11
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:UvXXH3ZwudjiJEH/ZjiQ1A
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-28 10:56:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3xRnRml7W34FKni0ohdoHw
 
 sub get_exhibition_id {
     my $self = shift;

@@ -168,7 +168,7 @@ sub project {
     my ($self, $res) = @_;
 
     $self->loader->add(
-        'project', {
+        'project' => {
             id               => $res->{dados_cadastrais}->{projeto_numero},
             title            => $res->{dados_cadastrais}->{projeto_nome},
             description      => $res->{dados_cadastrais}->{projeto_descricao},
@@ -185,7 +185,7 @@ sub project {
         $self->loader->add('badge', { name => $badge->{selo_nome} });
 
         $self->loader->add(
-            'project_badge', {
+            'project_badge' => {
                 project_id => $res->{dados_cadastrais}->{projeto_numero},
                 badge_name => $badge->{selo_nome},
             }
@@ -202,8 +202,7 @@ sub project {
         });
 
         $self->loader->add(
-            'goal_project',
-            {
+            'goal_project' => {
                 goal_id    => $goal_id,
                 project_id => $res->{dados_cadastrais}->{projeto_numero},
             }
@@ -213,7 +212,7 @@ sub project {
     # Informações adicionais.
     for my $information (@{ $res->{dados_cadastrais}->{projeto_informacao_adicional} }) {
         $self->loader->add(
-            'project_additional_information', {
+            'project_additional_information' => {
                 project_id  => $res->{dados_cadastrais}->{projeto_numero},
                 description => $information->{projeto_informacao_adicional_descricao},
                 inserted_at => $information->{projeto_informacao_adicional_dt_informacao},
@@ -221,13 +220,14 @@ sub project {
         );
     }
 
+    # Linhas de ação.
     for (keys %{ $res->{linhas_acao} }) {
         my $action_line = $res->{linhas_acao}->{$_};
 
         my ($project_id, $id_reference) = split m{\.};
 
         $self->loader->add(
-            'action_line', {
+            'action_line' => {
                 project_id            => $project_id,
                 id_reference          => $id_reference,
                 title                 => $action_line->{linha_acao_nome},
@@ -251,12 +251,25 @@ sub project {
                 }
             );
         }
+
+        # Carregando a execução regionalizada.
+        for my $k (keys %{ $action_line->{execucao_regional} || {} }) {
+            $self->loader->add(
+                'action_line_execution_subprefecture' => {
+                    action_line_project_id   => $project_id,
+                    action_line_id_reference => $id_reference,
+                    subprefecture_name       => $action_line->{execucao_regional}->{$k}->[0]->{prefeitura_regional_nome},
+                    value                    => $action_line->{execucao_regional}->{$k}->[0]->{linha_acao_execucao_prefeitura_regional_valor},
+                    period                   => $action_line->{execucao_regional}->{$k}->[0]->{linha_acao_execucao_prefeitura_regional_num_periodo},
+                }
+            );
+        }
     }
 
     my $budget_execution = $res->{dados_cadastrais}->{execucao_orcamentaria};
     for my $year (keys %{ $budget_execution }) {
         $self->loader->add(
-            'project_budget_execution', {
+            'project_budget_execution' => {
                 project_id => $res->{dados_cadastrais}->{projeto_numero},
                 year       => $year,
                 own_resources_investment   => $budget_execution->{$year}->{recursos_proprios}->{investimento},
