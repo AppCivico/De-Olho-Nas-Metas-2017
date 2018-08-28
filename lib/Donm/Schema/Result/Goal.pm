@@ -93,11 +93,6 @@ __PACKAGE__->table("goal");
   data_type: 'timestamp'
   is_nullable: 1
 
-=head2 secretariat
-
-  data_type: 'text'
-  is_nullable: 1
-
 =head2 status
 
   data_type: 'text'
@@ -106,6 +101,12 @@ __PACKAGE__->table("goal");
 =head2 last_updated_at
 
   data_type: 'timestamp'
+  is_nullable: 1
+
+=head2 secretariat_id
+
+  data_type: 'integer'
+  is_foreign_key: 1
   is_nullable: 1
 
 =cut
@@ -131,12 +132,12 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 1 },
   "updated_at",
   { data_type => "timestamp", is_nullable => 1 },
-  "secretariat",
-  { data_type => "text", is_nullable => 1 },
   "status",
   { data_type => "text", is_nullable => 1 },
   "last_updated_at",
   { data_type => "timestamp", is_nullable => 1 },
+  "secretariat_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -228,6 +229,26 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 secretariat
+
+Type: belongs_to
+
+Related object: L<Donm::Schema::Result::Secretariat>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "secretariat",
+  "Donm::Schema::Result::Secretariat",
+  { id => "secretariat_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
 =head2 topic
 
 Type: belongs_to
@@ -244,8 +265,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-24 17:26:58
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:0mfz+2Y6+tg3z0c/4o9Y0Q
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-28 15:00:58
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ACwzsrLFvfZNPehZus5PBw
 
 use Number::Format;
 
