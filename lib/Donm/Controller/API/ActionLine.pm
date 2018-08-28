@@ -68,7 +68,7 @@ __PACKAGE__->config(
                             semester    => $_->get_semester(),
                             accumulated => $_->get_column('accumulated'),
                         }
-                    } $action_line->action_line_executions->all()
+                    } $action_line->action_line_executions->search({ 'me.period' => { '>' => 0 } })->all()
                 ],
 
                 execution_subprefectures => [
@@ -83,7 +83,7 @@ __PACKAGE__->config(
                                 acronym => $_->subprefecture->get_column('acronym'),
                             },
                         }
-                    } $action_line->action_line_execution_subprefectures->search({}, { prefetch => [qw(subprefecture)] })->all()
+                    } $action_line->action_line_execution_subprefectures->search({ 'me.period' => { '>' => 0 } }, { prefetch => [qw(subprefecture)] })->all()
                 ]
             },
         },
