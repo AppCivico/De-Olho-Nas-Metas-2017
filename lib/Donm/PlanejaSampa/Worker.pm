@@ -233,8 +233,24 @@ sub project {
                 title                 => $action_line->{linha_acao_nome},
                 indicator_description => $action_line->{linha_acao_indicadores},
                 achievement           => $action_line->{linha_acao_marco},
+                indicator             => $action_line->{linha_acao_indicadores},
+                status                => $action_line->{linha_acao_estado},
+                last_updated_at       => $action_line->{linha_acao_ultimo_atualizacao_exec},
             }
         );
+
+        # Carregando a execução.
+        for my $exec (@{ $action_line->{execucao} }) {
+            $self->loader->add(
+                'action_line_execution' => {
+                    action_line_project_id   => $project_id,
+                    action_line_id_reference => $id_reference,
+                    value                    => $exec->{linha_acao_execucao_valor},
+                    period                   => $exec->{linha_acao_execucao_num_periodo},
+                    accumulated              => $exec->{linha_acao_execucao_valor_acumulado},
+                }
+            );
+        }
     }
 
     my $budget_execution = $res->{dados_cadastrais}->{execucao_orcamentaria};
