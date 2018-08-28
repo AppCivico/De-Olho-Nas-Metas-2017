@@ -10,13 +10,18 @@ with "CatalystX::Eta::Controller::AutoListGET";
 
 __PACKAGE__->config(
     # AutoBase.
-    result      => 'DB::Goal',
-    result_cond => { 'me.secretariat' => \'IS NOT NULL' },
-    result_attr => { columns => [ { name => { distinct => 'me.secretariat' } } ] },
+    result      => 'DB::Secretariat',
+    result_attr => { order_by => [ 'me.id' ] },
 
     # AutoListGET.
     list_key => 'secretariats',
-    build_list_row => sub { $_[0]->get_column('name') },
+    build_list_row => sub {
+        my $r = shift;
+        +{
+            id   => $r->get_column('id'),
+            name => $r->get_column('name'),
+        }
+    },
 );
 
 sub root : Chained('/api/root') : PathPart('') : CaptureArgs(0) { }
