@@ -43,5 +43,13 @@ WHERE goal.secretariat = secretariat.name;
 
 ALTER TABLE goal DROP COLUMN secretariat;
 
+CREATE TABLE project_secretariat (
+    id             SERIAL PRIMARY KEY,
+    project_id     INTEGER NOT NULL REFERENCES project(id),
+    secretariat_id INTEGER NOT NULL REFERENCES secretariat(id),
+    updated_at     TIMESTAMP WITHOUT TIME ZONE,
+    UNIQUE(project_id, secretariat_id)
+);
+
 COMMIT;
 

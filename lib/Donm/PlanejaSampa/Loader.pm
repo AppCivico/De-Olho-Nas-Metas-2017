@@ -123,6 +123,10 @@ sub add {
         my $subprefecture_name = delete $args->{subprefecture_name};
         $args->{subprefecture_id} = $self->_cache->{subprefecture}->{$subprefecture_name};
     }
+    elsif ($entity eq 'project_secretariat') {
+        my $secretariat_name = delete $args->{secretariat_name};
+        $args->{secretariat_id} = $self->_cache->{secretariat}->{$secretariat_name};
+    }
     else { die "die invalid entity '$entity'" }
 
     my $fh = $self->get_filehandle($entity);
@@ -163,7 +167,7 @@ sub load_all {
     my @entities = qw(
         badge project goal action_line goal_project goal_badge project_badge goal_execution goal_additional_information
         goal_execution_subprefecture project_additional_information project_budget_execution action_line_execution
-        action_line_execution_subprefecture
+        action_line_execution_subprefecture project_secretariat
     );
     for my $entity (@entities) {
         my $fh = $self->_filehandles->{$entity} or die die "There is no entity '$entity'.";
@@ -207,6 +211,7 @@ sub load_file {
             $conflict = join q{, }, qw(goal_id project_id)                                                      if 'goal_project'                        eq $entity;
             $conflict = join q{, }, qw(project_id badge_id)                                                     if 'project_badge'                       eq $entity;
             $conflict = join q{, }, qw(goal_id period accumulated)                                              if 'goal_execution'                      eq $entity;
+            $conflict = join q{, }, qw(project_id secretariat_id)                                               if 'project_secretariat'                 eq $entity;
             $conflict = join q{, }, qw(action_line_project_id action_line_id_reference period accumulated)      if 'action_line_execution'               eq $entity;
             $conflict = join q{, }, qw(project_id year)                                                         if 'project_budget_execution'            eq $entity;
             $conflict = join q{, }, qw(goal_id description)                                                     if 'goal_additional_information'         eq $entity;
@@ -281,7 +286,6 @@ sub _build_cache {
                 $_->get_column('name') => $_->id
             } $self->schema->resultset('Secretariat')->all()
         },
-
     };
 }
 

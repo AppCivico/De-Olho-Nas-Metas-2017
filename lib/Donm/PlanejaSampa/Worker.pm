@@ -183,7 +183,12 @@ sub project {
 
     # Secretarias.
     for my $k (keys %{ $res->{dados_cadastrais}->{secretaria} }) {
-        printf "INSERT INTO secretariat (name) VALUES ('%s');\n", $res->{dados_cadastrais}->{secretaria}->{$k}->{secretaria_descricao};
+        $self->loader->add(
+            'project_secretariat' => {
+                project_id       => $res->{dados_cadastrais}->{projeto_numero},
+                secretariat_name => $res->{dados_cadastrais}->{secretaria}->{$k}->{secretaria_descricao},
+            }
+        );
     }
 
     # Selos.
