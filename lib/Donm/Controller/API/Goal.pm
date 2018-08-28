@@ -46,6 +46,7 @@ __PACKAGE__->config(
                             accumulated => $_->get_column('accumulated'),
                             year        => $_->get_year(),
                             semester    => $_->get_semester(),
+                            progress    => $_->get_progress(),
                         };
                     } $goal->goal_executions->search( { 'me.accumulated' => 'false' } )->all()
                 ],

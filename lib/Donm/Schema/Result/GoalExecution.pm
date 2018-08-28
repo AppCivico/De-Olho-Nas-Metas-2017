@@ -151,6 +151,8 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-17 14:16:13
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3MZsYuOFdtaL+tb5+sMsYw
 
+use DDP;
+
 sub get_year {
     my $self = shift;
 
@@ -173,6 +175,63 @@ sub get_semester {
     elsif ($period =~ m{^[2468]$}) { return 2 }
 
     return undef; ## no critic
+}
+
+sub get_progress {
+    my $self = shift;
+
+    # Valor base.
+    my $base_value = $self->goal->get_column('base_value');
+
+    # Projeção.
+    my $year = $self->get_year();
+    my $projection = $year =~ m{^201[78]$}
+        ? $self->goal->get_column('projection_first_biennium')
+        : $self->goal->get_column('projection_second_biennium')
+    ;
+
+    # Valor.
+    my $value = $self->get_column('value');
+    $value =~ s/^\s+|\s+$//g;
+
+    # Normalizando os dados de acordo com a projeção.
+    ($projection) = split m{\n}, $projection;
+    defined $projection or return undef;
+    $projection =~ s/^\s+|\s+$//g;
+
+    if ($projection =~ m{^[0-9]+(\.[0-9]+)?$}) {}
+    elsif ($projection =~ m{^[0-9]+(,[0-9]+)?%$}) {
+        $projection =~ s/,/./g;
+        $projection =~ s/%//g;
+    }
+    elsif ($projection =~ m{^([0-9]+)\s+mil$}) {
+        $projection = $1;
+        $projection *= 1000;
+    }
+    elsif ($projection =~ m{^\Q-112.000 toneladas\E$}) { return undef }
+    elsif ($projection =~ m{^([0-9]+(,[0-9]+)?)\Q mortes/ 100.000 habitantes\E$}) {
+        $projection = $1;
+        $projection =~ s/,/./g;
+    }
+    elsif ($projection =~ m{\QCOM RECURSOS DE OUTROS ENTES: \E([0-9]+(\.[0-9]+)?);}) {
+        $projection = $1;
+        $projection =~ s/\.//g;
+    }
+    elsif ($projection =~ m{^([0-9]+) dias$}) {
+        $projection = $1;
+    }
+    else {
+        use DDP; p [
+            $self->goal->id,
+            $projection,
+            $value,
+        ];
+        die "Unknown projection format: '$projection'."
+    }
+
+    p $projection;
+
+    return undef;
 }
 
 __PACKAGE__->meta->make_immutable;
