@@ -218,6 +218,30 @@ db_transaction {
             is $res->{project}->{budget_executions}->[0]->{year}, 2018, 'year=2018';
         };
     };
+
+    subtest 'project secretariat' => sub {
+
+        my $project     = $schema->resultset('Project')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+        my $secretariat = $schema->resultset('Secretariat')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+
+        ok $project->project_secretariats->create({
+            secretariat_id => $secretariat->id,
+            updated_at     => \'NOW()',
+        });
+
+        rest_get [ qw/ api project /, $project->id ],
+            name  => 'get project',
+            stash => 'project_secretariat',
+        ;
+
+        stash_test 'project_secretariat' => sub {
+            my $res = shift;
+
+            is ref $res->{project}->{secretariats}, 'ARRAY', 'secretariats=ARRAY';
+            is $res->{project}->{secretariats}->[0]->{id},   $secretariat->id,   'secretariat_id';
+            is $res->{project}->{secretariats}->[0]->{name}, $secretariat->name, 'secretariat_name';
+        };
+    };
 };
 
 done_testing();
