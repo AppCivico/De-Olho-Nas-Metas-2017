@@ -139,6 +139,17 @@ __PACKAGE__->config(
                             }
                         } $project->project_budget_executions->all()
                     ],
+                ),
+
+                (
+                    secretariats => [
+                        map {
+                            +{
+                                id   => $_->secretariat->get_column('id'),
+                                name => $_->secretariat->get_column('name'),
+                            }
+                        } $project->project_secretariats->all()
+                    ],
                 )
             },
         };
@@ -158,6 +169,7 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
             prefetch => [
                 { 'action_lines'  => { 'subprefecture_action_lines' => 'subprefecture' } },
                 { 'goal_projects' => { 'goal' => 'topic' } },
+                { 'project_secretariats' => 'secretariat' },
             ],
         },
     );

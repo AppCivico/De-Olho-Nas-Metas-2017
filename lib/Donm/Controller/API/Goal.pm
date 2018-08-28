@@ -24,8 +24,15 @@ __PACKAGE__->config(
             goal => {
                 (
                     map { $_ => $goal->get_column($_) }
-                    qw/ id title topic_id slug indicator_description last_updated_at secretariat status /
+                    qw/ id title topic_id slug indicator_description last_updated_at status /
                 ),
+
+                secretariats => [
+                    +{
+                        id   => $goal->secretariat->get_column('id'),
+                        name => $goal->secretariat->get_column('name'),
+                    }
+                ],
 
                 execution => [
                     map {
@@ -141,6 +148,7 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
             prefetch => [
                 'topic',
                 'goal_executions',
+                'secretariat',
                 { 'goal_execution_subprefectures' => 'subprefecture' },
                 { 'goal_badges' => 'badge' },
                 { 'goal_projects' => { 'project' => { 'action_lines' => { 'subprefecture_action_lines' => 'subprefecture' } } } },
@@ -177,7 +185,14 @@ sub list_GET {
                 map {
                     my $r = $_;
                     +{
-                        ( map { $_ => $r->{$_} } qw/ id title topic_id topic slug indicator_description secretariat / ),
+                        ( map { $_ => $r->{$_} } qw/ id title topic_id topic slug indicator_description / ),
+
+                        secretariats => [
+                            +{
+                                id   => $r->{secretariat}->{id},
+                                name => $r->{secretariat}->{name},
+                            }
+                        ],
 
                         topics => [ +{ map { $_ => $r->{topic}->{$_} } qw/ id name slug / } ],
 
@@ -212,7 +227,7 @@ sub list_GET {
                         ),
                     },
                     {
-                        prefetch     => [ 'topic', { 'goal_projects' => 'project' }, 'goal_executions', { 'goal_badges' => 'badge' } ],
+                        prefetch     => [ 'topic', { 'goal_projects' => 'project' }, 'goal_executions', { 'goal_badges' => 'badge' }, 'secretariat' ],
                         order_by     => [ 'me.id' ],
                         result_class => 'DBIx::Class::ResultClass::HashRefInflator',
                     }

@@ -56,10 +56,11 @@ db_transaction {
     stash_test "goal" => sub {
         my $res = shift;
 
-        is( ref($res->{goal}), "HASH", 'main node is hashref' );
-        is( ref($res->{goal}->{topics}), 'ARRAY', 'retrieved topic' );
-        is( ref($res->{goal}->{projects}), "ARRAY", 'retrieved projects' );
+        is( ref($res->{goal}),                   'HASH',  'main node is hashref'     );
+        is( ref($res->{goal}->{topics}),         'ARRAY', 'retrieved topic'          );
+        is( ref($res->{goal}->{projects}),       "ARRAY", 'retrieved projects'       );
         is( ref($res->{goal}->{subprefectures}), "ARRAY", 'retrieved subprefectures' );
+        is( ref($res->{goal}->{secretariats}),   'ARRAY', 'retrieved secretariats'   );
 
         is( $res->{goal}->{id}, 1, 'id=1' );
         like( $res->{goal}->{title}, qr/^Aumentar a cobertura/, 'title' );
