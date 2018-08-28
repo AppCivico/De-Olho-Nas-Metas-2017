@@ -132,7 +132,7 @@ db_transaction {
             my $res = shift;
 
             is( $res->{goal}->{execution}->[0]->{semester}, 1,    'semester=1' );
-            is( $res->{goal}->{execution}->[0]->{year},     2020, 'year=2020'  );
+            is( $res->{goal}->{execution}->[0]->{year},     2019, 'year=2019'  );
         };
     };
 
