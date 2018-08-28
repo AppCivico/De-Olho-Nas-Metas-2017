@@ -41,6 +41,10 @@ __PACKAGE__->config(
                 title                 => $action_line->get_column('title'),
                 indicator_description => $action_line->get_column('indicator_description'),
                 slug                  => $action_line->get_column('slug'),
+                indicator             => $action_line->get_column('indicator'),
+                status                => $action_line->get_column('status'),
+                status                => $action_line->get_column('status'),
+                last_updated_at       => $action_line->get_column('last_updated_at'),
 
                 subprefectures => [
                     map {
