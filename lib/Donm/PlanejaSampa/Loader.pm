@@ -64,6 +64,9 @@ sub add {
         $args->{unit} = 'unit' if $unit eq 'Unidade';
         $args->{unit} = '%'    if $unit eq '%';
         $args->{unit} = 'R$'   if $unit =~ m{^R\$};
+
+        my $secretariat_name = delete $args->{secretariat_name};
+        $args->{secretariat_id} = $self->_cache->{secretariat}->{$secretariat_name};
     }
     elsif ($entity eq 'project') {
         $args->{slug} = slugify($args->{title});
@@ -272,6 +275,13 @@ sub _build_cache {
                 $_->get_column('name') => $_->id
             } $self->schema->resultset('Badge')->all()
         },
+
+        secretariat => +{
+            map {
+                $_->get_column('name') => $_->id
+            } $self->schema->resultset('Secretariat')->all()
+        },
+
     };
 }
 

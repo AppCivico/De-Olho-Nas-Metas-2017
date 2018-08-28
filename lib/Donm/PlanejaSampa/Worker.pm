@@ -97,7 +97,7 @@ sub goal {
             unit                       => $res->{meta_unidade_medida},
             base_value                 => $res->{meta_num_valor_base},
             status                     => $res->{meta_estado},
-            secretariat                => $res->{secretaria_descricao},
+            secretariat_name           => $res->{secretaria_descricao},
             last_updated_at            => $res->{meta_ultimo_atualizacao_reg},
         }
     );
@@ -181,6 +181,12 @@ sub project {
         }
     );
 
+    # Secretarias.
+    for my $k (keys %{ $res->{dados_cadastrais}->{secretaria} }) {
+        printf "INSERT INTO secretariat (name) VALUES ('%s');\n", $res->{dados_cadastrais}->{secretaria}->{$k}->{secretaria_descricao};
+    }
+
+    # Selos.
     for my $badge ( @{ $res->{dados_cadastrais}->{selos} } ) {
         $self->loader->add('badge', { name => $badge->{selo_nome} });
 
