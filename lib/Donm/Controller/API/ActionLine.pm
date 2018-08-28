@@ -59,6 +59,32 @@ __PACKAGE__->config(
                     slug        => $action_line->project->get_column('slug'),
                     description => $action_line->project->get_column('description'),
                 },
+
+                executions => [
+                    map {
+                        +{
+                            value       => $_->get_column('value'),
+                            year        => $_->get_year(),
+                            semester    => $_->get_semester(),
+                            accumulated => $_->get_column('accumulated'),
+                        }
+                    } $action_line->action_line_executions->all()
+                ],
+
+                execution_subprefectures => [
+                    map {
+                        +{
+                            value       => $_->get_column('value'),
+                            year        => $_->get_year(),
+                            semester    => $_->get_semester(),
+                            subprefecture => {
+                                id      => $_->subprefecture->get_column('id'),
+                                name    => $_->subprefecture->get_column('name'),
+                                acronym => $_->subprefecture->get_column('acronym'),
+                            },
+                        }
+                    } $action_line->action_line_execution_subprefectures->search({}, { prefetch => [qw(subprefecture)] })->all()
+                ]
             },
         },
     },
