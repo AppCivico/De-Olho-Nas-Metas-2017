@@ -261,12 +261,23 @@ sub get_progress {
     my $value = $self->get_column('value');
     $value =~ s/^\s+|\s+$//g;
 
-    my $projection_base_diff = $projection - $base_value;
-    my $value_base_diff      = $value - $base_value;
+    if ($projection >= $base_value) {
+        my $projection_base_diff = $projection - $base_value;
+        my $value_base_diff      = $value - $base_value;
 
-    $projection_base_diff ||= 1; # Avoid illegal division by zero.
+        $projection_base_diff ||= 1; # Avoid illegal division by zero.
 
-    return sprintf('%.2f', ( ( $value_base_diff * 100 ) / $projection_base_diff ));
+        return sprintf('%.2f', ( ( $value_base_diff * 100 ) / $projection_base_diff ));
+    }
+    else {
+        my $projection_base_diff = $base_value - $projection;
+        my $value_base_diff = $value - $projection;
+
+        $projection_base_diff ||= 1; # Avoid illegal division by zero.
+        return sprintf('%.2f', ( 100 - ( ( $value_base_diff * 100 ) / $projection_base_diff ) ));
+    }
+
+    return undef; ## no critic
 }
 
 __PACKAGE__->meta->make_immutable;
