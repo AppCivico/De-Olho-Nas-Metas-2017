@@ -234,13 +234,8 @@ sub get_progress {
     # Valor.
     my $value = $self->get_value_as_number() or return undef;
 
-    use DDP; p [
-        $projection,
-        $base_value,
-        $value,
-    ];
-
     my $projection_base_diff = $projection - $base_value;
+
     $projection_base_diff ||= 1; # Avoid illegal division by zero.
 
     return sprintf('%.2f', ( ( ($value - $base_value) * 100 ) / $projection_base_diff ));
