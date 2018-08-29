@@ -150,14 +150,6 @@ db_transaction {
             updated_at       => \'NOW()',
         });
 
-        ok $schema->resultset('GoalExecutionSubprefecture')->create({
-            goal_id          => $goal->id,
-            subprefecture_id => $subprefecture->id,
-            period           => 9,
-            value            => fake_int(1, 10000)->(),
-            updated_at       => \'NOW()',
-        });
-
         rest_get [ qw/ api goal /, $goal->id ],
             name  => 'get goal',
             stash => 'goal_execution_subprefecture',
