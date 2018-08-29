@@ -151,8 +151,6 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-17 14:16:13
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3MZsYuOFdtaL+tb5+sMsYw
 
-use DDP;
-
 sub get_year {
     my $self = shift;
 
@@ -177,103 +175,37 @@ sub get_semester {
     return undef; ## no critic
 }
 
+sub get_value_as_number {
+    my $self = shift;
+
+    my $value = $self->get_column('value');
+    $value =~ s/^\s+|\s+$//g;
+    return undef unless length $value > 0;
+
+    if ($value =~ m{^(\-?[0-9]+(\.[0-9]+)?)$}) { return $value }
+    elsif ($value =~ m{^([0-9]+,[0-9]+)$}) {
+        $value =~ s/,/./g;
+        return $value;
+    }
+    return undef;
+}
+
 sub get_progress {
     my $self = shift;
 
     # Projeção.
-    my $projection = $self->goal->get_column('projection_second_biennium');
-
-    # Normalizando os dados de acordo com a projeção.
-    ($projection) = split m{\n}, $projection;
-    defined $projection or return undef;
-    $projection =~ s/^\s+|\s+$//g;
-
-    my $goal_id = $self->goal->id;
-
-    if (grep { $goal_id == $_ } qw(45 47 51 52 19 20 3 6 34 7 38) ) {
-        return undef; ## no critic
-    }
-    elsif ($projection =~ m{^[0-9]+(\.[0-9]+)?$}) { }
-    elsif ($projection =~ m{^[0-9]+(,[0-9]+)?%$}) {
-        $projection =~ s/,/./g;
-        $projection =~ s/%//g;
-    }
-    elsif ($projection =~ m{^([0-9]+)\s+mil$}) {
-        $projection = $1;
-        $projection *= 1000;
-    }
-    elsif ($projection =~ m{^\Q-112.000 toneladas\E$}) { return undef }
-    elsif ($projection =~ m{^([0-9]+(,[0-9]+)?)\Q mortes/ 100.000 habitantes\E$}) {
-        $projection = $1;
-        $projection =~ s/,/./g;
-    }
-    elsif ($projection =~ m{\QCOM RECURSOS DE OUTROS ENTES: \E([0-9]+(\.[0-9]+)?);}) {
-        $projection = $1;
-        $projection =~ s/\.//g;
-    }
-    elsif ($projection =~ m{^([0-9]+) dias$}) {
-        $projection = $1;
-    }
-    elsif ($projection =~ m{^[0-9,]+%\Q (R$ \E([0-9\.,]+) per capita\)$}) { return undef }
-    elsif ($projection =~ m{^-[0-9]+% \(R\$ ([0-9]+)\Q milhões mais correção monetária)\E}) {
-        $projection = $1;
-    }
-    elsif ($projection =~ m{^([0-9]+(,[0-9]+)?)$}) {
-        $projection =~ s/,/./;
-    }
-    elsif ($projection =~ m{^([0-9]+) ações$}) {
-        $projection = $1;
-    }
-    elsif ($projection =~ m{^([0-9]+(,[0-9]+)?) em 1(00)?\.000$}) {
-        $projection = $1;
-        $projection =~ s/,/./;
-    }
-    elsif ($projection =~ m{^([0-9\.]+,[0-9]+)$}) {
-        $projection =~ s/\.//g;
-        $projection =~ s/,/./g;
-    }
-    elsif ($projection =~ m{^[0-9]+% \(([0-9\.]+)\);$}) {
-        $projection = $1;
-        $projection =~ s/\.//g;
-    }
-    elsif ($projection =~ m{^([0-9]+(,[0-9]+)?) km² \(}) {
-        $projection = $1;
-        $projection =~ s/,/./g;
-    }
-    elsif ($projection =~ m{^A definir$}) { return undef }
-    elsif ($projection =~ m{^(\d+) regionais$}) {
-        $projection = $1;
-    }
-    elsif ($projection =~ m{^R\$ ([0-9\.]+)\*?$}) {
-        $projection = $1;
-        $projection =~ s/\.//g;
-    }
-    else { return undef } ## no critic
+    my $projection = $self->goal->get_projection_as_number() or return undef; ## no critic
 
     # Valor base.
     my $base_value = $self->goal->get_column('base_value') or return undef; ## no critic
 
     # Valor.
-    my $value = $self->get_column('value');
-    $value =~ s/^\s+|\s+$//g;
+    my $value = $self->get_value_as_number() or return undef;
 
-    if ($projection >= $base_value) {
-        my $projection_base_diff = $projection - $base_value;
-        my $value_base_diff      = $value - $base_value;
+    my $projection_base_diff = $projection - $base_value;
+    $projection_base_diff ||= 1; # Avoid illegal division by zero.
 
-        $projection_base_diff ||= 1; # Avoid illegal division by zero.
-
-        return sprintf('%.2f', ( ( $value_base_diff * 100 ) / $projection_base_diff ));
-    }
-    else {
-        my $projection_base_diff = $base_value - $projection;
-        my $value_base_diff = $value - $projection;
-
-        $projection_base_diff ||= 1; # Avoid illegal division by zero.
-        return sprintf('%.2f', ( 100 - ( ( $value_base_diff * 100 ) / $projection_base_diff ) ));
-    }
-
-    return undef; ## no critic
+    return sprintf('%.2f', ( ( ($value - $base_value) * 100 ) / $projection_base_diff ));
 }
 
 __PACKAGE__->meta->make_immutable;

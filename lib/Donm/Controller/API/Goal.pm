@@ -53,12 +53,19 @@ __PACKAGE__->config(
 
                 execution_subprefecture => [
                     map {
+                        my $accumulated = $_->get_column('accumulated');
                         +{
-                            id         => $_->get_column('id'),
-                            year       => $_->get_year(),
-                            semester   => $_->get_semester(),
-                            value      => $_->get_column('value'),
-                            updated_at => $_->get_column('updated_at'),
+                            id          => $_->get_column('id'),
+                            year        => $_->get_year(),
+                            semester    => $_->get_semester(),
+                            value       => $_->get_column('value'),
+                            updated_at  => $_->get_column('updated_at'),
+                            accumulated => $accumulated,
+                            (
+                                $accumulated
+                                ? ( progress => $_->get_progress() )
+                                : ()
+                            ),
                             subprefecture => {
                                 id      => $_->subprefecture->get_column('id'),
                                 name    => $_->subprefecture->get_column('name'),
@@ -66,7 +73,7 @@ __PACKAGE__->config(
                             },
                         }
                     } $goal->goal_execution_subprefectures
-                      ->search_only_not_accumulated()
+                      ->with_accumulated()
                       ->search({}, { order_by => [qw( subprefecture_id )] })->all()
                 ],
 
