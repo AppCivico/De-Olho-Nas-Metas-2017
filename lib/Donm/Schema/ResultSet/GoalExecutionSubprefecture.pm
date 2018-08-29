@@ -15,4 +15,17 @@ sub search_only_not_accumulated {
     );
 }
 
+sub with_accumulated {
+    my $self = shift;
+
+    return $self->search(
+        {},
+        {
+            '+columns' => [
+                { accumulated => \'(me.period > 8)::boolean' }
+            ]
+        }
+    );
+}
+
 1;

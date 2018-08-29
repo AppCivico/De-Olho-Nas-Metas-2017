@@ -191,6 +191,39 @@ sub get_semester {
     return undef; ## no critic
 }
 
+sub get_value_as_number {
+    my $self = shift;
+
+    my $value = $self->get_column('value');
+    $value =~ s/^\s+|\s+$//g;
+    return undef unless length $value > 0;
+
+    if ($value =~ m{^(\-?[0-9]+)$}) { return $value }
+    elsif ($value =~ m{^([0-9]+,[0-9]+)$}) {
+        $value =~ s/,/./g;
+        return $value;
+    }
+    return undef;
+}
+
+sub get_progress {
+    my $self = shift;
+
+    # Projeção.
+    my $projection = $self->goal->get_projection_as_number() or return undef; ## no critic
+
+    # Valor base.
+    my $base_value = $self->goal->get_column('base_value') or return undef; ## no critic
+
+    # Valor.
+    my $value = $self->get_value_as_number() or return undef;
+
+    my $projection_base_diff = $projection - $base_value;
+    $projection_base_diff ||= 1; # Avoid illegal division by zero.
+
+    return sprintf('%.2f', ( ( ($value - $base_value) * 100 ) / $projection_base_diff ));
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

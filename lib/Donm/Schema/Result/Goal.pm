@@ -321,6 +321,81 @@ sub _format_value {
     return $value;
 }
 
+sub get_projection_as_number {
+    my $self = shift;
+
+    my $projection = $self->get_column('projection_second_biennium');
+
+    # Normalizando os dados de acordo com a projeção.
+    ($projection) = split m{\n}, $projection;
+    defined $projection or return undef;
+    $projection =~ s/^\s+|\s+$//g;
+
+    if (grep { $self->id == $_ } qw(45 47 51 52 19 20 3 6 34 7 38 24) ) { return undef } ## no critic
+    elsif ($projection =~ m{^[0-9]+(\.[0-9]+)?$}) { return $projection }
+    elsif ($projection =~ m{^[0-9]+(,[0-9]+)?%$}) {
+        $projection =~ s/,/./g;
+        $projection =~ s/%//g;
+    }
+    elsif ($projection =~ m{^([0-9]+)\s+mil$}) {
+        $projection = $1;
+        $projection *= 1000;
+    }
+    elsif ($projection =~ m{^\Q-112.000 toneladas\E$}) { return undef }
+    elsif ($projection =~ m{^([0-9]+(,[0-9]+)?)\Q mortes/ 100.000 habitantes\E$}) {
+        $projection = $1;
+        $projection =~ s/,/./g;
+    }
+    elsif ($projection =~ m{\QCOM RECURSOS DE OUTROS ENTES: \E([0-9]+(\.[0-9]+)?);}) {
+        $projection = $1;
+        $projection =~ s/\.//g;
+    }
+    elsif ($projection =~ m{^([0-9]+) dias$}) {
+        $projection = $1;
+    }
+    elsif ($projection =~ m{^[0-9,]+%\Q (R$ \E([0-9\.,]+) per capita\)$}) { return undef }
+    elsif ($projection =~ m{^-[0-9]+% \(R\$ ([0-9]+)\Q milhões mais correção monetária)\E}) {
+        $projection = $1;
+    }
+    elsif ($projection =~ m{^([0-9]+(,[0-9]+)?)$}) {
+        $projection =~ s/,/./;
+    }
+    elsif ($projection =~ m{^([0-9]+) (ações|pontos)$}) {
+        $projection = $1;
+    }
+    elsif ($projection =~ m{^([0-9]+(,[0-9]+)?) em 1(00)?\.000$}) {
+        $projection = $1;
+        $projection =~ s/,/./;
+    }
+    elsif ($projection =~ m{^([0-9\.]+,[0-9]+)$}) {
+        $projection =~ s/\.//g;
+        $projection =~ s/,/./g;
+    }
+    elsif ($projection =~ m{^[0-9]+% \(([0-9\.]+)\);$}) {
+        $projection = $1;
+        $projection =~ s/\.//g;
+    }
+    elsif ($projection =~ m{^([0-9]+(,[0-9]+)?) km² \(}) {
+        $projection = $1;
+        $projection =~ s/,/./g;
+    }
+    elsif ($projection =~ m{^A definir$}) { return undef }
+    elsif ($projection =~ m{^(\d+) regionais$}) {
+        $projection = $1;
+    }
+    elsif ($projection =~ m{^R\$ ([0-9\.]+)\*?$}) {
+        $projection = $1;
+        $projection =~ s/\.//g;
+    }
+    elsif ($projection =~ m{^([0-9]+)\s+mil m²$}) {
+        $projection = $1;
+        $projection *= 1000;
+    }
+    else { return undef } ## no critic
+
+    return $projection;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
