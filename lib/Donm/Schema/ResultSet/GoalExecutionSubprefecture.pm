@@ -22,7 +22,7 @@ sub with_accumulated {
         {},
         {
             '+columns' => [
-                { accumulated => \'(me.period > 8)::boolean' }
+                { accumulated => \'(me.period = 9)::boolean' }
             ]
         }
     );
