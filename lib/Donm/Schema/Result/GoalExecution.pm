@@ -180,9 +180,6 @@ sub get_semester {
 sub get_progress {
     my $self = shift;
 
-    # Valor base.
-    my $base_value = $self->goal->get_column('base_value');
-
     # Projeção.
     my $year = $self->get_year();
     my $projection = $year =~ m{^201[78]$}
@@ -190,16 +187,17 @@ sub get_progress {
         : $self->goal->get_column('projection_second_biennium')
     ;
 
-    # Valor.
-    my $value = $self->get_column('value');
-    $value =~ s/^\s+|\s+$//g;
-
     # Normalizando os dados de acordo com a projeção.
     ($projection) = split m{\n}, $projection;
     defined $projection or return undef;
     $projection =~ s/^\s+|\s+$//g;
 
-    if ($projection =~ m{^[0-9]+(\.[0-9]+)?$}) {}
+    my $goal_id = $self->goal->id;
+
+    if (grep { $goal_id == $_ } qw(45 47 51 52 19 20 3 6 34 7 38) ) {
+        return undef; ## no critic
+    }
+    elsif ($projection =~ m{^[0-9]+(\.[0-9]+)?$}) { }
     elsif ($projection =~ m{^[0-9]+(,[0-9]+)?%$}) {
         $projection =~ s/,/./g;
         $projection =~ s/%//g;
@@ -220,18 +218,55 @@ sub get_progress {
     elsif ($projection =~ m{^([0-9]+) dias$}) {
         $projection = $1;
     }
-    else {
-        use DDP; p [
-            $self->goal->id,
-            $projection,
-            $value,
-        ];
-        die "Unknown projection format: '$projection'."
+    elsif ($projection =~ m{^[0-9,]+%\Q (R$ \E([0-9\.,]+) per capita\)$}) { return undef }
+    elsif ($projection =~ m{^-[0-9]+% \(R\$ ([0-9]+)\Q milhões mais correção monetária)\E}) {
+        $projection = $1;
     }
+    elsif ($projection =~ m{^([0-9]+(,[0-9]+)?)$}) {
+        $projection =~ s/,/./;
+    }
+    elsif ($projection =~ m{^([0-9]+) ações$}) {
+        $projection = $1;
+    }
+    elsif ($projection =~ m{^([0-9]+(,[0-9]+)?) em 1(00)?\.000$}) {
+        $projection = $1;
+        $projection =~ s/,/./;
+    }
+    elsif ($projection =~ m{^([0-9\.]+,[0-9]+)$}) {
+        $projection =~ s/\.//g;
+        $projection =~ s/,/./g;
+    }
+    elsif ($projection =~ m{^[0-9]+% \(([0-9\.]+)\);$}) {
+        $projection = $1;
+        $projection =~ s/\.//g;
+    }
+    elsif ($projection =~ m{^([0-9]+(,[0-9]+)?) km² \(}) {
+        $projection = $1;
+        $projection =~ s/,/./g;
+    }
+    elsif ($projection =~ m{^A definir$}) { return undef }
+    elsif ($projection =~ m{^(\d+) regionais$}) {
+        $projection = $1;
+    }
+    elsif ($projection =~ m{^R\$ ([0-9\.]+)\*?$}) {
+        $projection = $1;
+        $projection =~ s/\.//g;
+    }
+    else { return undef } ## no critic
 
-    p $projection;
+    # Valor base.
+    my $base_value = $self->goal->get_column('base_value') or return undef; ## no critic
 
-    return undef;
+    # Valor.
+    my $value = $self->get_column('value');
+    $value =~ s/^\s+|\s+$//g;
+
+    my $projection_base_diff = $projection - $base_value;
+    my $value_base_diff      = $value - $base_value;
+
+    $projection_base_diff ||= 1; # Avoid illegal division by zero.
+
+    return sprintf('%.2f', ( ( $value_base_diff * 100 ) / $projection_base_diff ));
 }
 
 __PACKAGE__->meta->make_immutable;
