@@ -323,8 +323,9 @@ sub _format_value {
 
 sub get_projection_as_number {
     my $self = shift;
+    my $projection = shift;
 
-    my $projection = $self->get_column('projection_second_biennium');
+    $projection ||= $self->get_column('projection_second_biennium');
 
     # Normalizando os dados de acordo com a projeção.
     ($projection) = split m{\n}, $projection;
@@ -391,7 +392,10 @@ sub get_projection_as_number {
         $projection = $1;
         $projection *= 1000;
     }
-    else { return undef } ## no critic
+    else {
+        print STDERR "Unknown projection '%projection'.\n";
+        return undef;
+    }
 
     return $projection;
 }
