@@ -74,6 +74,7 @@ __PACKAGE__->config(
                         }
                     } $goal->goal_execution_subprefectures
                       ->with_accumulated()
+                      ->with_no_projection()
                       ->search({}, { order_by => [qw( subprefecture_id )] })->all()
                 ],
 
