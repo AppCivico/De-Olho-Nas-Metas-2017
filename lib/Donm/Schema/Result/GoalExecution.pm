@@ -181,11 +181,7 @@ sub get_progress {
     my $self = shift;
 
     # Projeção.
-    my $year = $self->get_year();
-    my $projection = $year =~ m{^201[78]$}
-        ? $self->goal->get_column('projection_first_biennium')
-        : $self->goal->get_column('projection_second_biennium')
-    ;
+    my $projection = $self->goal->get_column('projection_second_biennium');
 
     # Normalizando os dados de acordo com a projeção.
     ($projection) = split m{\n}, $projection;
