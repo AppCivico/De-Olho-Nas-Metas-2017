@@ -206,17 +206,39 @@ sub get_value_as_number {
     return undef;
 }
 
+sub get_projection_as_number {
+    my ($self) = @_;
+
+    my $projection = $self->result_source->schema->resultset('GoalExecutionSubprefecture')->search(
+        {
+            'me.goal_id'          => $self->get_column('goal_id'),
+            'me.subprefecture_id' => $self->get_column('subprefecture_id'),
+            'me.period'           => 10,
+        }
+    )->next;
+
+    return undef unless ref $projection;
+
+    return $self->goal->get_projection_as_number($projection->get_column('value'));
+}
+
 sub get_progress {
     my $self = shift;
 
     # Projeção.
-    my $projection = $self->goal->get_projection_as_number() or return undef; ## no critic
+    my $projection = $self->get_projection_as_number() or return undef; ## no critic
 
     # Valor base.
     my $base_value = $self->goal->get_column('base_value') or return undef; ## no critic
 
     # Valor.
     my $value = $self->get_value_as_number() or return undef;
+
+    use DDP; p [
+        $projection,
+        $base_value,
+        $value,
+    ];
 
     my $projection_base_diff = $projection - $base_value;
     $projection_base_diff ||= 1; # Avoid illegal division by zero.

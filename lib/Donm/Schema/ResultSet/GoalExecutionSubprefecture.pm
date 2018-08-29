@@ -28,4 +28,14 @@ sub with_accumulated {
     );
 }
 
+sub with_no_projection {
+    my $self = shift;
+
+    return $self->search(
+        {
+            'me.period' => { '!=' => 10 }
+        }
+    );
+}
+
 1;
