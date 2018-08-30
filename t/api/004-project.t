@@ -200,7 +200,7 @@ db_transaction {
         ok $project->project_budget_executions->create({
             year => 2018,
             (
-                map { $_ => fake_words(3)->() }
+                map { $_ => fake_pick('R$ 9,784 milhões', '10 milhões', '0,0001 milhão')->() }
                 qw/ own_resources_investment own_resources_costing own_resources_total other_resources_investment
                 other_resources_costing other_resources_total total_year_investment total_year_costing total_year_total /
             ),
@@ -214,8 +214,8 @@ db_transaction {
         stash_test 'project_budget_execution' => sub {
             my $res = shift;
 
-            is ref $res->{project}->{budget_executions}, 'ARRAY', 'budget_executions=ARRAY';
-            is $res->{project}->{budget_executions}->[0]->{year}, 2018, 'year=2018';
+            is ref $res->{project}->{budget_execution}, 'HASH', 'budget_execution=HASH';
+            is $res->{project}->{budget_execution}->{per_year}->[0]->{year}, 2018, 'year=2018';
         };
     };
 

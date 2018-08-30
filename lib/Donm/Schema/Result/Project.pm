@@ -232,7 +232,23 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-28 15:40:47
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:19ev0ODqy9vrXJ02JpHWVQ
 
+use List::Util 'reduce';
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
+sub get_overall_total {
+    my $self = shift;
+
+    return reduce {
+        my $total_year = $b->get_column('total_year_total');
+
+        $total_year =~ s/(^\s+|\s+$)//g;
+        $total_year =~ s/^R\$ //g;
+        $total_year =~ s/,/./g;
+        $total_year *= 1000000 if $total_year =~ s/\s+milh(ão|ões)$//g;
+
+        $a + $total_year;
+    } 0, $self->project_budget_executions->all();
+}
+
 __PACKAGE__->meta->make_immutable;
+
 1;

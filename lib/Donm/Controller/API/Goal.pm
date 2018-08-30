@@ -9,6 +9,8 @@ with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoResultGET";
 with "CatalystX::Eta::Controller::TypesValidation";
 
+use List::Util 'reduce';
+
 __PACKAGE__->config(
     # AutoBase.
     result => "DB::Goal",
@@ -19,7 +21,6 @@ __PACKAGE__->config(
         my ($goal, $self, $c) = @_;
 
         my %unique_subprefectures = ();
-
         return {
             goal => {
                 (
@@ -51,32 +52,33 @@ __PACKAGE__->config(
                     } $goal->goal_executions->search( { 'me.accumulated' => 'false' } )->all()
                 ],
 
-                execution_subprefecture => [
-                    map {
-                        my $accumulated = $_->get_column('accumulated');
-                        +{
-                            id          => $_->get_column('id'),
-                            year        => $_->get_year(),
-                            semester    => $_->get_semester(),
-                            value       => $_->get_column('value'),
-                            updated_at  => $_->get_column('updated_at'),
-                            accumulated => $accumulated,
-                            (
-                                $accumulated
-                                ? ( progress => $_->get_progress() )
-                                : ()
-                            ),
-                            subprefecture => {
-                                id      => $_->subprefecture->get_column('id'),
-                                name    => $_->subprefecture->get_column('name'),
-                                acronym => $_->subprefecture->get_column('acronym'),
-                            },
-                        }
-                    } $goal->goal_execution_subprefectures
-                      ->with_accumulated()
-                      ->with_no_projection()
+                execution_subprefecture => (
+                    reduce {
+                        my $subprefecture_id = $b->get_column('subprefecture_id');
+
+                        $a->{$subprefecture_id}{subprefecture} ||= {
+                            id      => $b->subprefecture->get_column('id'),
+                            name    => $b->subprefecture->get_column('name'),
+                            acronym => $b->subprefecture->get_column('acronym'),
+                        };
+
+                        $a->{$subprefecture_id}{total_progress} ||= $goal->goal_execution_subprefectures
+                          ->search( { 'me.subprefecture_id' => $subprefecture_id } )
+                          ->get_total_progress();
+
+                        push @{ $a->{$subprefecture_id}{per_semester} }, {
+                            year        => $b->get_year(),
+                            semester    => $b->get_semester(),
+                            value       => $b->get_column('value'),
+                            progress    => $b->get_progress(),
+                        };
+                        $a;
+                    } {},
+                    $goal->goal_execution_subprefectures
+                      ->filter_projection()
+                      ->filter_accumulated()
                       ->search({}, { order_by => [qw( subprefecture_id )] })->all()
-                ],
+                ),
 
                 projection_first_biennium  => $goal->get_readable_projection_first_biennium(),
                 projection_second_biennium => $goal->get_readable_projection_second_biennium(),
