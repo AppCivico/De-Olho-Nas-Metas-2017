@@ -28,7 +28,17 @@ sub with_accumulated {
     );
 }
 
-sub with_no_projection {
+sub filter_accumulated {
+    my $self = shift;
+
+    return $self->search(
+        {
+            'me.period' => { '!=' => 9 }
+        }
+    );
+}
+
+sub filter_projection {
     my $self = shift;
 
     return $self->search(
@@ -36,6 +46,14 @@ sub with_no_projection {
             'me.period' => { '!=' => 10 }
         }
     );
+}
+
+sub get_total_progress {
+    my $self = shift;
+
+    my $accumulated = $self->search( { 'me.period' => 9 } )->next;
+
+    return $accumulated->get_progress();
 }
 
 1;
