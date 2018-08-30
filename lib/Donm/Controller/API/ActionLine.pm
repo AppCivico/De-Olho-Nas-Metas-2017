@@ -73,7 +73,10 @@ __PACKAGE__->config(
                             accumulated => $_->get_column('accumulated'),
                             progress    => $_->get_progress(),
                         }
-                    } $action_line->action_line_executions->search({ 'me.period' => { '-in' => [1.. 8] } })->all()
+                    } $action_line->action_line_executions->search({
+                        'me.period'      => { '-in' => [1.. 8] },
+                        'me.accumulated' => 'false',
+                    })->all()
                 ],
 
                 execution_subprefectures => [
