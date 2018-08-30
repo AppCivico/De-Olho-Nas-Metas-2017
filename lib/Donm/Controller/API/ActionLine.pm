@@ -9,8 +9,6 @@ with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoListGET";
 with "CatalystX::Eta::Controller::AutoResultGET";
 
-use DDP;
-
 __PACKAGE__->config(
     # AutoBase.
     result      => 'DB::ActionLine',

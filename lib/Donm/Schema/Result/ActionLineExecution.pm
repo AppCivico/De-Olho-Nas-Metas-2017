@@ -210,10 +210,7 @@ sub get_value_as_number {
         $value =~ s/,/./g;
         return $value;
     }
-    else {
-        use DDP; p [ $self->action_line->get_exhibition_id(), $value ];
-        die "Unknown value format '$value'";
-    }
+
     return undef;
 }
 
