@@ -73,7 +73,7 @@ __PACKAGE__->config(
                             accumulated => $_->get_column('accumulated'),
                             progress    => $_->get_progress(),
                         }
-                    } $action_line->action_line_executions->search({ 'me.period' => { '<=' => '8' } })->all()
+                    } $action_line->action_line_executions->search({ 'me.period' => { '-in' => [1.. 8] } })->all()
                 ],
 
                 execution_subprefectures => [
@@ -88,7 +88,7 @@ __PACKAGE__->config(
                                 acronym => $_->subprefecture->get_column('acronym'),
                             },
                         }
-                    } $action_line->action_line_execution_subprefectures->search({ 'me.period' => { '<=' => '8' } }, { prefetch => [qw(subprefecture)] })->all()
+                    } $action_line->action_line_execution_subprefectures->search({ 'me.period' => { '-in' => [1..8] } }, { prefetch => [qw(subprefecture)] })->all()
                 ]
             },
         },
