@@ -193,21 +193,49 @@ sub get_semester {
     return undef; ## no critic
 }
 
+sub get_value_as_number {
+    my $self = shift;
+
+    my $value = $self->get_column('value');
+    $value =~ s/^\s+|\s+$//g;
+    return undef unless length $value > 0;
+
+    if    ($value eq '')    { return undef }
+    if    ($value eq '-')   { return undef }
+    if    ($value eq 'ND')  { return undef }
+    elsif ($value eq 'N/D') { return undef }
+    elsif ($value =~ m{^\-?[0-9]+$})              { return $value }
+    elsif ($value =~ m{^(\-?[0-9]+(\.[0-9]+)?)$}) { return $value }
+    elsif ($value =~ m{^([0-9]+,[0-9]+)$}) {
+        $value =~ s/,/./g;
+        return $value;
+    }
+    else {
+        use DDP; p [ $self->action_line->get_exhibition_id(), $value ];
+        die "Unknown value format '$value'";
+    }
+    return undef;
+}
+
 sub get_progress {
     my $self = shift;
 
-    my $projection = $self->result_source->schema->resultset('ActionLineExecution')->search(
-        {
-            'me.action_line_project_id'   => $self->get_column('action_line_project_id'),
-            'me.action_line_id_reference' => $self->get_column('action_line_id_reference'),
-            'me.period' => 9,
-        }
-    )->next;
-    return undef unless ref $projection;
+    die "Cant calculate progress of an accumulated action line execution."
+      if $self->get_column('accumulated');
 
-    use DDP; p $projection->get_column('value');
+    my $action_line_id = $self->action_line->get_exhibition_id();
+    if (grep { $action_line_id == $_ } qw/ 1.5 7.5 12.4 22.1 29.1 30.1 30.3 30.5 30.6 58.1 58.2 69.5 2.2 6.6 12.3/ ) {
+        return undef;
+    }
 
-    return undef;
+    my $base_value = $self->action_line->get_base_value_as_number() or return undef; ## no critic
+    my $projection = $self->action_line->get_projection_as_number() or return undef; ## no critic
+    my $value      = $self->get_value_as_number()                   or return undef; ## no critic
+
+    my $projection_base_diff = $projection - $base_value;
+    $projection_base_diff ||= 1; # Avoid illegal division by zero.
+
+    return sprintf('%.2f', ( ( ($value - $base_value) * 100 ) / $projection_base_diff ));
 }
 
 __PACKAGE__->meta->make_immutable;
