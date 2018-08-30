@@ -193,6 +193,23 @@ sub get_semester {
     return undef; ## no critic
 }
 
+sub get_progress {
+    my $self = shift;
+
+    my $projection = $self->result_source->schema->resultset('ActionLineExecution')->search(
+        {
+            'me.action_line_project_id'   => $self->get_column('action_line_project_id'),
+            'me.action_line_id_reference' => $self->get_column('action_line_id_reference'),
+            'me.period' => 9,
+        }
+    )->next;
+    return undef unless ref $projection;
+
+    use DDP; p $projection->get_column('value');
+
+    return undef;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
