@@ -122,8 +122,10 @@ __PACKAGE__->config(
                     ],
                 ),
 
-                (
-                    budget_executions => [
+                budget_execution => {
+                    overall_total => $project->get_overall_total(),
+
+                    per_year => [
                         map {
                             +{
                                 year => $_->get_column('year'),
@@ -139,7 +141,7 @@ __PACKAGE__->config(
                             }
                         } $project->project_budget_executions->all()
                     ],
-                ),
+                },
 
                 (
                     secretariats => [
