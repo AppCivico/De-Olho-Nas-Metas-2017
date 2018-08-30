@@ -247,6 +247,8 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-28 10:56:42
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3xRnRml7W34FKni0ohdoHw
 
+use Scalar::Util qw(looks_like_number);
+
 sub get_exhibition_id {
     my $self = shift;
 
@@ -264,9 +266,52 @@ sub get_base_value {
 
     my $base_value = $self->action_line_executions->search({ 'me.period' => 0 })->next;
     if (ref $base_value) {
-        return $base_value->get_column('value');
+        my $value = $base_value->get_column('value');
+        $value =~ s/^\s+|\s+$//g;
+        return $value;
     }
     return undef; ## no critic
+}
+
+sub get_base_value_as_number {
+    my $self = shift;
+
+    my $base_value = $self->get_base_value() or return undef;
+
+    if (looks_like_number($base_value)) { return $base_value }
+    elsif ($base_value eq '')               { return undef }
+    elsif ($base_value eq '-')              { return undef }
+    elsif ($base_value eq 'NA')             { return undef }
+    elsif ($base_value eq 'N/D')            { return undef }
+    elsif ($base_value eq 'N/A')            { return undef }
+    elsif ($base_value eq 'Nenhum')         { return undef }
+    elsif ($base_value eq 'Nenhuma')        { return undef }
+    elsif ($base_value eq 'Não consta')     { return undef }
+    elsif ($base_value eq 'Não aplicável')  { return undef }
+    elsif ($base_value eq 'Não disponível') { return undef }
+    elsif ($base_value eq '0,0%')           { return 0 }
+    elsif ($base_value eq '0 vistorias')    { return 0 }
+    elsif ($base_value eq '2 bibliotecas')  { return 2 }
+    elsif ($base_value eq '80 vistorias realizadas') { return 80 }
+    elsif ($base_value eq '230 agentes públicos capacitados') { return 230 }
+    elsif ($base_value eq '33 projetos analisados') { return 33 }
+    elsif ($base_value eq '08 selos concedidos') { return 8 }
+    elsif ($base_value eq '0,87%') { return 0.87 }
+    elsif ($base_value eq '512kbps') { return 512 }
+    elsif ($base_value =~ m{^R\$ ([0-9]+(,[0-9]+)?) milhões$}) {
+        $base_value = $1;
+        $base_value =~ s/,/./g;
+        $base_value *= 1000000;
+    }
+    elsif ($base_value =~ m{^([0-9]+(,[0-9]+)?)$}) {
+        $base_value = $1;
+        $base_value =~ s/,/./g;
+    }
+    else {
+        use DDP;
+        p [ $self->get_exhibition_id(), $base_value ];
+        die "Unknown base value format '$base_value'.";
+    }
 }
 
 sub get_projection_as_number {
