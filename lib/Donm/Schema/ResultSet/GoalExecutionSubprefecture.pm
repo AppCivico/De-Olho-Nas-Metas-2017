@@ -51,9 +51,10 @@ sub filter_projection {
 sub get_total_progress {
     my $self = shift;
 
-    my $accumulated = $self->search( { 'me.period' => 9 } )->next;
-
-    return $accumulated->get_progress();
+    if (ref (my $accumulated = $self->search( { 'me.period' => 9 } )->next)) {
+        return $accumulated->get_progress();
+    }
+    return undef;
 }
 
 1;
