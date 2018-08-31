@@ -87,6 +87,7 @@ __PACKAGE__->config(
                             id      => $b->subprefecture->get_column('id'),
                             name    => $b->subprefecture->get_column('name'),
                             acronym => $b->subprefecture->get_column('acronym'),
+                            slug    => $b->subprefecture->get_column('slug'),
                         };
 
                         $a->{$subprefecture_id}{total_progress} ||= $c->model('DB::ActionLineExecutionSubprefecture')->search(
