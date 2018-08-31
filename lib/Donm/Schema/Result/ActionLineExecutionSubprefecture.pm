@@ -227,24 +227,6 @@ sub get_projection_as_number {
     return undef;
 }
 
-sub get_projection {
-    my $self = shift;
-
-    my $projection = $self->result_source->schema->resultset('ActionLineExecutionSubprefecture')->search(
-        {
-            'me.action_line_project_id'   => $self->get_column('action_line_project_id'),
-            'me.action_line_id_reference' => $self->get_column('action_line_id_reference'),
-            'me.subprefecture_id'         => $self->get_column('subprefecture_id'),
-            'me.period'                   => 10,
-        }
-    )->next;
-
-    if (ref $projection) {
-        return $projection->get_column('value');
-    }
-    return undef;
-}
-
 sub get_progress {
     my $self = shift;
 

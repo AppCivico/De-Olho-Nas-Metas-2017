@@ -98,11 +98,12 @@ __PACKAGE__->config(
                             }
                         )->get_total_progress();
 
+                        $a->{projection} ||= $action_line->get_projection_by_subprefecture($subprefecture_id);
+
                         push @{ $a->{$subprefecture_id}{per_semester} }, {
                             year        => $b->get_year(),
                             semester    => $b->get_semester(),
                             value       => $b->get_column('value'),
-                            projection  => $b->get_projection(),
                             progress    => $b->get_progress(),
                         };
                         $a;

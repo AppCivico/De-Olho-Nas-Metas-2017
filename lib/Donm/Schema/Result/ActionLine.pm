@@ -374,6 +374,22 @@ sub get_projection_as_number {
     return undef;
 }
 
+sub get_projection_by_subprefecture {
+    my ($self, $subprefecture_id) = @_;
+
+    my $projection = $self->action_line_execution_subprefectures->search(
+        {
+            'me.subprefecture_id' => $subprefecture_id,
+            'me.period' => 10,
+        }
+    )->next;
+
+    if (ref $projection) {
+        return $projection->get_column('value');
+    }
+    return undef;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
