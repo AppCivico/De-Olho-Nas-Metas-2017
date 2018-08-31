@@ -9,6 +9,7 @@ with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoResultGET";
 with "CatalystX::Eta::Controller::TypesValidation";
 
+use HTML::Entities;
 use List::Util 'reduce';
 
 __PACKAGE__->config(
@@ -137,7 +138,7 @@ __PACKAGE__->config(
                         map {
                             my $ai = $_;
                             +{
-                                description => $ai->get_column('description'),
+                                description => decode_entities($ai->get_column('description')),
                                 inserted_at => $ai->get_column('inserted_at'),
                             }
                         } $goal->goal_additional_informations->all()
