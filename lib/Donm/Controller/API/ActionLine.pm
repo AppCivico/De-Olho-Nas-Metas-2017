@@ -43,7 +43,6 @@ __PACKAGE__->config(
                 slug                  => $action_line->get_column('slug'),
                 indicator             => $action_line->get_column('indicator'),
                 status                => $action_line->get_column('status'),
-                status                => $action_line->get_column('status'),
                 last_updated_at       => $action_line->get_column('last_updated_at'),
 
                 subprefectures => [
@@ -98,7 +97,7 @@ __PACKAGE__->config(
                             }
                         )->get_total_progress();
 
-                        $a->{projection} ||= $action_line->get_projection_by_subprefecture($subprefecture_id);
+                        $a->{$subprefecture_id}{projection} ||= $action_line->get_projection_by_subprefecture($subprefecture_id);
 
                         push @{ $a->{$subprefecture_id}{per_semester} }, {
                             year        => $b->get_year(),
