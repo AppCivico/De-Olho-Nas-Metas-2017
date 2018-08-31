@@ -265,15 +265,17 @@ sub project {
 
         # Carregando a execução regionalizada.
         for my $k (keys %{ $action_line->{execucao_regional} || {} }) {
-            $self->loader->add(
-                'action_line_execution_subprefecture' => {
-                    action_line_project_id   => $project_id,
-                    action_line_id_reference => $id_reference,
-                    subprefecture_name       => $action_line->{execucao_regional}->{$k}->[0]->{prefeitura_regional_nome},
-                    value                    => $action_line->{execucao_regional}->{$k}->[0]->{linha_acao_execucao_prefeitura_regional_valor},
-                    period                   => $action_line->{execucao_regional}->{$k}->[0]->{linha_acao_execucao_prefeitura_regional_num_periodo},
-                }
-            );
+            for my $r (@{ $action_line->{execucao_regional}->{$k} }) {
+                $self->loader->add(
+                    'action_line_execution_subprefecture' => {
+                        action_line_project_id   => $project_id,
+                        action_line_id_reference => $id_reference,
+                        subprefecture_name       => $r->{prefeitura_regional_nome},
+                        value                    => $r->{linha_acao_execucao_prefeitura_regional_valor},
+                        period                   => $r->{linha_acao_execucao_prefeitura_regional_num_periodo},
+                    }
+                );
+            }
         }
     }
 

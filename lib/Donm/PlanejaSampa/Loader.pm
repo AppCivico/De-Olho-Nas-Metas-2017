@@ -164,15 +164,18 @@ sub get_filehandle {
 sub load_all {
     my $self = shift;
 
-    my @entities = qw(
+    my %entities = map { $_ => 1 } qw(
         badge project goal action_line goal_project goal_badge project_badge goal_execution goal_additional_information
         goal_execution_subprefecture project_additional_information project_budget_execution action_line_execution
         action_line_execution_subprefecture project_secretariat
     );
-    for my $entity (@entities) {
-        my $fh = $self->_filehandles->{$entity} or die die "There is no entity '$entity'.";
-        printf "Loading entity '%s'...\n", $entity;
-        $self->load_file($entity, $fh);
+    for my $entity (keys %{ $self->_filehandles }) {
+        die "There is no entity '$entity'." unless $entities{$entity};
+
+        if (my $fh = $self->_filehandles->{$entity}) {
+            printf "Loading entity '%s'...\n", $entity;
+            $self->load_file($entity, $fh);
+        }
     }
     return;
 }
@@ -248,7 +251,7 @@ sub _get_random_string {
 sub _get_new_fh {
     my $self = shift;
 
-    my $fh = File::Temp->new( UNLINK => 0, SUFFIX => '.csv', DIR => '/tmp' );
+    my $fh = File::Temp->new( UNLINK => 1, SUFFIX => '.csv', DIR => '/tmp' );
     binmode $fh, ':encoding(utf8)';
     chmod 0644, $fh->filename;
 
