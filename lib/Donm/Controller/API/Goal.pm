@@ -53,7 +53,7 @@ __PACKAGE__->config(
                     } $goal->goal_executions->search( { 'me.accumulated' => 'false' } )->all()
                 ],
 
-                execution_subprefecture => (
+                execution_subprefectures => (
                     reduce {
                         my $subprefecture_id = $b->get_column('subprefecture_id');
 
