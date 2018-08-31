@@ -45,6 +45,7 @@ db_transaction {
                             description => "Foi articulado em torno da ideia de uma cidade inteligente, eficiente, que gera oportunidades e simplifica a vida das pessoas",
                         }
                     ],
+                    secretariats => [],
                 },
             ],
             'only one result',
@@ -220,6 +221,11 @@ db_transaction {
     };
 
     subtest 'project secretariat' => sub {
+
+        rest_get "/api/project",
+            name  => "filter by title",
+            stash => "projects",
+        ;
 
         my $project     = $schema->resultset('Project')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
         my $secretariat = $schema->resultset('Secretariat')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;

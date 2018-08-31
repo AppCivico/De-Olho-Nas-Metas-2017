@@ -233,6 +233,7 @@ __PACKAGE__->has_many(
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:19ev0ODqy9vrXJ02JpHWVQ
 
 use List::Util 'reduce';
+use Scalar::Util qw(looks_like_number);
 
 sub get_overall_total {
     my $self = shift;
@@ -247,6 +248,45 @@ sub get_overall_total {
 
         $a + $total_year;
     } 0, $self->project_budget_executions->all();
+}
+
+sub get_total_planned_budget {
+    my $self = shift;
+
+    my $own_resources_investment   = $self->get_column('budget_own_resources_investment');
+    my $own_resources_costing      = $self->get_column('budget_own_resources_costing');
+    my $other_resources_investment = $self->get_column('budget_other_resources_investment');
+    my $other_resources_costing    = $self->get_column('budget_other_resources_costing');
+
+    $own_resources_investment =~ s/(^\s+|\s+$)//g;
+    $own_resources_investment =~ s/^R\$ //g;
+    $own_resources_investment =~ s/,/./g;
+    $own_resources_investment *= 1000000 if $own_resources_investment =~ s/\s+milh(ão|ões)$//g;
+
+    $own_resources_costing =~ s/(^\s+|\s+$)//g;
+    $own_resources_costing =~ s/^R\$ //g;
+    $own_resources_costing =~ s/,/./g;
+    $own_resources_costing *= 1000000 if $own_resources_costing =~ s/\s+milh(ão|ões)$//g;
+
+    $other_resources_investment =~ s/(^\s+|\s+$)//g;
+    $other_resources_investment =~ s/^R\$ //g;
+    $other_resources_investment =~ s/,/./g;
+    $other_resources_investment *= 1000000 if $other_resources_investment =~ s/\s+milh(ão|ões)$//g;
+
+    $other_resources_costing =~ s/(^\s+|\s+$)//g;
+    $other_resources_costing =~ s/^R\$ //g;
+    $other_resources_costing =~ s/,/./g;
+    $other_resources_costing *= 1000000 if $other_resources_costing =~ s/\s+milh(ão|ões)$//g;
+
+    if(
+        looks_like_number($own_resources_costing)
+        && looks_like_number($own_resources_investment)
+        && looks_like_number($other_resources_costing)
+        && looks_like_number($other_resources_investment)
+    ) {
+        return $own_resources_costing + $own_resources_investment + $other_resources_costing + $other_resources_investment;
+    }
+    return undef;
 }
 
 __PACKAGE__->meta->make_immutable;

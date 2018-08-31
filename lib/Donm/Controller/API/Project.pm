@@ -36,7 +36,8 @@ __PACKAGE__->config(
                         other_resources => {
                             investment => $project->get_column('budget_other_resources_investment'),
                             costing    => $project->get_column('budget_other_resources_costing'),
-                        }
+                        },
+                        total => $project->get_total_planned_budget(),
                     },
                 ),
 
