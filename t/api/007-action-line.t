@@ -59,8 +59,10 @@ db_transaction {
         });
 
         my $subprefecture = $schema->resultset('Subprefecture')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+        my $subprefecture_id = $subprefecture->id;
+
         ok $action_line->action_line_execution_subprefectures->create({
-            subprefecture_id => $subprefecture->id,
+            subprefecture_id => $subprefecture_id,
             value            => fake_words(3)->(),
             period           => 2,
         });
@@ -77,9 +79,9 @@ db_transaction {
             is $res->{action_line}->{executions}->[0]->{year},     2018,    'year=2018';
             is $res->{action_line}->{executions}->[0]->{semester}, 2,       'semester=2';
 
-            is ref $res->{action_line}->{execution_subprefectures},             'ARRAY', 'execution_subprefectures=ARRAY';
-            is $res->{action_line}->{execution_subprefectures}->[0]->{year},     2017,   'year=2017';
-            is $res->{action_line}->{execution_subprefectures}->[0]->{semester}, 2,      'semester=2';
+            is ref $res->{action_line}->{execution_subprefectures},             'HASH', 'execution_subprefectures=HASH';
+            is $res->{action_line}->{execution_subprefectures}->{$subprefecture_id}->{per_semester}->[0]->{year},     2017,   'year=2017';
+            is $res->{action_line}->{execution_subprefectures}->{$subprefecture_id}->{per_semester}->[0]->{semester}, 2,      'semester=2';
         };
     };
 };

@@ -253,10 +253,10 @@ sub get_overall_total {
 sub get_total_planned_budget {
     my $self = shift;
 
-    my $own_resources_investment   = $self->get_column('budget_own_resources_investment');
-    my $own_resources_costing      = $self->get_column('budget_own_resources_costing');
-    my $other_resources_investment = $self->get_column('budget_other_resources_investment');
-    my $other_resources_costing    = $self->get_column('budget_other_resources_costing');
+    my $own_resources_investment   = $self->get_column('budget_own_resources_investment')   or return undef;
+    my $own_resources_costing      = $self->get_column('budget_own_resources_costing')      or return undef;
+    my $other_resources_investment = $self->get_column('budget_other_resources_investment') or return undef;
+    my $other_resources_costing    = $self->get_column('budget_other_resources_costing')    or return undef;
 
     $own_resources_investment =~ s/(^\s+|\s+$)//g;
     $own_resources_investment =~ s/^R\$ //g;
