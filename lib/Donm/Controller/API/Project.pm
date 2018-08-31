@@ -36,7 +36,8 @@ __PACKAGE__->config(
                         other_resources => {
                             investment => $project->get_column('budget_other_resources_investment'),
                             costing    => $project->get_column('budget_other_resources_costing'),
-                        }
+                        },
+                        total => $project->get_total_planned_budget(),
                     },
                 ),
 
@@ -193,7 +194,6 @@ sub list_GET {
                 map {
                     my $r = $_;
                     my %unique_topics = ();
-
                     +{
                         ( map { $_ => $r->{$_} } qw/ id title slug description / ),
 
@@ -203,6 +203,8 @@ sub list_GET {
                                   grep { !($unique_topics{$_->{goal}->{topic_id}}++) } @{ $r->{goal_projects} }
                             ]
                         ),
+
+                        ( secretariats => $r->{project_secretariats} ),
                     };
                 } $c->stash->{collection}->search(
                     {
@@ -236,7 +238,7 @@ SQL_QUERY
                         ),
                     },
                     {
-                        prefetch => [ { 'goal_projects' => { 'goal' => "topic" } } ],
+                        prefetch => [ { 'goal_projects' => { 'goal' => "topic" } }, 'project_secretariats' ],
                         result_class => "DBIx::Class::ResultClass::HashRefInflator",
                     },
                 )->all()
