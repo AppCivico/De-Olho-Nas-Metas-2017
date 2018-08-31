@@ -221,7 +221,6 @@ sub get_projection_as_number {
         }
     )->next;
 
-    use DDP; p $projection;
     if (ref $projection) {
         return $self->action_line->get_projection_as_number($projection->get_column('value'));
     }
