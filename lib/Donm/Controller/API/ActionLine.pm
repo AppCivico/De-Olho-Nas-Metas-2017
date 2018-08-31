@@ -102,6 +102,7 @@ __PACKAGE__->config(
                             year        => $b->get_year(),
                             semester    => $b->get_semester(),
                             value       => $b->get_column('value'),
+                            projection  => $b->get_projection(),
                             progress    => $b->get_progress(),
                         };
                         $a;
