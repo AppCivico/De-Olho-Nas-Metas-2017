@@ -9,6 +9,8 @@ with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoListGET";
 with "CatalystX::Eta::Controller::AutoResultGET";
 
+use List::Util 'reduce';
+
 __PACKAGE__->config(
     # AutoBase.
     result      => 'DB::ActionLine',
@@ -77,20 +79,45 @@ __PACKAGE__->config(
                     })->all()
                 ],
 
-                execution_subprefectures => [
-                    map {
-                        +{
-                            value       => $_->get_column('value'),
-                            year        => $_->get_year(),
-                            semester    => $_->get_semester(),
-                            subprefecture => {
-                                id      => $_->subprefecture->get_column('id'),
-                                name    => $_->subprefecture->get_column('name'),
-                                acronym => $_->subprefecture->get_column('acronym'),
-                            },
-                        }
-                    } $action_line->action_line_execution_subprefectures->search({ 'me.period' => { '-in' => [1..8] } }, { prefetch => [qw(subprefecture)] })->all()
-                ]
+                execution_subprefectures => (
+                    reduce {
+                        my $subprefecture_id = $b->get_column('subprefecture_id');
+
+                        $a ||= {};
+                        $a->{$subprefecture_id}{subprefecture} ||= {
+                            id      => $b->subprefecture->get_column('id'),
+                            name    => $b->subprefecture->get_column('name'),
+                            acronym => $b->subprefecture->get_column('acronym'),
+                        };
+
+                        $a->{$subprefecture_id}{total_progress} ||= $c->model('DB::ActionLineExecutionSubprefecture')->search(
+                            {
+                                'me.action_line_project_id'   => $b->get_column('action_line_project_id'),
+                                'me.action_line_id_reference' => $b->get_column('action_line_id_reference'),
+                                'me.subprefecture_id'         => $subprefecture_id,
+                            }
+                        )->get_total_progress();
+
+                        push @{ $a->{$subprefecture_id}{per_semester} }, {
+                            year        => $b->get_year(),
+                            semester    => $b->get_semester(),
+                            value       => $b->get_column('value'),
+                            progress    => $b->get_progress(),
+                        };
+                        $a;
+                    } {},
+                    $action_line->action_line_execution_subprefectures
+                      ->filter_projection()
+                      ->filter_accumulated()
+                      ->search(
+                          {},
+                          {
+                              prefetch => [qw( subprefecture )],
+                              order_by => [qw( subprefecture_id )],
+                          }
+                        )
+                      ->all()
+                ),
             },
         },
     },

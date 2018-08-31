@@ -209,7 +209,43 @@ sub get_semester {
     return undef; ## no critic
 }
 
+sub get_projection_as_number {
+    my ($self) = @_;
 
+    my $projection = $self->result_source->schema->resultset('ActionLineExecutionSubprefecture')->search(
+        {
+            'me.action_line_project_id'   => $self->get_column('action_line_project_id'),
+            'me.action_line_id_reference' => $self->get_column('action_line_id_reference'),
+            'me.subprefecture_id'         => $self->get_column('subprefecture_id'),
+            'me.period'                   => 10,
+        }
+    )->next;
+
+    use DDP; p $projection;
+    if (ref $projection) {
+        return $self->action_line->get_projection_as_number($projection->get_column('value'));
+    }
+    return undef;
+}
+
+sub get_progress {
+    my $self = shift;
+
+    # Projeção.
+    my $projection = $self->get_projection_as_number() or return undef; ## no critic
+
+    # Valor base.
+    my $base_value = $self->goal->get_column('base_value') or return undef; ## no critic
+
+    # Valor.
+    my $value = $self->get_value_as_number() or return undef;
+
+    my $projection_base_diff = $projection - $base_value;
+
+    $projection_base_diff ||= 1; # Avoid illegal division by zero.
+
+    return sprintf('%.2f', ( ( ($value - $base_value) * 100 ) / $projection_base_diff ));
+}
 
 __PACKAGE__->meta->make_immutable;
 

@@ -311,29 +311,35 @@ sub get_base_value_as_number {
 }
 
 sub get_projection_as_number {
-    my $self = shift;
+    my ($self, $string) = @_;
 
     my $base_value = $self->get_base_value() || '';
 
-    my $projection = $self->get_projection();
-    return undef unless ref $projection;
+    my $projection;
+    if (defined $string) {
+        $projection = $string;
+    }
+    else {
+        $projection = $self->get_projection();
+        return undef unless ref $projection;
+        $projection = $projection->get_column('value');
+    }
 
-    $projection = $projection->get_column('value');
     $projection =~ s/^\s+|\s+$//g;
 
     my $exhibition_id = $self->get_exhibition_id;
 
     if (grep { $exhibition_id == $_ } qw/ 4.1 13.1 2.2 1.11 3.9 5.2 6.2 6.5 6.6 7.9 11.11 29.7 58.2 69.5 / ) { return undef } ## no critic
     elsif ($base_value eq 'Não aplicável') { return undef }
-    elsif ($base_value eq 'N/A') { return undef }
-    elsif ($projection eq '') { return undef }
-    elsif ($projection eq 'A definir') { return undef }
+    elsif ($base_value eq 'N/A')           { return undef }
+    elsif ($projection eq '')              { return undef }
+    elsif ($projection eq 'A definir')     { return undef }
+    elsif ($projection =~ m{^\-?[0-9]+$})  { return $projection }
     elsif ( $exhibition_id eq '2.1') {
         $projection = $1 if $projection =~ m{^([0-9]+)\%\([0-9]+\)$}g;
     }
-    elsif ($projection =~ m{^\-?[0-9]+$}) { return $projection }
     elsif ($projection =~ m{^(\-?[0-9]+(\.[0-9]+)?)$}) { return $projection }
-    elsif ($projection =~ m{^([0-9]+,[0-9]+)\%$}) {
+    elsif ($projection =~ m{^(\-?[0-9]+,[0-9]+)\%$}) {
         $projection = $1;
         $projection =~ s/,/./g;
     }
