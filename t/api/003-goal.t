@@ -159,11 +159,11 @@ db_transaction {
         stash_test 'goal_execution_subprefecture' => sub {
             my $res = shift;
 
-            is ref $res->{goal}->{execution_subprefecture}, 'HASH', 'execution_subprefecture=HASH';
-            is ref $res->{goal}->{execution_subprefecture}->{$subprefecture_id}->{subprefecture}, 'HASH', 'subprefecture=HASH';
-            is scalar keys %{ $res->{goal}->{execution_subprefecture} }, 1, 'one item';
-            is $res->{goal}->{execution_subprefecture}->{$subprefecture_id}->{per_semester}->[0]->{year}, '2017', 'year=2017';
-            is $res->{goal}->{execution_subprefecture}->{$subprefecture_id}->{per_semester}->[1], undef, 'accumulated=undef';
+            is ref $res->{goal}->{execution_subprefectures}, 'HASH', 'execution_subprefecture=HASH';
+            is ref $res->{goal}->{execution_subprefectures}->{$subprefecture_id}->{subprefecture}, 'HASH', 'subprefecture=HASH';
+            is scalar keys %{ $res->{goal}->{execution_subprefectures} }, 1, 'one item';
+            is $res->{goal}->{execution_subprefectures}->{$subprefecture_id}->{per_semester}->[0]->{year}, '2017', 'year=2017';
+            is $res->{goal}->{execution_subprefectures}->{$subprefecture_id}->{per_semester}->[1], undef, 'accumulated=undef';
         };
     };
 
