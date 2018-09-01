@@ -230,6 +230,9 @@ sub get_projection_as_number {
 sub get_progress {
     my $self = shift;
 
+    # TODO Realivar como calcular esse progresso.
+    return undef;
+
     # Projeção.
     my $projection = $self->get_projection_as_number() or return undef; ## no critic
 
