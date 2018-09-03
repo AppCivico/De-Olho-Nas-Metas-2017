@@ -247,6 +247,20 @@ db_transaction {
             is $res->{project}->{secretariats}->[0]->{id},   $secretariat->id,   'secretariat_id';
             is $res->{project}->{secretariats}->[0]->{name}, $secretariat->name, 'secretariat_name';
         };
+
+        rest_get [ qw/ api project /],
+            name  => 'list projects',
+            stash => 'project_secretariat_list',
+        ;
+
+        stash_test 'project_secretariat_list' => sub {
+            my $res = shift;
+
+            ok my ($project) = grep { $_->{id} == $project->id } @{ $res->{projects} };
+            is ref $project->{secretariats}, 'ARRAY', 'secretariats=ARRAY';
+            is $project->{secretariats}->[0]->{id},   $secretariat->id,   'secretariat_id';
+            is $project->{secretariats}->[0]->{name}, $secretariat->name, 'secretariat_name';
+        };
     };
 };
 

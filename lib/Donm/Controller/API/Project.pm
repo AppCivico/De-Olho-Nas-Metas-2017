@@ -197,14 +197,19 @@ sub list_GET {
                     +{
                         ( map { $_ => $r->{$_} } qw/ id title slug description / ),
 
-                        (
-                            topics => [
-                                map { $_->{goal}->{topic} }
-                                  grep { !($unique_topics{$_->{goal}->{topic_id}}++) } @{ $r->{goal_projects} }
-                            ]
-                        ),
+                        topics => [
+                            map { $_->{goal}->{topic} }
+                              grep { !($unique_topics{$_->{goal}->{topic_id}}++) } @{ $r->{goal_projects} }
+                        ],
 
-                        ( secretariats => $r->{project_secretariats} ),
+                        secretariats => [
+                            map {
+                                +{
+                                    id   => $_->{secretariat}->{id},
+                                    name => $_->{secretariat}->{name},
+                                }
+                            } @{ $r->{project_secretariats } }
+                        ],
                     };
                 } $c->stash->{collection}->search(
                     {
@@ -238,7 +243,7 @@ SQL_QUERY
                         ),
                     },
                     {
-                        prefetch => [ { 'goal_projects' => { 'goal' => "topic" } }, 'project_secretariats' ],
+                        prefetch => [ { 'goal_projects' => { 'goal' => "topic" } }, { 'project_secretariats' => 'secretariat' } ],
                         result_class => "DBIx::Class::ResultClass::HashRefInflator",
                     },
                 )->all()
