@@ -217,6 +217,8 @@ sub get_value_as_number {
 sub get_progress {
     my $self = shift;
 
+    return undef;
+
     die "Cant calculate progress of an not accumulated action line execution."
       if !$self->get_column('accumulated');
 
