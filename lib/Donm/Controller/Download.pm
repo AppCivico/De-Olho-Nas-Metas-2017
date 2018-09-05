@@ -24,8 +24,8 @@ sub root : Chained('/') : PathPart('') : CaptureArgs(0) {
 sub base : Chained('root') : PathPart('download') : CaptureArgs(0) {}
 
 sub get_temp_file {
-    my $fh = File::Temp->new( UNLINK => 0, SUFFIX => '.csv', DIR => '/tmp' );
-    #binmode $fh, ':encoding(UTF-8)';
+    my $fh = File::Temp->new( UNLINK => 1, SUFFIX => '.csv', DIR => '/tmp' );
+    binmode $fh, ':encoding(UTF-8)';
 
     return $fh;
 }

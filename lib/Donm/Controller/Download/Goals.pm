@@ -56,7 +56,7 @@ sub download : Chained('base') : PathPart('') : Args(0) {
     my $filename = 'Metas_' . DateTime->now->ymd('') . '.csv';
     $c->response->headers->header( 'content-disposition' => "attachment;filename=$filename");
 
-    #binmode $fh, ':raw';
+    binmode $fh, ':raw';
     $fh->seek(0, SEEK_SET);
     $c->res->body($fh);
     $c->detach();
