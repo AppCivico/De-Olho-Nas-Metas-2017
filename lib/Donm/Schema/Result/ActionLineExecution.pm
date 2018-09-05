@@ -217,8 +217,8 @@ sub get_value_as_number {
 sub get_progress {
     my $self = shift;
 
-    die "Cant calculate progress of an accumulated action line execution."
-      if $self->get_column('accumulated');
+    die "Cant calculate progress of an not accumulated action line execution."
+      if !$self->get_column('accumulated');
 
     my $action_line_id = $self->action_line->get_exhibition_id();
     if (grep { $action_line_id == $_ } qw/ 1.5 7.5 12.4 22.1 29.1 30.1 30.3 30.5 30.6 58.1 58.2 69.5 2.2 6.6 12.3/ ) {

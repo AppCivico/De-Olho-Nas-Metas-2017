@@ -74,7 +74,11 @@ __PACKAGE__->config(
                         }
                     } $action_line->action_line_executions->search({
                         'me.period'      => { '-in' => [1.. 8] },
-                        'me.accumulated' => 'false',
+                        # O correto aqui seria enviar o dado não acumulado. Por um bug na API do PlanejaSampa, os
+                        # valores acumulados estão vindo com acumulado=false e os não acumulados com acumulado=true.
+                        # Quando corrigem, precisamos voltar a flag para accumulated=false.
+                        'me.accumulated' => 'true',
+                        #'me.accumulated' => 'false',
                     })->all()
                 ],
 

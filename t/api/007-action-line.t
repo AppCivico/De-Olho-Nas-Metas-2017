@@ -55,7 +55,7 @@ db_transaction {
         ok $action_line->action_line_executions->create({
             value       => fake_words(3)->(),
             period      => 4,
-            accumulated => 'false',
+            accumulated => 'true',
         });
 
         my $subprefecture = $schema->resultset('Subprefecture')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
