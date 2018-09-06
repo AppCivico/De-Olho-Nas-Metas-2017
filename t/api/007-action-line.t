@@ -45,7 +45,7 @@ db_transaction {
 
         is_deeply(
             [ sort keys %{ $res->{action_line} } ],
-            [ sort qw/ id achievement title indicator_description subprefectures project slug executions execution_subprefectures status indicator last_updated_at / ],
+            [ sort qw/ id achievement title indicator_description subprefectures project slug execution execution_subprefectures status indicator last_updated_at / ],
         );
     };
 
@@ -75,11 +75,11 @@ db_transaction {
         stash_test 'action_line_execution' => sub {
             my $res = shift;
 
-            is ref $res->{action_line}->{executions},              'ARRAY', 'executions=ARRAY';
-            is $res->{action_line}->{executions}->[0]->{year},     2018,    'year=2018';
-            is $res->{action_line}->{executions}->[0]->{semester}, 2,       'semester=2';
+            is ref $res->{action_line}->{execution},              'ARRAY', 'execution=ARRAY';
+            is $res->{action_line}->{execution}->[0]->{year},     2018,    'year=2018';
+            is $res->{action_line}->{execution}->[0]->{semester}, 2,       'semester=2';
 
-            is ref $res->{action_line}->{execution_subprefectures},             'HASH', 'execution_subprefectures=HASH';
+            is ref $res->{action_line}->{execution_subprefectures}, 'HASH', 'execution_subprefectures=HASH';
             is $res->{action_line}->{execution_subprefectures}->{$subprefecture_id}->{per_semester}->[0]->{year},     2017,   'year=2017';
             is $res->{action_line}->{execution_subprefectures}->{$subprefecture_id}->{per_semester}->[0]->{semester}, 2,      'semester=2';
         };

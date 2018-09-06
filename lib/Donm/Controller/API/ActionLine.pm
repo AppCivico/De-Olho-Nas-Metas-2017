@@ -63,7 +63,7 @@ __PACKAGE__->config(
                     description => $action_line->project->get_column('description'),
                 },
 
-                executions => [
+                execution => [
                     map {
                         +{
                             value       => $_->get_column('value'),
