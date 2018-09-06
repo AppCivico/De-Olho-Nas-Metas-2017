@@ -210,6 +210,15 @@ sub list_GET {
                                 }
                             } @{ $r->{project_secretariats } }
                         ],
+
+                        badges => [
+                            map {
+                                +{
+                                    id   => $_->{secretariat}->{id},
+                                    name => $_->{secretariat}->{name},
+                                }
+                            } @{ $r->{project_badges } }
+                        ],
                     };
                 } $c->stash->{collection}->search(
                     {
@@ -243,7 +252,11 @@ SQL_QUERY
                         ),
                     },
                     {
-                        prefetch => [ { 'goal_projects' => { 'goal' => "topic" } }, { 'project_secretariats' => 'secretariat' } ],
+                        prefetch => [
+                            { 'project_badges' => 'badge' },
+                            { 'goal_projects' => { 'goal' => 'topic' } },
+                            { 'project_secretariats' => 'secretariat' },
+                        ],
                         result_class => "DBIx::Class::ResultClass::HashRefInflator",
                     },
                 )->all()
