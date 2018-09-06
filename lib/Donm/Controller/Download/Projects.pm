@@ -31,7 +31,10 @@ sub download : Chained('base') : PathPart('') : Args(0) {
         ]
     );
 
-    my $project_rs = $c->model('DB::Project');
+    my $project_rs = $c->model('DB::Project')->search(
+        undef,
+        { order_by => [qw( me.id )] },
+    );
     while (my $project = $project_rs->next()) {
         $self->csv->print(
             $fh,

@@ -26,7 +26,10 @@ sub download : Chained('base') : PathPart('') : Args(0) {
 
     my $goal_rs = $c->model('DB::Goal')->search(
         undef,
-        { prefetch => [ qw/ secretariat topic / ] },
+        {
+            prefetch => [qw( secretariat topic )],
+            order_by => [qw( me.id )],
+        }
     );
 
     while (my $goal = $goal_rs->next()) {
