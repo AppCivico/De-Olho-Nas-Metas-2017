@@ -45,6 +45,7 @@ db_transaction {
                             description => "Foi articulado em torno da ideia de uma cidade inteligente, eficiente, que gera oportunidades e simplifica a vida das pessoas",
                         }
                     ],
+                    badges       => [],
                     secretariats => [],
                 },
             ],
