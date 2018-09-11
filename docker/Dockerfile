@@ -36,3 +36,5 @@ USER root
 RUN mkdir /etc/service/donm
 COPY donm.sh /etc/service/donm/run
 
+ADD crontab /etc/cron.d/donm-jobs
+RUN touch /var/log/cron.log
