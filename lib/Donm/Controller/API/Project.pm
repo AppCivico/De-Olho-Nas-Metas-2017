@@ -214,8 +214,8 @@ sub list_GET {
                         badges => [
                             map {
                                 +{
-                                    id   => $_->{secretariat}->{id},
-                                    name => $_->{secretariat}->{name},
+                                    id   => $_->{badge}->{id},
+                                    name => $_->{badge}->{name},
                                 }
                             } @{ $r->{project_badges } }
                         ],
