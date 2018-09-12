@@ -516,7 +516,9 @@ File::Copy	./lib/Donm/PlanejaSampa/Loader.pm	/^use File::Copy;$/;"	u
 File::Slurper 'read_text'	./lib/Donm/PlanejaSampa/Loader.pm	/^use File::Slurper 'read_text';$/;"	u
 File::Temp	./lib/Donm/PlanejaSampa/Loader.pm	/^use File::Temp;$/;"	u
 File::Temp ':seekable'	./lib/Donm/Controller/Download.pm	/^use File::Temp ':seekable';$/;"	u
+File::Temp ':seekable'	./lib/Donm/Controller/Download/ActionLine.pm	/^use File::Temp ':seekable';$/;"	u
 File::Temp ':seekable'	./lib/Donm/Controller/Download/Goals.pm	/^use File::Temp ':seekable';$/;"	u
+File::Temp ':seekable'	./lib/Donm/Controller/Download/Projects.pm	/^use File::Temp ':seekable';$/;"	u
 FindBin qw($RealBin $Script)	./script/adhoc/populate-database.pl	/^use FindBin qw($RealBin $Script);$/;"	u
 FindBin qw($RealBin $Script)	./script/adhoc/update-action-line-region.pl	/^use FindBin qw($RealBin $Script);$/;"	u
 FindBin qw($RealBin $Script)	./script/crontab/update-iota-indicators.pl	/^use FindBin qw($RealBin $Script);$/;"	u
@@ -561,7 +563,9 @@ Moose	./lib/Donm/Controller/API/Subprefecture.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Controller/API/Topic.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Controller/API/Variable.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Controller/Download.pm	/^use Moose;$/;"	u
+Moose	./lib/Donm/Controller/Download/ActionLine.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Controller/Download/Goals.pm	/^use Moose;$/;"	u
+Moose	./lib/Donm/Controller/Download/Projects.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Controller/Root.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Data/Manager.pm	/^use Moose;$/;"	u
 Moose	./lib/Donm/Data/Visitor.pm	/^use Moose;$/;"	u
@@ -856,6 +860,7 @@ base	./lib/Donm/Controller/Download.pm	/^sub base : Chained('root') : PathPart('
 base	./lib/Donm/Controller/Download/ActionLine.pm	/^sub base : Chained('root') : PathPart('action-lines') : CaptureArgs(0) { }$/;"	s
 base	./lib/Donm/Controller/Download/Goals.pm	/^sub base : Chained('root') : PathPart('goals') : CaptureArgs(0) { }$/;"	s
 base	./lib/Donm/Controller/Download/Projects.pm	/^sub base : Chained('root') : PathPart('projects') : CaptureArgs(0) { }$/;"	s
+base 'Catalyst::Model::DBIC::Schema'	./lib/Donm/Model/DB.pm	/^use base 'Catalyst::Model::DBIC::Schema';$/;"	u
 check	./lib/Donm/Role/Verification.pm	/^sub check {$/;"	s
 coercion	./lib/Data/Verifier.pm	/^sub coercion {$/;"	s
 common::sense	./lib/Donm/Controller/API.pm	/^use common::sense;$/;"	u
@@ -871,7 +876,9 @@ common::sense	./lib/Donm/Controller/API/Subprefecture.pm	/^use common::sense;$/;
 common::sense	./lib/Donm/Controller/API/Topic.pm	/^use common::sense;$/;"	u
 common::sense	./lib/Donm/Controller/API/Variable.pm	/^use common::sense;$/;"	u
 common::sense	./lib/Donm/Controller/Download.pm	/^use common::sense;$/;"	u
+common::sense	./lib/Donm/Controller/Download/ActionLine.pm	/^use common::sense;$/;"	u
 common::sense	./lib/Donm/Controller/Download/Goals.pm	/^use common::sense;$/;"	u
+common::sense	./lib/Donm/Controller/Download/Projects.pm	/^use common::sense;$/;"	u
 common::sense	./lib/Donm/PlanejaSampa.pm	/^use common::sense;$/;"	u
 common::sense	./lib/Donm/PlanejaSampa/Loader.pm	/^use common::sense;$/;"	u
 common::sense	./lib/Donm/PlanejaSampa/Worker.pm	/^use common::sense;$/;"	u
@@ -890,6 +897,7 @@ csv	./lib/Donm/PlanejaSampa/Loader.pm	/^has csv => ($/;"	a
 current_path	./lib/Donm/Data/Visitor.pm	/^has current_path => ($/;"	a
 data_as_json	./lib/Donm/PlanejaSampa/Worker.pm	/^sub data_as_json { decode_json(${$_[0]->data}) } ## no critic$/;"	s
 default	./lib/Donm/Controller/Root.pm	/^sub default :Path {$/;"	s
+derived	./lib/Data/Verifier.pm	/^has 'derived' => ($/;"	a
 download	./lib/Donm/Controller/Download/ActionLine.pm	/^sub download : Chained('base') : PathPart('') : Args(0) {$/;"	s
 download	./lib/Donm/Controller/Download/Goals.pm	/^sub download : Chained('base') : PathPart('') : Args(0) {$/;"	s
 download	./lib/Donm/Controller/Download/Projects.pm	/^sub download : Chained('base') : PathPart('') : Args(0) {$/;"	s
@@ -900,6 +908,8 @@ filter_accumulated	./lib/Donm/Schema/ResultSet/ActionLineExecutionSubprefecture.
 filter_accumulated	./lib/Donm/Schema/ResultSet/GoalExecutionSubprefecture.pm	/^sub filter_accumulated {$/;"	s
 filter_projection	./lib/Donm/Schema/ResultSet/ActionLineExecutionSubprefecture.pm	/^sub filter_projection {$/;"	s
 filter_projection	./lib/Donm/Schema/ResultSet/GoalExecutionSubprefecture.pm	/^sub filter_projection {$/;"	s
+filters	./lib/Data/Verifier.pm	/^has 'filters' => ($/;"	a
+final_value	./lib/Donm/Data/Visitor.pm	/^has final_value => ($/;"	a
 forbidden	./lib/Donm/Controller/API.pm	/^sub forbidden : Private {$/;"	s
 get_action_lines_count	./lib/Donm/Schema/Result/Subprefecture.pm	/^sub get_action_lines_count {$/;"	s
 get_base_value	./lib/Donm/Schema/Result/ActionLine.pm	/^sub get_base_value {$/;"	s
@@ -983,7 +993,9 @@ namespace::autoclean	./lib/Donm/Controller/API/Subprefecture.pm	/^use namespace:
 namespace::autoclean	./lib/Donm/Controller/API/Topic.pm	/^use namespace::autoclean;$/;"	u
 namespace::autoclean	./lib/Donm/Controller/API/Variable.pm	/^use namespace::autoclean;$/;"	u
 namespace::autoclean	./lib/Donm/Controller/Download.pm	/^use namespace::autoclean;$/;"	u
+namespace::autoclean	./lib/Donm/Controller/Download/ActionLine.pm	/^use namespace::autoclean;$/;"	u
 namespace::autoclean	./lib/Donm/Controller/Download/Goals.pm	/^use namespace::autoclean;$/;"	u
+namespace::autoclean	./lib/Donm/Controller/Download/Projects.pm	/^use namespace::autoclean;$/;"	u
 namespace::autoclean	./lib/Donm/Controller/Root.pm	/^use namespace::autoclean;$/;"	u
 namespace::autoclean	./lib/Donm/Data/Manager.pm	/^use namespace::autoclean;$/;"	u
 namespace::autoclean	./lib/Donm/Data/Visitor.pm	/^use namespace::autoclean;$/;"	u
@@ -1034,6 +1046,8 @@ root	./lib/Donm/Controller/Download.pm	/^sub root : Chained('\/') : PathPart('')
 root	./lib/Donm/Controller/Download/ActionLine.pm	/^sub root : Chained('\/download\/base') : PathPart('') : CaptureArgs(0) { }$/;"	s
 root	./lib/Donm/Controller/Download/Goals.pm	/^sub root : Chained('\/download\/base') : PathPart('') : CaptureArgs(0) { }$/;"	s
 root	./lib/Donm/Controller/Download/Projects.pm	/^sub root : Chained('\/download\/base') : PathPart('') : CaptureArgs(0) { }$/;"	s
+schema	./lib/Donm/PlanejaSampa/Loader.pm	/^has schema => ($/;"	a
+schema	./lib/Donm/Role/Verification/TransactionalActions/DBIC.pm	/^has schema => ($/;"	a
 search_by_exhibition_id	./lib/Donm/Schema/ResultSet/ActionLine.pm	/^sub search_by_exhibition_id {$/;"	s
 search_only_not_accumulated	./lib/Donm/Schema/ResultSet/GoalExecutionSubprefecture.pm	/^sub search_only_not_accumulated {$/;"	s
 slugify	./lib/Donm/Utils.pm	/^sub slugify {$/;"	s
@@ -1103,4 +1117,35 @@ vars qw(@ISA @EXPORT)	./lib/Donm/Utils.pm	/^use vars qw(@ISA @EXPORT);$/;"	u
 verifiers	./lib/Donm/Role/Verification.pm	/^has verifiers => ($/;"	a
 verify	./lib/Data/Verifier.pm	/^sub verify {$/;"	s
 visit_hash	./lib/Donm/Data/Visitor.pm	/^sub visit_hash {$/;"	s
+warnings	./lib/Donm/Schema/Result/ActionLine.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/ActionLineExecution.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/ActionLineExecutionSubprefecture.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/Badge.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/GeographyColumn.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/GeometryColumn.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/Goal.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/GoalAdditionalInformation.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/GoalBadge.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/GoalExecution.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/GoalExecutionSubprefecture.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/GoalProject.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/Indicator.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/Project.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/ProjectAdditionalInformation.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/ProjectBadge.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/ProjectBudgetExecution.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/ProjectSecretariat.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/RasterColumn.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/RasterOverview.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/Region.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/RegionIndicator.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/RegionVariable.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/Secretariat.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/SpatialRefSy.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/Subprefecture.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/SubprefectureActionLine.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/Topic.pm	/^use warnings;$/;"	u
+warnings	./lib/Donm/Schema/Result/Variable.pm	/^use warnings;$/;"	u
+warnings	./script/donm_create.pl	/^use warnings;$/;"	u
 with_accumulated	./lib/Donm/Schema/ResultSet/GoalExecutionSubprefecture.pm	/^sub with_accumulated {$/;"	s
+yada	./lib/Donm/PlanejaSampa.pm	/^has yada => ($/;"	a
