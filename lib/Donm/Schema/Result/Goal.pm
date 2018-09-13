@@ -393,7 +393,7 @@ sub get_projection_as_number {
         $projection *= 1000;
     }
     else {
-        print STDERR "Unknown projection '%projection'.\n";
+        print STDERR "Unknown projection '$projection'.\n";
         return undef;
     }
 
