@@ -332,7 +332,7 @@ sub get_projection_as_number {
     defined $projection or return undef;
     $projection =~ s/^\s+|\s+$//g;
 
-    if (grep { $self->id == $_ } qw(45 47 51 52 19 20 3 6 34 7 38 24) ) { return undef } ## no critic
+    if (grep { $self->id == $_ } qw(45 47 51 52 19 20 3 6 34 7 38 24 8) ) { return undef } ## no critic
     elsif ($projection =~ m{^[0-9]+(\.[0-9]+)?$}) { return $projection }
     elsif ($projection =~ m{^[0-9]+(,[0-9]+)?%$}) {
         $projection =~ s/,/./g;
