@@ -196,20 +196,7 @@ sub get_progress {
     die "I should not calculate progress of non-accumulated executions."
       unless $self->get_column('accumulated');
 
-    # Projeção.
-    my $projection = $self->goal->get_projection_as_number() or return undef; ## no critic
-
-    # Valor base.
-    my $base_value = $self->goal->get_column('base_value') or return undef; ## no critic
-
-    # Valor.
-    my $value = $self->get_value_as_number() or return undef;
-
-    # Progresso.
-    my $projection_base_diff = $projection - $base_value;
-    $projection_base_diff ||= 1; # Avoid illegal division by zero.
-
-    my $progress = sprintf('%.2f', ( ( ($value - $base_value) * 100 ) / $projection_base_diff ));
+    my $progress = $self->get_raw_progress();
 
     my $period = $self->get_column('period');
     if ($period == 1) {
@@ -240,9 +227,6 @@ sub get_progress {
 
 sub get_raw_progress {
     my $self = shift;
-
-    die "I should not calculate progress of non-accumulated executions."
-      unless $self->get_column('accumulated');
 
     # Projeção.
     my $projection = $self->goal->get_projection_as_number() or return undef; ## no critic
