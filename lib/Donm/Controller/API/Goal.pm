@@ -50,7 +50,7 @@ __PACKAGE__->config(
                             semester    => $_->get_semester(),
                             progress    => $_->get_progress(),
                         };
-                    } $goal->goal_executions->search( { 'me.accumulated' => 'false' } )->all()
+                    } $goal->goal_executions->search_for_accumulated()->all()
                 ],
 
                 execution_subprefectures => (

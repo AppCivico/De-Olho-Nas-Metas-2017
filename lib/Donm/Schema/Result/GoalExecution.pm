@@ -193,6 +193,9 @@ sub get_value_as_number {
 sub get_progress {
     my $self = shift;
 
+    die "I should not calculate progress of non-accumulated executions."
+      unless $self->get_column('accumulated');
+
     # Projeção.
     my $projection = $self->goal->get_projection_as_number() or return undef; ## no critic
 
@@ -202,10 +205,35 @@ sub get_progress {
     # Valor.
     my $value = $self->get_value_as_number() or return undef;
 
+    # Progresso.
     my $projection_base_diff = $projection - $base_value;
     $projection_base_diff ||= 1; # Avoid illegal division by zero.
 
-    return sprintf('%.2f', ( ( ($value - $base_value) * 100 ) / $projection_base_diff ));
+    my $progress = sprintf('%.2f', ( ( ($value - $base_value) * 100 ) / $projection_base_diff ));
+
+    my $period = $self->get_column('period');
+    if ($period == 1) {
+        return $progress;
+    }
+    else {
+        my $goal_execution_rs = $self->result_source->schema->resultset('GoalExecution');
+
+        my $last_accumulatead_goal_execution = $goal_execution_rs->search(
+            {
+                'me.goal_id'     => $self->goal->id,
+                'me.period'      => $period - 1,
+                'me.accumulated' => 'true',
+            },
+        )->next;
+
+        if (ref $last_accumulatead_goal_execution) {
+            my $last_accumulatead_goal_execution_progress = $last_accumulatead_goal_execution->get_progress();
+
+            return sprintf('%.2f', ( $progress - $last_accumulatead_goal_execution_progress ));
+        }
+    }
+
+    return undef; ## no critic
 }
 
 __PACKAGE__->meta->make_immutable;

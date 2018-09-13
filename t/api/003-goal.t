@@ -118,7 +118,7 @@ db_transaction {
                     goal_id     => $goal_id,
                     period      => 5,
                     value       => 10,
-                    accumulated => 'false',
+                    accumulated => 'true',
                 }
             ),
             'add goal execution',
