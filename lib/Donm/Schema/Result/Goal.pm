@@ -332,8 +332,14 @@ sub get_projection_as_number {
     defined $projection or return undef;
     $projection =~ s/^\s+|\s+$//g;
 
-    if (grep { $self->id == $_ } qw(45 47 51 52 19 20 3 6 34 7 38 24 8) ) { return undef } ## no critic
-    elsif ($projection =~ m{^[0-9]+(\.[0-9]+)?$}) { return $projection }
+    my $goal_id = $self->id;
+
+    #if (grep { $goal_id == $_ } qw(9 10 12 40 48 ) ) { return undef }
+    if (grep { $goal_id == $_ } qw( 1235315 ) ) { return undef }
+    elsif ($projection eq 'A definir')               { return undef }
+    elsif ($projection eq 'N/A')                     { return undef }
+    elsif ($projection eq '15.000' && $goal_id == 8) { return 15000 }
+    elsif ($projection =~ m{^[0-9]+(\.[0-9]+)?$})    { return $projection }
     elsif ($projection =~ m{^[0-9]+(,[0-9]+)?%$}) {
         $projection =~ s/,/./g;
         $projection =~ s/%//g;
@@ -380,7 +386,6 @@ sub get_projection_as_number {
         $projection = $1;
         $projection =~ s/,/./g;
     }
-    elsif ($projection =~ m{^A definir$}) { return undef }
     elsif ($projection =~ m{^(\d+) regionais$}) {
         $projection = $1;
     }
@@ -392,12 +397,40 @@ sub get_projection_as_number {
         $projection = $1;
         $projection *= 1000;
     }
+    elsif ($projection =~ m{^[0-9]+\Q% (VIGITEL: \E([0-9]+(,?[0-9]+)?)\%\)$}) {
+        $projection = $1;
+        $projection =~ s/,/./g;
+    }
     else {
-        print STDERR "Unknown projection '$projection'.\n";
+        print STDERR "Unknown projection '$projection' of goal id '$goal_id'.\n";
         return undef;
     }
 
     return $projection;
+}
+
+sub is_all_goal_executions_accumulated {
+    my ($self) = @_;
+
+    my @goal_executions = $self->goal_executions
+      ->search(undef, { result_class => 'DBIx::Class::ResultClass::HashRefInflator' } )
+      ->all();
+
+    for my $e (grep { $_->{accumulated} } @goal_executions) {
+        my $period  = $e->{period};
+        my $goal_id = $e->{goal_id};
+
+        my ($not_accumulated_in_this_period) = grep {
+            $_->{accumulated} == 0
+            && $_->{period}   == $period
+            && $_->{goal_id}  == $goal_id
+        } @goal_executions;
+
+        if (ref $not_accumulated_in_this_period && q...$not_accumulated_in_this_period->{value} ne q...$e->{value}) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -191,34 +191,49 @@ sub get_value_as_number {
 }
 
 sub get_progress {
-    my $self = shift;
+    my ($self) = @_;
 
     die "I should not calculate progress of non-accumulated executions."
-      unless $self->get_column('accumulated');
+      if !$self->get_column('accumulated');
 
     my $progress = $self->get_raw_progress();
 
+    my $goal_execution_rs = $self->goal->goal_executions;
+
     my $period = $self->get_column('period');
-    if ($period == 1) {
+    my $is_all_goal_executions_accumulated = $self->goal->is_all_goal_executions_accumulated();
+
+    my $has_previous_execution_rs = $goal_execution_rs->search(
+        {
+            'me.period'      => { '<', $period },
+            #'me.accumulated' => 'true',
+            (
+                $is_all_goal_executions_accumulated
+                ? ()
+                : ( 'me.accumulated' => 'true' )
+            ),
+        },
+        {
+            order_by => [
+                { '-desc' => 'me.period' },
+                \'(CASE WHEN me.accumulated THEN 1 ELSE 2 END) ASC',
+            ]
+        }
+    );
+
+    if ($period == 1 || $has_previous_execution_rs->count == 0) {
         return $progress;
     }
-    else {
-        my $goal_execution_rs = $self->result_source->schema->resultset('GoalExecution');
 
-        my $last_accumulatead_goal_execution = $goal_execution_rs->search(
-            {
-                'me.goal_id'     => $self->goal->id,
-                'me.period'      => $period - 1,
-                'me.accumulated' => 'true',
-            },
-        )->next;
+    my $last_accumulatead_goal_execution = $has_previous_execution_rs->next();
 
-        if (ref $last_accumulatead_goal_execution) {
-            my $last_accumulatead_goal_execution_progress = $last_accumulatead_goal_execution->get_raw_progress();
+    if (ref $last_accumulatead_goal_execution) {
+        my $last_accumulatead_goal_execution_progress = $last_accumulatead_goal_execution->get_raw_progress();
 
-            if (defined $last_accumulatead_goal_execution_progress) {
-                return sprintf('%.2f', ( $progress - $last_accumulatead_goal_execution_progress ));
-            }
+        #use DDP; p [ $period, $progress, $last_accumulatead_goal_execution_progress];
+
+        if (defined $last_accumulatead_goal_execution_progress) {
+            return sprintf('%.2f', ( $progress - $last_accumulatead_goal_execution_progress ));
         }
     }
 
@@ -233,6 +248,9 @@ sub get_raw_progress {
 
     # Valor base.
     my $base_value = $self->goal->get_column('base_value') or return undef; ## no critic
+    if ($base_value =~ m{^N/?A$}) {
+        return undef;
+    }
 
     # Valor.
     my $value = $self->get_value_as_number() or return undef;
@@ -241,7 +259,11 @@ sub get_raw_progress {
     my $projection_base_diff = $projection - $base_value;
     $projection_base_diff ||= 1; # Avoid illegal division by zero.
 
-    return sprintf('%.2f', ( ( ($value - $base_value) * 100 ) / $projection_base_diff ));
+    my $progress = sprintf('%.2f', ( ( ($value - $base_value) * 100 ) / $projection_base_diff ));
+    if ($progress == 0) {
+        return 0;
+    }
+    return $progress;
 }
 
 __PACKAGE__->meta->make_immutable;
