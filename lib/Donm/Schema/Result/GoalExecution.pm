@@ -206,12 +206,7 @@ sub get_progress {
     my $has_previous_execution_rs = $goal_execution_rs->search(
         {
             'me.period'      => { '<', $period },
-            #'me.accumulated' => 'true',
-            (
-                $is_all_goal_executions_accumulated
-                ? ()
-                : ( 'me.accumulated' => 'true' )
-            ),
+            'me.accumulated' => 'true',
         },
         {
             order_by => [
