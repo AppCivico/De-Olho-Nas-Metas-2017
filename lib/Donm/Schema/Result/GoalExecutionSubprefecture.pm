@@ -228,17 +228,11 @@ sub get_progress {
     # Projeção.
     my $projection = $self->get_projection_as_number() or return undef; ## no critic
 
-    # Valor base.
-    my $base_value = $self->goal->get_column('base_value') or return undef; ## no critic
-
     # Valor.
     my $value = $self->get_value_as_number() or return undef;
 
-    my $projection_base_diff = $projection - $base_value;
-
-    $projection_base_diff ||= 1; # Avoid illegal division by zero.
-
-    return sprintf('%.2f', ( ( ($value - $base_value) * 100 ) / $projection_base_diff ));
+    $projection ||= 1; # Avoid divison by zero.
+    return sprintf('%.2f', ( ($value * 100) / $projection ));
 }
 
 __PACKAGE__->meta->make_immutable;
