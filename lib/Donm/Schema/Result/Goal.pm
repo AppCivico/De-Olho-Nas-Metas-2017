@@ -452,7 +452,7 @@ sub get_total_progress {
             order_by => [ { '-desc' => 'me.period' } ],
             rows     => 1,
         }
-    );
+    )->next();
 
     if (ref $last_accumulated_goal_execution) {
         my $value = $last_accumulated_goal_execution->get_value_as_number() or return;
