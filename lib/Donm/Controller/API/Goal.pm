@@ -21,6 +21,8 @@ __PACKAGE__->config(
     build_row  => sub {
         my ($goal, $self, $c) = @_;
 
+        my $total_progress = $goal->get_total_progress();
+
         my %unique_subprefectures = ();
         return {
             goal => {
@@ -28,6 +30,8 @@ __PACKAGE__->config(
                     map { $_ => $goal->get_column($_) }
                     qw/ id title topic_id slug indicator_description last_updated_at status /
                 ),
+
+                total_progress => $total_progress,
 
                 secretariats => [
                     (

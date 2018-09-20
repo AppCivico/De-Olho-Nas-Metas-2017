@@ -433,6 +433,42 @@ sub is_all_goal_executions_accumulated {
     return 1;
 }
 
+sub get_total_progress {
+    my $self = shift;
+
+    # Projeção.
+    my $projection = $self->get_projection_as_number() or return;
+
+    # Valor base.
+    my $base_value = $self->get_column('base_value') or return;
+    if ($base_value =~ m{^N/?A$}) {
+        return;
+    }
+
+    # Obtendo a última execução.
+    my $last_accumulated_goal_execution = $self->goal_executions->search(
+        { 'me.accumulated' => 'true' },
+        {
+            order_by => [ { '-desc' => 'me.period' } ],
+            rows     => 1,
+        }
+    );
+
+    if (ref $last_accumulated_goal_execution) {
+        my $value = $last_accumulated_goal_execution->get_value_as_number() or return;
+
+        # Progresso.
+        my $projection_base_diff = $projection - $base_value;
+        $projection_base_diff ||= 1; # Avoid illegal division by zero.
+
+        my $progress = sprintf('%.2f', ( ( ($value - $base_value) * 100 ) / $projection_base_diff ));
+        return 0 if $progress == 0;
+        return $progress;
+    }
+
+    return;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
