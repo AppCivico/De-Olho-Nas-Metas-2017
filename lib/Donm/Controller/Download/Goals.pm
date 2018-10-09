@@ -20,7 +20,7 @@ sub download : Chained('base') : PathPart('') : Args(0) {
         $fh,
         [
             qw( ID NOME EIXO SECRETARIA PROJEÇÃO INDICADOR ),
-            'VALOR BASE', 'STATUS',
+            'VALOR BASE', 'STATUS', 'PROGRESSO',
         ]
     );
 
@@ -33,6 +33,8 @@ sub download : Chained('base') : PathPart('') : Args(0) {
     );
 
     while (my $goal = $goal_rs->next()) {
+        my $progress = $goal->get_total_progress();
+
         $self->csv->print(
             $fh,
             [
@@ -52,6 +54,11 @@ sub download : Chained('base') : PathPart('') : Args(0) {
                 $goal->get_column('indicator_description'),
                 $goal->get_column('base_value'),
                 $goal->get_column('status'),
+                (
+                    defined $progress
+                    ? "$progress%"
+                    : 'N/A'
+                ),
             ]
         );
     }
