@@ -22,8 +22,7 @@ __PACKAGE__->config(
         my ($goal, $self, $c) = @_;
 
         my $total_progress     = $goal->get_total_progress();
-        my $temporary_progress = $goal->temporary_progress;
-        $temporary_progress   += 0.00 if defined $goal->temporary_progress;
+        my $temporary_progress = $goal->get_temporary_progress();
 
         my %unique_subprefectures = ();
         return {
@@ -49,16 +48,16 @@ __PACKAGE__->config(
                 ],
 
                 execution => [
-                    map {
-                        +{
-                            value       => $_->get_column('value'),
-                            updated_at  => $_->get_column('updated_at'),
-                            accumulated => $_->get_column('accumulated'),
-                            year        => $_->get_year(),
-                            semester    => $_->get_semester(),
-                            progress    => $_->get_progress(),
-                        };
-                    } $goal->goal_executions->search_for_accumulated()->all()
+                    #map {
+                    #    +{
+                    #        value       => $_->get_column('value'),
+                    #        updated_at  => $_->get_column('updated_at'),
+                    #        accumulated => $_->get_column('accumulated'),
+                    #        year        => $_->get_year(),
+                    #        semester    => $_->get_semester(),
+                    #        progress    => $_->get_progress(),
+                    #    };
+                    #} $goal->goal_executions->search_for_accumulated()->all()
                 ],
 
                 execution_subprefectures => (

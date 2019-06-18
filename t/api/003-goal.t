@@ -105,37 +105,37 @@ db_transaction {
         };
     };
 
-    subtest 'goal execution' => sub {
+    #subtest 'goal execution' => sub {
 
-        my $goal_id = 4;
-        my $goal_execution_rs = $schema->resultset('GoalExecution')->search( { 'me.goal_id' => $goal_id } );
+    #    my $goal_id = 4;
+    #    my $goal_execution_rs = $schema->resultset('GoalExecution')->search( { 'me.goal_id' => $goal_id } );
 
-        ok( $goal_execution_rs->delete(), 'delete goal execution' );
-        ok(
-            $schema->resultset('GoalExecution')
-            ->create(
-                {
-                    goal_id     => $goal_id,
-                    period      => 5,
-                    value       => 10,
-                    accumulated => 'true',
-                }
-            ),
-            'add goal execution',
-        );
+    #    ok( $goal_execution_rs->delete(), 'delete goal execution' );
+    #    ok(
+    #        $schema->resultset('GoalExecution')
+    #        ->create(
+    #            {
+    #                goal_id     => $goal_id,
+    #                period      => 5,
+    #                value       => 10,
+    #                accumulated => 'true',
+    #            }
+    #        ),
+    #        'add goal execution',
+    #    );
 
-        rest_get [ qw/ api goal /, $goal_id ],
-            name  => 'get goal id=4',
-            stash => 'goal_execution',
-        ;
+    #    rest_get [ qw/ api goal /, $goal_id ],
+    #        name  => 'get goal id=4',
+    #        stash => 'goal_execution',
+    #    ;
 
-        stash_test 'goal_execution' => sub {
-            my $res = shift;
+    #    stash_test 'goal_execution' => sub {
+    #        my $res = shift;
 
-            is( $res->{goal}->{execution}->[0]->{semester}, 1,    'semester=1' );
-            is( $res->{goal}->{execution}->[0]->{year},     2019, 'year=2019'  );
-        };
-    };
+    #        is( $res->{goal}->{execution}->[0]->{semester}, 1,    'semester=1' );
+    #        is( $res->{goal}->{execution}->[0]->{year},     2019, 'year=2019'  );
+    #    };
+    #};
 
     subtest 'goal execution by subprefecture' => sub {
 
