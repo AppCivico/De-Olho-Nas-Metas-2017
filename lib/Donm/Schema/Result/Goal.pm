@@ -109,6 +109,11 @@ __PACKAGE__->table("goal");
   is_foreign_key: 1
   is_nullable: 1
 
+=head2 temporary_progress
+
+  data_type: 'integer'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -138,6 +143,8 @@ __PACKAGE__->add_columns(
   { data_type => "timestamp", is_nullable => 1 },
   "secretariat_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+  "temporary_progress",
+  { data_type => "integer", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -265,8 +272,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-28 15:00:58
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ACwzsrLFvfZNPehZus5PBw
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-06-18 13:42:04
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Ruln+3aAJh7WEO0JSQdAEQ
 
 use Number::Format;
 
