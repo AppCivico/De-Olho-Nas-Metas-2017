@@ -22,8 +22,6 @@ __PACKAGE__->config(
         my ($goal, $self, $c) = @_;
 
         #my $total_progress = $goal->get_total_progress();
-        my $temporary_progress = $goal->temporary_progress;
-        $temporary_progress   += 0 if defined $goal->temporary_progress;
 
         my %unique_subprefectures = ();
         return {
@@ -34,7 +32,7 @@ __PACKAGE__->config(
                 ),
 
                 #total_progress => $total_progress,
-                total_progress  => $temporary_progress,
+                total_progress  => $goal->temporary_progress,
 
                 secretariats => [
                     (
