@@ -445,10 +445,12 @@ sub get_temporary_progress {
     my $self = shift;
 
     my $temporary_progress = $self->temporary_progress;
-    if (defined($temporary_progress)) {
-        return sprintf('%.2f', $temporary_progress);
-    }
-    return;
+
+    return $temporary_progress;
+    #if (defined($temporary_progress)) {
+    #    return sprintf('%.2f', $temporary_progress);
+    #}
+    #return;
 }
 
 sub get_total_progress {
