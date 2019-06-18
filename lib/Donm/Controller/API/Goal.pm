@@ -35,8 +35,6 @@ __PACKAGE__->config(
 
                 #total_progress => $total_progress,
                 total_progress => $temporary_progress,
-                original_total_progress => $total_progress,
-                time => time(),
 
                 secretariats => [
                     (
