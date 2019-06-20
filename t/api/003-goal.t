@@ -56,17 +56,14 @@ db_transaction {
     stash_test "goal" => sub {
         my $res = shift;
 
-        is( ref($res->{goal}), "HASH", 'main node is hashref' );
-        is( ref($res->{goal}->{topic}), "HASH", 'retrieved topic' );
-        is( ref($res->{goal}->{projects}), "ARRAY", 'retrieved projects' );
+        is( ref($res->{goal}),                   'HASH',  'main node is hashref'     );
+        is( ref($res->{goal}->{topics}),         'ARRAY', 'retrieved topic'          );
+        is( ref($res->{goal}->{projects}),       "ARRAY", 'retrieved projects'       );
         is( ref($res->{goal}->{subprefectures}), "ARRAY", 'retrieved subprefectures' );
+        is( ref($res->{goal}->{secretariats}),   'ARRAY', 'retrieved secretariats'   );
 
         is( $res->{goal}->{id}, 1, 'id=1' );
-        is(
-            $res->{goal}->{title},
-            "Aumentar a cobertura da Atenção Básica à Saúde para 70% na cidade de São Paulo.",
-            'title',
-        );
+        like( $res->{goal}->{title}, qr/^Aumentar a cobertura/, 'title' );
         is(
             $res->{goal}->{indicator_description},
             "Indicador de cobertura populacional estimada da atenção básica.",
@@ -80,6 +77,119 @@ db_transaction {
         is_fail => 1,
         code    => 404,
     ;
+
+    subtest 'goal badge' => sub {
+
+        ok( my $goal  = $schema->resultset('Goal')->search( { 'me.id' => 1 } )->next  );
+        ok( my $badge = $schema->resultset('Badge')->search( { 'me.id' => 1 } )->next );
+
+        ok(
+            $schema->resultset('GoalBadge')->create({
+                goal_id  => $goal->id,
+                badge_id => $badge->id
+            }),
+            'add relationship'
+        );
+
+        rest_get [ qw/ api goal /, $goal->id ],
+            name  => 'get goal',
+            stash => 'goal_badge',
+        ;
+
+        stash_test 'goal_badge' => sub {
+            my $res = shift;
+
+            is( ref $res->{goal}->{badges},          'ARRAY', 'badges=ARRAY' );
+            is( $res->{goal}->{badges}->[0]->{id},   '1',     'badge_id=1' );
+            is( $res->{goal}->{badges}->[0]->{name}, 'Erradicação da pobreza', 'name' );
+        };
+    };
+
+    #subtest 'goal execution' => sub {
+
+    #    my $goal_id = 4;
+    #    my $goal_execution_rs = $schema->resultset('GoalExecution')->search( { 'me.goal_id' => $goal_id } );
+
+    #    ok( $goal_execution_rs->delete(), 'delete goal execution' );
+    #    ok(
+    #        $schema->resultset('GoalExecution')
+    #        ->create(
+    #            {
+    #                goal_id     => $goal_id,
+    #                period      => 5,
+    #                value       => 10,
+    #                accumulated => 'true',
+    #            }
+    #        ),
+    #        'add goal execution',
+    #    );
+
+    #    rest_get [ qw/ api goal /, $goal_id ],
+    #        name  => 'get goal id=4',
+    #        stash => 'goal_execution',
+    #    ;
+
+    #    stash_test 'goal_execution' => sub {
+    #        my $res = shift;
+
+    #        is( $res->{goal}->{execution}->[0]->{semester}, 1,    'semester=1' );
+    #        is( $res->{goal}->{execution}->[0]->{year},     2019, 'year=2019'  );
+    #    };
+    #};
+
+    subtest 'goal execution by subprefecture' => sub {
+
+        my $goal = $schema->resultset('Goal')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+        my $subprefecture = $schema->resultset('Subprefecture')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+        my $subprefecture_id = $subprefecture->id;
+
+        ok $schema->resultset('GoalExecutionSubprefecture')->create({
+            goal_id          => $goal->id,
+            subprefecture_id => $subprefecture_id,
+            period           => 2,
+            value            => fake_int(1, 10000)->(),
+            updated_at       => \'NOW()',
+        });
+
+        rest_get [ qw/ api goal /, $goal->id ],
+            name  => 'get goal',
+            stash => 'goal_execution_subprefecture',
+        ;
+
+        stash_test 'goal_execution_subprefecture' => sub {
+            my $res = shift;
+
+            is ref $res->{goal}->{execution_subprefectures}, 'HASH', 'execution_subprefecture=HASH';
+            is ref $res->{goal}->{execution_subprefectures}->{$subprefecture_id}->{subprefecture}, 'HASH', 'subprefecture=HASH';
+            is scalar keys %{ $res->{goal}->{execution_subprefectures} }, 1, 'one item';
+            is $res->{goal}->{execution_subprefectures}->{$subprefecture_id}->{per_semester}->[0]->{year}, '2017', 'year=2017';
+            is $res->{goal}->{execution_subprefectures}->{$subprefecture_id}->{per_semester}->[1], undef, 'accumulated=undef';
+        };
+    };
+
+    subtest 'goal additional information' => sub {
+
+        my $goal = $schema->resultset('Goal')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+        my $description = fake_paragraphs(1)->();
+
+        ok $goal->goal_additional_informations->create({
+            description => $description,
+            inserted_at => fake_past_datetime->(),
+            updated_at  => \'NOW()',
+        });
+
+        rest_get [ qw/ api goal /, $goal->id ],
+            name  => 'get goal',
+            stash => 'goal_additional_information',
+        ;
+
+        stash_test 'goal_additional_information' => sub {
+            my $res = shift;
+
+            is ref $res->{goal}->{additional_information}, 'ARRAY', 'additional_information=ARRAY';
+            is $res->{goal}->{additional_information}->[0]->{description}, $description, 'description';
+        };
+    };
 };
 
 done_testing();

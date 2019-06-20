@@ -9,7 +9,7 @@ with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoListGET";
 with "CatalystX::Eta::Controller::AutoResultGET";
 
-use DDP;
+use List::Util 'reduce';
 
 __PACKAGE__->config(
     # AutoBase.
@@ -41,6 +41,9 @@ __PACKAGE__->config(
                 title                 => $action_line->get_column('title'),
                 indicator_description => $action_line->get_column('indicator_description'),
                 slug                  => $action_line->get_column('slug'),
+                indicator             => $action_line->get_column('indicator'),
+                status                => $action_line->get_column('status'),
+                last_updated_at       => $action_line->get_column('last_updated_at'),
 
                 subprefectures => [
                     map {
@@ -59,6 +62,68 @@ __PACKAGE__->config(
                     slug        => $action_line->project->get_column('slug'),
                     description => $action_line->project->get_column('description'),
                 },
+
+                execution => [
+                    map {
+                        +{
+                            value       => $_->get_column('value'),
+                            year        => $_->get_year(),
+                            semester    => $_->get_semester(),
+                            accumulated => $_->get_column('accumulated'),
+                            progress    => $_->get_progress(),
+                        }
+                    } $action_line->action_line_executions->search({
+                        'me.period'      => { '-in' => [1.. 8] },
+                        # O correto aqui seria enviar o dado não acumulado. Por um bug na API do PlanejaSampa, os
+                        # valores acumulados estão vindo com acumulado=false e os não acumulados com acumulado=true.
+                        # Quando corrigem, precisamos voltar a flag para accumulated=false.
+                        'me.accumulated' => 'true',
+                        #'me.accumulated' => 'false',
+                    })->all()
+                ],
+
+                execution_subprefectures => (
+                    reduce {
+                        my $subprefecture_id = $b->get_column('subprefecture_id');
+
+                        $a ||= {};
+                        $a->{$subprefecture_id}{subprefecture} ||= {
+                            id      => $b->subprefecture->get_column('id'),
+                            name    => $b->subprefecture->get_column('name'),
+                            acronym => $b->subprefecture->get_column('acronym'),
+                            slug    => $b->subprefecture->get_column('slug'),
+                        };
+
+                        $a->{$subprefecture_id}{total_progress} ||= $c->model('DB::ActionLineExecutionSubprefecture')->search(
+                            {
+                                'me.action_line_project_id'   => $b->get_column('action_line_project_id'),
+                                'me.action_line_id_reference' => $b->get_column('action_line_id_reference'),
+                                'me.subprefecture_id'         => $subprefecture_id,
+                            }
+                        )->get_total_progress();
+
+                        $a->{$subprefecture_id}{projection} ||= $action_line->get_projection_by_subprefecture($subprefecture_id);
+
+                        push @{ $a->{$subprefecture_id}{per_semester} }, {
+                            year        => $b->get_year(),
+                            semester    => $b->get_semester(),
+                            value       => $b->get_column('value'),
+                            progress    => $b->get_progress(),
+                        };
+                        $a;
+                    } {},
+                    $action_line->action_line_execution_subprefectures
+                      ->filter_projection()
+                      ->filter_accumulated()
+                      ->search(
+                          {},
+                          {
+                              prefetch => [qw( subprefecture )],
+                              order_by => [qw( subprefecture_id )],
+                          }
+                        )
+                      ->all()
+                ),
             },
         },
     },

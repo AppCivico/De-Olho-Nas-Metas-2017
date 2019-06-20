@@ -40,7 +40,7 @@ __PACKAGE__->table_class("DBIx::Class::ResultSource::View");
 =cut
 
 __PACKAGE__->table("geography_columns");
-__PACKAGE__->result_source_instance->view_definition(" SELECT current_database() AS f_table_catalog,\n    n.nspname AS f_table_schema,\n    c.relname AS f_table_name,\n    a.attname AS f_geography_column,\n    postgis_typmod_dims(a.atttypmod) AS coord_dimension,\n    postgis_typmod_srid(a.atttypmod) AS srid,\n    postgis_typmod_type(a.atttypmod) AS type\n   FROM pg_class c,\n    pg_attribute a,\n    pg_type t,\n    pg_namespace n\n  WHERE ((t.typname = 'geography'::name) AND (a.attisdropped = false) AND (a.atttypid = t.oid) AND (a.attrelid = c.oid) AND (c.relnamespace = n.oid) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text))");
+__PACKAGE__->result_source_instance->view_definition(" SELECT current_database() AS f_table_catalog,\n    n.nspname AS f_table_schema,\n    c.relname AS f_table_name,\n    a.attname AS f_geography_column,\n    postgis_typmod_dims(a.atttypmod) AS coord_dimension,\n    postgis_typmod_srid(a.atttypmod) AS srid,\n    postgis_typmod_type(a.atttypmod) AS type\n   FROM pg_class c,\n    pg_attribute a,\n    pg_type t,\n    pg_namespace n\n  WHERE ((t.typname = 'geography'::name) AND (a.attisdropped = false) AND (a.atttypid = t.oid) AND (a.attrelid = c.oid) AND (c.relnamespace = n.oid) AND (c.relkind = ANY (ARRAY['r'::\"char\", 'v'::\"char\", 'm'::\"char\", 'f'::\"char\", 'p'::\"char\"])) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text))");
 
 =head1 ACCESSORS
 
@@ -103,8 +103,8 @@ __PACKAGE__->add_columns(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-08-25 18:41:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:sbCzHCALV6cHzOe8UFK6Cw
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-06-18 13:42:04
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:uo+a9IAa5MzboqI2Wqp+Cw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

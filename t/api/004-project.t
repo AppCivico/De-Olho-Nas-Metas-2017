@@ -40,11 +40,13 @@ db_transaction {
                     topics => [
                         {
                             id   => 5,
-                            name => "Desenvolvimento Econômico E Gestão",
+                            name => "Desenvolvimento Econômico e Gestão",
                             slug => "desenvolvimento-economico-e-gestao",
                             description => "Foi articulado em torno da ideia de uma cidade inteligente, eficiente, que gera oportunidades e simplifica a vida das pessoas",
                         }
                     ],
+                    badges       => [],
+                    secretariats => [],
                 },
             ],
             'only one result',
@@ -140,6 +142,126 @@ db_transaction {
             ],
             'retrieved one topic',
         );
+    };
+
+    subtest 'project badges' => sub {
+
+        ok( my $project = $schema->resultset('Project')->search( {}, { rows => 1, order_by => \['RANDOM()'] } )->next );
+        ok( my $badge   = $schema->resultset('Badge')->search( {}, { rows => 1, order_by => \['RANDOM()'] } )->next );
+
+        ok(
+            $schema->resultset('ProjectBadge')->create({
+                project_id => $project->id,
+                badge_id   => $badge->id,
+            }),
+            'add relationship'
+        );
+
+        rest_get [ qw/ api project /, $project->id ],
+            name  => 'get project',
+            stash => 'project_badge',
+        ;
+
+        stash_test 'project_badge' => sub {
+            my $res = shift;
+
+            is( ref $res->{project}->{badges},          'ARRAY',      'badges=ARRAY' );
+            is( $res->{project}->{badges}->[0]->{id},   $badge->id,   'badge_id' );
+            is( $res->{project}->{badges}->[0]->{name}, $badge->name, 'name' );
+        };
+    };
+
+    subtest 'project additional information' => sub {
+
+        my $project = $schema->resultset('Project')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+        my $description = fake_paragraphs(1)->();
+
+        ok $project->project_additional_informations->create({
+            description => $description,
+            inserted_at => fake_past_datetime->(),
+            hash        => 'foobar',
+            updated_at  => \'NOW()',
+        });
+
+        rest_get [ qw/ api project /, $project->id ],
+            name  => 'get project',
+            stash => 'project_additional_information',
+        ;
+
+        stash_test 'project_additional_information' => sub {
+            my $res = shift;
+
+            is ref $res->{project}->{additional_information}, 'ARRAY', 'additional_information=ARRAY';
+            is $res->{project}->{additional_information}->[0]->{description}, $description, 'description';
+        };
+    };
+
+    subtest 'project budget execution' => sub {
+
+        my $project = $schema->resultset('Project')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+        ok $project->project_budget_executions->create({
+            year => 2018,
+            (
+                map { $_ => fake_pick('R$ 9,784 milhões', '10 milhões', '0,0001 milhão')->() }
+                qw/ own_resources_investment own_resources_costing own_resources_total other_resources_investment
+                other_resources_costing other_resources_total total_year_investment total_year_costing total_year_total /
+            ),
+        });
+
+        rest_get [ qw/ api project /, $project->id ],
+            name  => 'get project',
+            stash => 'project_budget_execution',
+        ;
+
+        stash_test 'project_budget_execution' => sub {
+            my $res = shift;
+
+            is ref $res->{project}->{budget_execution}, 'HASH', 'budget_execution=HASH';
+            is $res->{project}->{budget_execution}->{per_year}->[0]->{year}, 2018, 'year=2018';
+        };
+    };
+
+    subtest 'project secretariat' => sub {
+
+        rest_get "/api/project",
+            name  => "filter by title",
+            stash => "projects",
+        ;
+
+        my $project     = $schema->resultset('Project')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+        my $secretariat = $schema->resultset('Secretariat')->search({}, { rows => 1, order_by => [\'RANDOM()'] })->next;
+
+        ok $project->project_secretariats->create({
+            secretariat_id => $secretariat->id,
+            updated_at     => \'NOW()',
+        });
+
+        rest_get [ qw/ api project /, $project->id ],
+            name  => 'get project',
+            stash => 'project_secretariat',
+        ;
+
+        stash_test 'project_secretariat' => sub {
+            my $res = shift;
+
+            is ref $res->{project}->{secretariats}, 'ARRAY', 'secretariats=ARRAY';
+            is $res->{project}->{secretariats}->[0]->{id},   $secretariat->id,   'secretariat_id';
+            is $res->{project}->{secretariats}->[0]->{name}, $secretariat->name, 'secretariat_name';
+        };
+
+        rest_get [ qw/ api project /],
+            name  => 'list projects',
+            stash => 'project_secretariat_list',
+        ;
+
+        stash_test 'project_secretariat_list' => sub {
+            my $res = shift;
+
+            ok my ($project) = grep { $_->{id} == $project->id } @{ $res->{projects} };
+            is ref $project->{secretariats}, 'ARRAY', 'secretariats=ARRAY';
+            is $project->{secretariats}->[0]->{id},   $secretariat->id,   'secretariat_id';
+            is $project->{secretariats}->[0]->{name}, $secretariat->name, 'secretariat_name';
+        };
     };
 };
 

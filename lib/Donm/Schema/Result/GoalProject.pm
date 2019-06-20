@@ -68,6 +68,11 @@ __PACKAGE__->table("goal_project");
   is_nullable: 0
   original: {default_value => \"now()"}
 
+=head2 updated_at
+
+  data_type: 'timestamp'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -89,6 +94,8 @@ __PACKAGE__->add_columns(
     is_nullable   => 0,
     original      => { default_value => \"now()" },
   },
+  "updated_at",
+  { data_type => "timestamp", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -102,6 +109,25 @@ __PACKAGE__->add_columns(
 =cut
 
 __PACKAGE__->set_primary_key("id");
+
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<goal_project_goal_id_project_id_key>
+
+=over 4
+
+=item * L</goal_id>
+
+=item * L</project_id>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint(
+  "goal_project_goal_id_project_id_key",
+  ["goal_id", "project_id"],
+);
 
 =head1 RELATIONS
 
@@ -136,8 +162,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-09-19 16:13:23
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:GtjOnCdEVMW2pSTU9QoxEA
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-24 17:26:58
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:huBWGojuowodshFSwhUoEg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

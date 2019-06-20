@@ -40,7 +40,7 @@ __PACKAGE__->table_class("DBIx::Class::ResultSource::View");
 =cut
 
 __PACKAGE__->table("raster_overviews");
-__PACKAGE__->result_source_instance->view_definition(" SELECT current_database() AS o_table_catalog,\n    n.nspname AS o_table_schema,\n    c.relname AS o_table_name,\n    a.attname AS o_raster_column,\n    current_database() AS r_table_catalog,\n    (split_part(split_part(s.consrc, '''::name'::text, 1), ''''::text, 2))::name AS r_table_schema,\n    (split_part(split_part(s.consrc, '''::name'::text, 2), ''''::text, 2))::name AS r_table_name,\n    (split_part(split_part(s.consrc, '''::name'::text, 3), ''''::text, 2))::name AS r_raster_column,\n    (btrim(split_part(s.consrc, ','::text, 2)))::integer AS overview_factor\n   FROM pg_class c,\n    pg_attribute a,\n    pg_type t,\n    pg_namespace n,\n    pg_constraint s\n  WHERE ((t.typname = 'raster'::name) AND (a.attisdropped = false) AND (a.atttypid = t.oid) AND (a.attrelid = c.oid) AND (c.relnamespace = n.oid) AND ((c.relkind)::text = ANY ((ARRAY['r'::character(1), 'v'::character(1), 'm'::character(1), 'f'::character(1)])::text[])) AND (s.connamespace = n.oid) AND (s.conrelid = c.oid) AND (s.consrc ~~ '%_overview_constraint(%'::text) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text))");
+__PACKAGE__->result_source_instance->view_definition(" SELECT current_database() AS o_table_catalog,\n    n.nspname AS o_table_schema,\n    c.relname AS o_table_name,\n    a.attname AS o_raster_column,\n    current_database() AS r_table_catalog,\n    (split_part(split_part(s.consrc, '''::name'::text, 1), ''''::text, 2))::name AS r_table_schema,\n    (split_part(split_part(s.consrc, '''::name'::text, 2), ''''::text, 2))::name AS r_table_name,\n    (split_part(split_part(s.consrc, '''::name'::text, 3), ''''::text, 2))::name AS r_raster_column,\n    (btrim(split_part(s.consrc, ','::text, 2)))::integer AS overview_factor\n   FROM pg_class c,\n    pg_attribute a,\n    pg_type t,\n    pg_namespace n,\n    ( SELECT pg_constraint.connamespace,\n            pg_constraint.conrelid,\n            pg_constraint.conkey,\n            pg_get_constraintdef(pg_constraint.oid) AS consrc\n           FROM pg_constraint) s\n  WHERE ((t.typname = 'raster'::name) AND (a.attisdropped = false) AND (a.atttypid = t.oid) AND (a.attrelid = c.oid) AND (c.relnamespace = n.oid) AND ((c.relkind)::text = ANY ((ARRAY['r'::character(1), 'v'::character(1), 'm'::character(1), 'f'::character(1)])::text[])) AND (s.connamespace = n.oid) AND (s.conrelid = c.oid) AND (s.consrc ~~ '%_overview_constraint(%'::text) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text))");
 
 =head1 ACCESSORS
 
@@ -121,8 +121,8 @@ __PACKAGE__->add_columns(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-08-25 18:41:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rz0K8ovcJH9K96Xeir3e/g
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-06-18 13:42:04
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:spP2w8KHQjyduayuyk59pA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

@@ -9,7 +9,8 @@ with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoResultGET";
 with "CatalystX::Eta::Controller::TypesValidation";
 
-use DDP;
+use HTML::Entities;
+use List::Util 'reduce';
 
 __PACKAGE__->config(
     # AutoBase.
@@ -20,19 +21,79 @@ __PACKAGE__->config(
     build_row  => sub {
         my ($goal, $self, $c) = @_;
 
-        my %unique_subprefectures = ();
+        #my $total_progress = $goal->get_total_progress();
+        #my $temporary_progress = $goal->temporary_progress;
+        #$temporary_progress   += 0 if defined $temporary_progress;
 
+        my %unique_subprefectures = ();
         return {
             goal => {
                 (
                     map { $_ => $goal->get_column($_) }
-                    qw/ id title topic_id slug indicator_description /
+                    qw/ id title topic_id slug indicator_description last_updated_at status /
                 ),
 
-                first_biennium => $goal->get_readable_first_biennium(),
-                second_biennium => $goal->get_readable_second_biennium(),
+                #total_progress => $total_progress,
+                #total_progress => $temporary_progress,
+                total_progress => $goal->temporary_progress,
 
-                ( topic => { map { $_ => $goal->topic->$_ } qw/ id name slug / } ),
+                secretariats => [
+                    (
+                        ref $goal->secretariat
+                        ? +{
+                            id   => $goal->secretariat->get_column('id'),
+                            name => $goal->secretariat->get_column('name'),
+                        }
+                        : ()
+                    ),
+                ],
+
+                execution => [
+                    #map {
+                    #    +{
+                    #        value       => $_->get_column('value'),
+                    #        updated_at  => $_->get_column('updated_at'),
+                    #        accumulated => $_->get_column('accumulated'),
+                    #        year        => $_->get_year(),
+                    #        semester    => $_->get_semester(),
+                    #        progress    => $_->get_progress(),
+                    #    };
+                    #} $goal->goal_executions->search_for_accumulated()->all()
+                ],
+
+                execution_subprefectures => (
+                    reduce {
+                        my $subprefecture_id = $b->get_column('subprefecture_id');
+
+                        $a->{$subprefecture_id}{subprefecture} ||= {
+                            id      => $b->subprefecture->get_column('id'),
+                            name    => $b->subprefecture->get_column('name'),
+                            acronym => $b->subprefecture->get_column('acronym'),
+                            slug    => $b->subprefecture->get_column('slug'),
+                        };
+
+                        $a->{$subprefecture_id}{total_progress} ||= $goal->goal_execution_subprefectures
+                          ->search( { 'me.subprefecture_id' => $subprefecture_id } )
+                          ->get_total_progress();
+
+                        push @{ $a->{$subprefecture_id}{per_semester} }, {
+                            year        => $b->get_year(),
+                            semester    => $b->get_semester(),
+                            value       => $b->get_column('value'),
+                            progress    => $b->get_progress(),
+                        };
+                        $a;
+                    } {},
+                    $goal->goal_execution_subprefectures
+                      ->filter_projection()
+                      ->filter_accumulated()
+                      ->search({}, { order_by => [qw( subprefecture_id )] })->all()
+                ),
+
+                projection_first_biennium  => $goal->get_readable_projection_first_biennium(),
+                projection_second_biennium => $goal->get_readable_projection_second_biennium(),
+
+                ( topics => [ +{ map { $_ => $goal->topic->$_ } qw/ id name slug / } ] ),
 
                 (
                     subprefectures => [
@@ -68,6 +129,30 @@ __PACKAGE__->config(
                         } $goal->goal_projects->all()
                     ],
                 ),
+
+                (
+                    badges => [
+                        map {
+                            my $badge = $_->badge;
+                            +{
+                                id   => $badge->get_column('id'),
+                                name => $badge->get_column('name'),
+                            }
+                        } $goal->goal_badges->all()
+                    ],
+                ),
+
+                (
+                    additional_information => [
+                        map {
+                            my $ai = $_;
+                            +{
+                                description => decode_entities($ai->get_column('description')),
+                                inserted_at => $ai->get_column('inserted_at'),
+                            }
+                        } $goal->goal_additional_informations->all()
+                    ],
+                )
             },
         };
     },
@@ -87,8 +172,12 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
         {
             prefetch => [
                 'topic',
-                { 'goal_projects' => { 'project' => { 'action_lines' => { 'subprefecture_action_lines' => 'subprefecture' } } } }
-            ]
+                'goal_executions',
+                'secretariat',
+                { 'goal_execution_subprefectures' => 'subprefecture' },
+                { 'goal_badges' => 'badge' },
+                { 'goal_projects' => { 'project' => { 'action_lines' => { 'subprefecture_action_lines' => 'subprefecture' } } } },
+            ],
         },
     );
 
@@ -123,14 +212,30 @@ sub list_GET {
                     +{
                         ( map { $_ => $r->{$_} } qw/ id title topic_id topic slug indicator_description / ),
 
-                        topic => +{ map { $_ => $r->{topic}->{$_} } qw/ id name slug / },
+                        secretariats => [
+                            +{
+                                id   => $r->{secretariat}->{id},
+                                name => $r->{secretariat}->{name},
+                            },
+                        ],
+
+                        topics => [ +{ map { $_ => $r->{topic}->{$_} } qw/ id name slug / } ],
 
                         projects => [
                             map {
                                 my $gp = $_;
 
-                                +{ map { $_ => $gp->{project}->{$_} } qw/ id title slug / },
+                                +{ map { $_ => $gp->{project}->{$_} } qw/ id title slug / }
                             } @{ $r->{goal_projects} }
+                        ],
+                        badges => [
+                            map {
+                                my $badge = $_->{badge};
+                                +{
+                                    id   => $badge->{id},
+                                    name => $badge->{name},
+                                }
+                            } @{ $r->{goal_badges} }
                         ],
                     }
                 } $c->stash->{collection}->search(
@@ -147,9 +252,9 @@ sub list_GET {
                         ),
                     },
                     {
-                        prefetch     => [ "topic", { 'goal_projects' => "project" } ],
-                        order_by     => [ "me.id" ],
-                        result_class => "DBIx::Class::ResultClass::HashRefInflator",
+                        prefetch     => [ 'topic', { 'goal_projects' => 'project' }, 'goal_executions', { 'goal_badges' => 'badge' }, 'secretariat' ],
+                        order_by     => [ 'me.id' ],
+                        result_class => 'DBIx::Class::ResultClass::HashRefInflator',
                     }
                 )->all()
             ],

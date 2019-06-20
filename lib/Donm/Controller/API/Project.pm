@@ -5,8 +5,6 @@ use namespace::autoclean;
 
 BEGIN { extends 'CatalystX::Eta::Controller::REST' }
 
-use Text::Lorem;
-
 with "CatalystX::Eta::Controller::AutoBase";
 with "CatalystX::Eta::Controller::AutoResultGET";
 
@@ -19,8 +17,6 @@ __PACKAGE__->config(
     build_row  => sub {
         my ($project, $self, $c) = @_;
 
-        my $lorem = Text::Lorem->new();
-
         my %unique_topics = ();
         my %unique_subprefectures = ();
 
@@ -30,6 +26,20 @@ __PACKAGE__->config(
 
                 current_scenario => $project->get_column('current_scenario'),
                 expected_results => $project->get_column('expected_results'),
+
+                (
+                    budget => {
+                        own_resources => {
+                            investment => $project->get_column('budget_own_resources_investment'),
+                            costing    => $project->get_column('budget_own_resources_costing'),
+                        },
+                        other_resources => {
+                            investment => $project->get_column('budget_other_resources_investment'),
+                            costing    => $project->get_column('budget_other_resources_costing'),
+                        },
+                        total => $project->get_total_planned_budget(),
+                    },
+                ),
 
                 (
                     topics => [
@@ -89,6 +99,61 @@ __PACKAGE__->config(
                         } $project->action_lines->all()
                     ],
                 ),
+
+                (
+                    badges => [
+                        map {
+                            my $badge = $_->badge;
+                            +{
+                                id   => $badge->get_column('id'),
+                                name => $badge->get_column('name'),
+                            }
+                        } $project->project_badges->all()
+                    ],
+                ),
+
+                (
+                    additional_information => [
+                        map {
+                            +{
+                                description => $_->get_column('description'),
+                                inserted_at => $_->get_column('inserted_at'),
+                            }
+                        } $project->project_additional_informations->all()
+                    ],
+                ),
+
+                budget_execution => {
+                    overall_total => $project->get_overall_total(),
+
+                    per_year => [
+                        map {
+                            +{
+                                year => $_->get_column('year'),
+                                own_resources_investment   => $_->get_column('own_resources_investment'),
+                                own_resources_costing      => $_->get_column('own_resources_costing'),
+                                own_resources_total        => $_->get_column('own_resources_total'),
+                                other_resources_investment => $_->get_column('other_resources_investment'),
+                                other_resources_costing    => $_->get_column('other_resources_costing'),
+                                other_resources_total      => $_->get_column('other_resources_total'),
+                                total_year_investment      => $_->get_column('total_year_investment'),
+                                total_year_costing         => $_->get_column('total_year_costing'),
+                                total_year_total           => $_->get_column('total_year_total'),
+                            }
+                        } $project->project_budget_executions->all()
+                    ],
+                },
+
+                (
+                    secretariats => [
+                        map {
+                            +{
+                                id   => $_->secretariat->get_column('id'),
+                                name => $_->secretariat->get_column('name'),
+                            }
+                        } $project->project_secretariats->all()
+                    ],
+                )
             },
         };
     },
@@ -107,6 +172,7 @@ sub object : Chained('base') : PathPart('') : CaptureArgs(1) {
             prefetch => [
                 { 'action_lines'  => { 'subprefecture_action_lines' => 'subprefecture' } },
                 { 'goal_projects' => { 'goal' => 'topic' } },
+                { 'project_secretariats' => 'secretariat' },
             ],
         },
     );
@@ -128,16 +194,31 @@ sub list_GET {
                 map {
                     my $r = $_;
                     my %unique_topics = ();
-
                     +{
                         ( map { $_ => $r->{$_} } qw/ id title slug description / ),
 
-                        (
-                            topics => [
-                                map { $_->{goal}->{topic} }
-                                  grep { !($unique_topics{$_->{goal}->{topic_id}}++) } @{ $r->{goal_projects} }
-                            ]
-                        ),
+                        topics => [
+                            map { $_->{goal}->{topic} }
+                              grep { !($unique_topics{$_->{goal}->{topic_id}}++) } @{ $r->{goal_projects} }
+                        ],
+
+                        secretariats => [
+                            map {
+                                +{
+                                    id   => $_->{secretariat}->{id},
+                                    name => $_->{secretariat}->{name},
+                                }
+                            } @{ $r->{project_secretariats } }
+                        ],
+
+                        badges => [
+                            map {
+                                +{
+                                    id   => $_->{badge}->{id},
+                                    name => $_->{badge}->{name},
+                                }
+                            } @{ $r->{project_badges } }
+                        ],
                     };
                 } $c->stash->{collection}->search(
                     {
@@ -171,7 +252,11 @@ SQL_QUERY
                         ),
                     },
                     {
-                        prefetch => [ { 'goal_projects' => { 'goal' => "topic" } } ],
+                        prefetch => [
+                            { 'project_badges' => 'badge' },
+                            { 'goal_projects' => { 'goal' => 'topic' } },
+                            { 'project_secretariats' => 'secretariat' },
+                        ],
                         result_class => "DBIx::Class::ResultClass::HashRefInflator",
                     },
                 )->all()

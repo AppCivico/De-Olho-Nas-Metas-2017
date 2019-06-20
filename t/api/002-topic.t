@@ -18,7 +18,7 @@ db_transaction {
         ok( ( grep { $_->{name} eq "Desenvolvimento Humano" } @{ $res->{topics} } ), "Desenvolvimento Humano");
         ok( ( grep { $_->{name} eq "Desenvolvimento Social" } @{ $res->{topics} } ), "Desenvolvimento Social");
         ok(
-            ( grep { $_->{name} eq "Desenvolvimento Econômico E Gestão" } @{ $res->{topics} } ),
+            ( grep { $_->{name} eq "Desenvolvimento Econômico e Gestão" } @{ $res->{topics} } ),
             "Desenvolvimento Econômico E Gestão"
         );
         ok(
@@ -26,7 +26,7 @@ db_transaction {
             "Desenvolvimento Institucional"
         );
         ok(
-            ( grep { $_->{name} eq "Desenvolvimento Urbano E Meio Ambiente" } @{ $res->{topics} } ),
+            ( grep { $_->{name} eq "Desenvolvimento Urbano e Meio Ambiente" } @{ $res->{topics} } ),
             "Desenvolvimento Urbano E Meio Ambiente"
         );
     };

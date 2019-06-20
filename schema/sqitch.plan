@@ -37,3 +37,17 @@
 0033-project-results-scenario [0032-variable-source-year] 2017-12-07T19:51:23Z Junior Moraes <juniorfvox@gmail.com> # project-results-scenario
 0034-goal-unit [0033-project-results-scenario] 2017-12-21T20:40:59Z Junior Moraes <juniorfvox@gmail.com> # goal-unit
 0035-iota-indicators [0034-goal-unit] 2018-01-05T15:32:27Z Junior Moraes <juniorfvox@gmail.com> # iota-indicators
+0036-planejasampa-api [0035-iota-indicators] 2018-08-14T20:17:41Z junior,,, <junior@fvox> # anejasampa-api
+0037-goal-status-secretariat [0036-planejasampa-api] 2018-08-20T17:46:45Z Junior Moraes <juniorfvox@gmail.com> # goal-status-secretariat
+0038-fix-action-line-slug [0037-goal-status-secretariat] 2018-08-21T13:14:35Z Junior Moraes <juniorfvox@gmail.com> # fix-action-line-slug
+0039-project-budget [0038-fix-action-line-slug] 2018-08-22T14:46:04Z Junior Moraes <juniorfvox@gmail.com> # project-budget
+0040-add-badge [0039-project-budget] 2018-08-22T19:09:24Z Junior Moraes <juniorfvox@gmail.com> # add-badge
+0041-fix-uniq-goal-project [0040-add-badge] 2018-08-23T15:44:53Z Junior Moraes <juniorfvox@gmail.com> # fix-uniq-goal-project
+0042-goal-additional-information [0041-fix-uniq-goal-project] 2018-08-24T21:18:37Z Junior Moraes <juniorfvox@gmail.com> # goal-additional-information
+0043-project-badge [0042-goal-additional-information] 2018-08-27T17:44:22Z junior,,, <junior@fvox> # oject-badge
+0044-add-badge [0043-project-badge] 2018-08-27T19:28:22Z junior,,, <junior@fvox> # d-badge
+0045-project-additional-information [0044-add-badge] 2018-08-27T19:35:14Z junior,,, <junior@fvox> # oject-additional-information
+0046-project-budget-execution [0045-project-additional-information] 2018-08-27T21:07:26Z junior,,, <junior@fvox> # project-budget-execution
+0047-action-line-more [0046-project-budget-execution] 2018-08-28T13:19:12Z Junior Moraes <juniorfvox@gmail.com> # action-line-more
+0048-secretariat [0047-action-line-more] 2018-08-28T17:25:05Z Junior Moraes <juniorfvox@gmail.com> # secretariat
+0049-add-temporary-goal-progress [0048-secretariat] 2019-06-18T16:00:55Z Junior Moraes <juniorfvox@gmail.com> # add-temporary-goal-progress

@@ -72,6 +72,31 @@ __PACKAGE__->table("project");
   data_type: 'text'
   is_nullable: 1
 
+=head2 updated_at
+
+  data_type: 'timestamp'
+  is_nullable: 1
+
+=head2 budget_own_resources_investment
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 budget_own_resources_costing
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 budget_other_resources_investment
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 budget_other_resources_costing
+
+  data_type: 'text'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -86,6 +111,16 @@ __PACKAGE__->add_columns(
   "expected_results",
   { data_type => "text", is_nullable => 1 },
   "current_scenario",
+  { data_type => "text", is_nullable => 1 },
+  "updated_at",
+  { data_type => "timestamp", is_nullable => 1 },
+  "budget_own_resources_investment",
+  { data_type => "text", is_nullable => 1 },
+  "budget_own_resources_costing",
+  { data_type => "text", is_nullable => 1 },
+  "budget_other_resources_investment",
+  { data_type => "text", is_nullable => 1 },
+  "budget_other_resources_costing",
   { data_type => "text", is_nullable => 1 },
 );
 
@@ -133,11 +168,127 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 project_additional_informations
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-12-07 17:52:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:77r1JpEpe1OhSyJVVBkViA
+Type: has_many
+
+Related object: L<Donm::Schema::Result::ProjectAdditionalInformation>
+
+=cut
+
+__PACKAGE__->has_many(
+  "project_additional_informations",
+  "Donm::Schema::Result::ProjectAdditionalInformation",
+  { "foreign.project_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 project_badges
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::ProjectBadge>
+
+=cut
+
+__PACKAGE__->has_many(
+  "project_badges",
+  "Donm::Schema::Result::ProjectBadge",
+  { "foreign.project_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 project_budget_executions
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::ProjectBudgetExecution>
+
+=cut
+
+__PACKAGE__->has_many(
+  "project_budget_executions",
+  "Donm::Schema::Result::ProjectBudgetExecution",
+  { "foreign.project_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 project_secretariats
+
+Type: has_many
+
+Related object: L<Donm::Schema::Result::ProjectSecretariat>
+
+=cut
+
+__PACKAGE__->has_many(
+  "project_secretariats",
+  "Donm::Schema::Result::ProjectSecretariat",
+  { "foreign.project_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
 
 
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2018-08-28 15:40:47
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:19ev0ODqy9vrXJ02JpHWVQ
+
+use List::Util 'reduce';
+use Scalar::Util qw(looks_like_number);
+
+sub get_overall_total {
+    my $self = shift;
+
+    return reduce {
+        my $total_year = $b->get_column('total_year_total');
+
+        $total_year =~ s/(^\s+|\s+$)//g;
+        $total_year =~ s/^R\$ //g;
+        $total_year =~ s/,/./g;
+        $total_year *= 1000000 if $total_year =~ s/\s+milh(ão|ões)$//g;
+
+        $a + $total_year;
+    } 0, $self->project_budget_executions->all();
+}
+
+sub get_total_planned_budget {
+    my $self = shift;
+
+    my $own_resources_investment   = $self->get_column('budget_own_resources_investment')   or return undef;
+    my $own_resources_costing      = $self->get_column('budget_own_resources_costing')      or return undef;
+    my $other_resources_investment = $self->get_column('budget_other_resources_investment') or return undef;
+    my $other_resources_costing    = $self->get_column('budget_other_resources_costing')    or return undef;
+
+    $own_resources_investment =~ s/(^\s+|\s+$)//g;
+    $own_resources_investment =~ s/^R\$ //g;
+    $own_resources_investment =~ s/,/./g;
+    $own_resources_investment *= 1000000 if $own_resources_investment =~ s/\s+milh(ão|ões)$//g;
+
+    $own_resources_costing =~ s/(^\s+|\s+$)//g;
+    $own_resources_costing =~ s/^R\$ //g;
+    $own_resources_costing =~ s/,/./g;
+    $own_resources_costing *= 1000000 if $own_resources_costing =~ s/\s+milh(ão|ões)$//g;
+
+    $other_resources_investment =~ s/(^\s+|\s+$)//g;
+    $other_resources_investment =~ s/^R\$ //g;
+    $other_resources_investment =~ s/,/./g;
+    $other_resources_investment *= 1000000 if $other_resources_investment =~ s/\s+milh(ão|ões)$//g;
+
+    $other_resources_costing =~ s/(^\s+|\s+$)//g;
+    $other_resources_costing =~ s/^R\$ //g;
+    $other_resources_costing =~ s/,/./g;
+    $other_resources_costing *= 1000000 if $other_resources_costing =~ s/\s+milh(ão|ões)$//g;
+
+    if(
+        looks_like_number($own_resources_costing)
+        && looks_like_number($own_resources_investment)
+        && looks_like_number($other_resources_costing)
+        && looks_like_number($other_resources_investment)
+    ) {
+        return $own_resources_costing + $own_resources_investment + $other_resources_costing + $other_resources_investment;
+    }
+    return undef;
+}
+
 __PACKAGE__->meta->make_immutable;
+
 1;

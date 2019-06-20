@@ -1,0 +1,7 @@
+MAILTO=""
+USER=app
+SHELL=/bin/bash
+
+0 3 */15 * * app ( cd /src/; source envfile.sh; ./script/crontab/update-data-planejasampa.pl) 2>&1
+0 4 */30 * * app ( cd /src/; source envfile.sh; ./script/crontab/update-iota-indicators.pl) 2>&1
+0 5 */30 * * app ( cd /src/; source envfile.sh; ./script/crontab/update-iota-variables.pl) 2>&1
